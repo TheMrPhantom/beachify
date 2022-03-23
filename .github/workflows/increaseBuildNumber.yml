@@ -1,0 +1,27 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Increase Build Number
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'frontend/src/BuildNumber.json'
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GHUB_TOKEN }}
+      - name: Increase build number
+        run: awk '$0++' frontend/src/BuildNumber.json > newfile && mv newfile frontend/src/BuildNumber.json
+      - name: Commit report
+        run: |
+          git config --global user.name 'TheMrPhantom'
+          git config --global user.email 'themrphantom@github.com'
+          git commit -am "Increased Version Number"
+          git push
