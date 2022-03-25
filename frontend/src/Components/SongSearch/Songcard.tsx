@@ -20,7 +20,7 @@ const Songcard = (props: Props) => {
 
     return (
         <Paper
-            className={style.cardContainer + " " + commonStyle.fullWidth + (props.callback !== undefined ? style.cursorPointer : '')}
+            className={style.cardContainer + " " + commonStyle.fullWidth + " " + (props.callback !== undefined ? style.cursorPointer : '')}
             elevation={!isHovered ? 2 : 7}
             onClick={() => {
                 if (config.DEBUG === true) {
