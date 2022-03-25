@@ -6,10 +6,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: transparent !important;
+
+    background-color:transparent !important;
     margin: $padding;
-    padding: $padding;
-    gap: $flex-gap;
+    padding:$padding;
+    justify-content: center;
+    gap:$flex-gap;
 }
 
 .textbox {

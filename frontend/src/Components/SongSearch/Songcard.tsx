@@ -3,13 +3,16 @@ import React, { useState } from 'react'
 import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
 import commonStyle from '../Common/common.module.scss';
+import { title } from 'process';
+import config from '../../environment.json'
 
 type Props = {
     title: string,
     interpret: string,
     album: string,
     coverURL: string,
-    songID: string
+    songID: string,
+    callback?: (songID: string) => void
 }
 
 const Songcard = (props: Props) => {
@@ -17,10 +20,15 @@ const Songcard = (props: Props) => {
 
     return (
         <Paper
-            className={style.cardContainer + " " + commonStyle.fullWidth}
+            className={style.cardContainer + " " + commonStyle.fullWidth + (props.callback !== undefined ? style.cursorPointer : '')}
             elevation={!isHovered ? 2 : 7}
             onClick={() => {
-                console.log(props.songID);
+                if (config.DEBUG === true) {
+                    console.log('In Songcard: ' + props.songID);
+                }
+                if (props.callback != undefined) {
+                    props.callback(props.songID);
+                }
             }}
             onMouseEnter={(value) => {
                 setisHovered(true);

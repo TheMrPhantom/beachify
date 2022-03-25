@@ -8,6 +8,9 @@ import SongListItem from './SongListItem';
 type Props = {}
 
 const SongArea = (props: Props) => {
+    function fancyCallBack(songID:string) {
+        console.log('callback: ' + songID);
+    }
     return (
         <div className={style.container}>
             <TextField
@@ -25,6 +28,7 @@ const SongArea = (props: Props) => {
                 album='Perception'
                 coverURL='https://i.scdn.co/image/ab67616d0000b273cd733919ee57d0cc466e152f'
                 songID='spotify:track:0zdycLZKxVZ3EA8Nuxo35M'
+                callback={fancyCallBack}
             />
             <Songcard
                 title='Two Hundred'
@@ -32,6 +36,7 @@ const SongArea = (props: Props) => {
                 album='Perception'
                 coverURL='https://i.scdn.co/image/ab67616d0000b273cd733919ee57d0cc466e152f'
                 songID='spotify:track:0zdycLZKxVZ3EA8Nuxo35M'
+                callback={fancyCallBack}
             />
             <Songcard
                 title='Three Hundred'
@@ -39,6 +44,7 @@ const SongArea = (props: Props) => {
                 album='Perception'
                 coverURL='https://i.scdn.co/image/ab67616d0000b273cd733919ee57d0cc466e152f'
                 songID='spotify:track:0zdycLZKxVZ3EA8Nuxo35M'
+                callback={fancyCallBack}
             />
             <div className={commonStyle.fullWidth + " " + style.lowerContainer}>
                 <SongListItem />

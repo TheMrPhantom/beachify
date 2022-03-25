@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
 import SongArea from './Components/SongSearch/SongArea';
+import QueueArea from "./Components/SongQueue/QueueArea";
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
@@ -26,7 +27,7 @@ function App() {
           <CssBaseline />
           <Provider store={store}>
            <SongArea />
-
+            <QueueArea />
           </Provider>
         </div>
       </Router>
