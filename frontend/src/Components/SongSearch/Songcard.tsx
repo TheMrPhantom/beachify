@@ -2,7 +2,7 @@ import { Paper } from '@mui/material'
 import React, { useState } from 'react'
 import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
-import { title } from 'process';
+import commonStyle from '../Common/common.module.scss';
 
 type Props = {
     title: string,
@@ -17,7 +17,7 @@ const Songcard = (props: Props) => {
 
     return (
         <Paper
-            className={style.cardContainer}
+            className={style.cardContainer + " " + commonStyle.fullWidth}
             elevation={!isHovered ? 2 : 7}
             onClick={() => {
                 console.log(props.songID);
@@ -28,7 +28,7 @@ const Songcard = (props: Props) => {
             onMouseLeave={(value) => {
                 setisHovered(false);
             }}
-            
+
         >
             <img alt='album cover' src={props.coverURL} className={style.image} />
             <div className={style.textContainer}>

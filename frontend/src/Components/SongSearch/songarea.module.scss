@@ -1,26 +1,28 @@
 @import "../Common/variables.module.scss";
 
-.container{
-    width:50%;
+.container {
+    width: 50%;
     min-width: 380px;
-    display:flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    background-color:transparent !important;
-    margin:$padding;
-    padding:$padding;
-    gap:$flex-gap;
+    background-color: transparent !important;
+    margin: $padding;
+    padding: $padding;
+    gap: $flex-gap;
 }
 
-.textbox{
-    width:80%;
-    
+.textbox {
+    width: 80%;
 }
 
-.resize{
-    font-size: 25px;
+.lowerContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: $flex-gap;
 }
 
-.fullWidth{
-    width: -webkit-fill-available;
+.resize {
+    font-size: 25px !important;
 }

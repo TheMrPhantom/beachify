@@ -348,6 +348,7 @@ const normalPrimary = '#39AEA9'
 const normalBackground = '#062C30'
 const normalText = '#F5F5F5'
 const normalSecondary = '#067779'
+const normalAction='#E2D784'
 
 export const normalTheme = createTheme({
     palette: {
@@ -375,7 +376,7 @@ export const normalTheme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    color: '#000000',
+                    color: normalAction,
                 },
                 outlined: {
                     borderColor: "#c8c8c8",

@@ -1,10 +1,9 @@
 @import "../Common/variables.module.scss";
 
-$image-size:130px;
+$image-size: 130px;
 
-.cardContainer{
-    width: -webkit-fill-available;
-    display:flex;
+.cardContainer {
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -12,7 +11,7 @@ $image-size:130px;
     cursor: pointer;
 }
 
-.textContainer{
+.textContainer {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -20,7 +19,7 @@ $image-size:130px;
     padding: $padding;
 }
 
-.image{
-    width:$image-size;
-    height:$image-size
+.image {
+    width: $image-size;
+    height: $image-size;
 }

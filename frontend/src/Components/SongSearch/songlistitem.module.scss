@@ -1,3 +1,10 @@
-.container{
+.container {
     display: flex;
+    width: 100%;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }

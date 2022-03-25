@@ -1,5 +1,5 @@
 import React from 'react'
-import { Paper, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import Songcard from './Songcard';
 import style from './songarea.module.scss'
 import commonStyle from '../Common/common.module.scss';
@@ -11,7 +11,7 @@ const SongArea = (props: Props) => {
     return (
         <div className={style.container}>
             <TextField
-                placeholder='Songtitle'
+                placeholder='Songtitel'
                 variant='standard'
                 className={style.textbox}
                 InputProps={{
@@ -40,7 +40,7 @@ const SongArea = (props: Props) => {
                 coverURL='https://i.scdn.co/image/ab67616d0000b273cd733919ee57d0cc466e152f'
                 songID='spotify:track:0zdycLZKxVZ3EA8Nuxo35M'
             />
-            <div className={commonStyle.fullWidth}>
+            <div className={commonStyle.fullWidth + " " + style.lowerContainer}>
                 <SongListItem />
                 <SongListItem />
                 <SongListItem />
