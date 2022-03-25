@@ -11,6 +11,7 @@ import { CssBaseline, Paper, TextField } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Songcard from './Components/SongSearch/Songcard';
 import SongArea from './Components/SongSearch/SongArea';
+import QueueArea from "./Components/SongQueue/QueueArea";
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
@@ -27,7 +28,7 @@ function App() {
           <CssBaseline />
           <Provider store={store}>
            <SongArea />
-
+            <QueueArea />
           </Provider>
         </div>
       </Router>
