@@ -57,6 +57,15 @@ def authenticated(fn):
 #             return util.build_response("Unauthorized", 403)
 #     return None
 
+@app.route('/api/search/<string:seach_term>', methods=["GET"])
+def search_for_song(event_URL):
+
+
+    event_infos = db.get_event_infos(event_URL)
+    if event_infos is not None:
+        return util.build_response(event_infos)
+    else:
+        return util.build_response("Event not found", code=404)
 
 @app.route('/api/event/infos/<string:event_URL>', methods=["GET"])
 def get_event_infos(event_URL):

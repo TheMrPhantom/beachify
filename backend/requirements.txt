@@ -5,3 +5,4 @@ schedule
 flask_sqlalchemy
 psycopg2
 waitress
+spotipy
