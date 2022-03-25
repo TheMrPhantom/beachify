@@ -1,0 +1,26 @@
+@import "../Common/variables.module.scss";
+
+$image-size:130px;
+
+.cardContainer{
+    width: -webkit-fill-available;
+    display:flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+
+.textContainer{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: $padding;
+}
+
+.image{
+    width:$image-size;
+    height:$image-size
+}

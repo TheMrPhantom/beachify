@@ -7,8 +7,10 @@ import allReducer from './Reducer/reducerCombiner';
 import { createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { Provider } from 'react-redux';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, Paper, TextField } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
+import Songcard from './Components/SongSearch/Songcard';
+import SongArea from './Components/SongSearch/SongArea';
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
@@ -24,7 +26,8 @@ function App() {
         <div className="App">
           <CssBaseline />
           <Provider store={store}>
-            {/*  INSERT MAIN TAG HERE  */}
+           <SongArea />
+
           </Provider>
         </div>
       </Router>

@@ -344,14 +344,18 @@ export const darkTheme2 = createTheme({
     },
 });
 
-const normalPrimary = '#bbc34f'
-const normalBackground = '#fbfbfb'
-const normalText = '#000000'
+const normalPrimary = '#39AEA9'
+const normalBackground = '#062C30'
+const normalText = '#F5F5F5'
+const normalSecondary = '#067779'
 
 export const normalTheme = createTheme({
     palette: {
         primary: {
             main: normalPrimary
+        },
+        secondary: {
+            main: normalSecondary
         },
         background: {
             default: normalBackground
@@ -361,6 +365,13 @@ export const normalTheme = createTheme({
         },
     },
     components: {
+        MuiPaper: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: normalSecondary
+                }
+            }
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
