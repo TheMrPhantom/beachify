@@ -6,3 +6,4 @@ flask_sqlalchemy
 psycopg2
 waitress
 spotipy
+six>=1.15.0

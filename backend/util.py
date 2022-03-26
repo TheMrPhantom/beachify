@@ -30,10 +30,26 @@ def build_response(message: object, code: int = 200, type: str = "application/js
     return r
 
 
+def simplify_spotify_tracks(song):
+    songs = song["tracks"]["items"]
+    output = []
+
+    for s in songs:
+        interprets = []
+        for i in s["artists"]:
+            interprets.append(i["name"])
+        output.append({
+            "trackID": s["uri"],
+            "album": s["album"]["name"],
+            "coverURL": s["album"]["images"][1]["url"],
+            "interprets": interprets,
+            "songname": s["name"]})
+    return output
+
+
 def log(prefix, message):
     if logging_enabled:
         time = datetime.datetime.now().strftime("%x %X")
         output_string = f"[{time}] {prefix} -> {message}"
         with open("logs/log.txt", 'a+') as f:
             f.write(f"{output_string}\n")
-

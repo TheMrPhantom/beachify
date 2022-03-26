@@ -8,6 +8,7 @@ $image-size: 130px;
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
+    align-content: stretch;
 }
 
 .cursorPointer {
@@ -25,4 +26,6 @@ $image-size: 130px;
 .image {
     width: $image-size;
     height: $image-size;
+    object-fit: cover;
+    display:inline-block;
 }

@@ -8,8 +8,16 @@ from functools import wraps
 import authenticator
 import util
 from web import *
-
 from database import Queries
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
+
+scope = "user-read-playback-state user-modify-playback-state user-read-currently-playing streaming playlist-read-private playlist-read-collaborative"
+
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+
+auth_manager = SpotifyClientCredentials()
+sp = spotipy.Spotify(auth_manager=auth_manager)
 
 
 token_manager = authenticator.TokenManager()
@@ -57,15 +65,10 @@ def authenticated(fn):
 #             return util.build_response("Unauthorized", 403)
 #     return None
 
-@app.route('/api/search/<string:seach_term>', methods=["GET"])
-def search_for_song(event_URL):
+@app.route('/api/search/song/<string:seach_term>', methods=["GET"])
+def search_for_song(seach_term):
+    return util.build_response(util.simplify_spotify_tracks(sp.search(seach_term, limit=10)))
 
-
-    event_infos = db.get_event_infos(event_URL)
-    if event_infos is not None:
-        return util.build_response(event_infos)
-    else:
-        return util.build_response("Event not found", code=404)
 
 @app.route('/api/event/infos/<string:event_URL>', methods=["GET"])
 def get_event_infos(event_URL):

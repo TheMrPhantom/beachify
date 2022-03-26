@@ -1,16 +1,43 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { TextField } from '@mui/material';
 import Songcard from './Songcard';
 import style from './songarea.module.scss'
-import commonStyle from '../Common/common.module.scss';
-import SongListItem from './SongListItem';
+import { getAndStore } from '../Common/StaticFunctions';
 
 type Props = {}
 
 const SongArea = (props: Props) => {
-    function fancyCallBack(songID:string) {
+    const [searchText, setsearchText] = useState("")
+    const [songs, setsongs] = useState([])
+
+    useEffect(() => {
+        if (searchText.length === 0) {
+            setsongs([]);
+            return
+        }
+        getAndStore("search/song/" + searchText, setsongs)
+    }, [searchText])
+
+
+    const fancyCallBack = (songID: string) => {
         console.log('callback: ' + songID);
     }
+
+    const songlist = (): Array<JSX.Element> => {
+
+        return songs.map((song: any) => {
+            return <Songcard
+                key={song.trackID}
+                title={song.songname}
+                interpret={song.interprets[0]}
+                album={song.album}
+                coverURL={song.coverURL}
+                songID={song.trackID}
+                callback={fancyCallBack}
+            />
+        })
+    }
+
     return (
         <div className={style.container}>
             <TextField
@@ -21,38 +48,15 @@ const SongArea = (props: Props) => {
                     classes: {
                         input: style.resize,
                     },
-                }} />
-            <Songcard
-                title='One Hundred'
-                interpret='NF'
-                album='Perception'
-                coverURL='https://i.scdn.co/image/ab67616d0000b273cd733919ee57d0cc466e152f'
-                songID='spotify:track:0zdycLZKxVZ3EA8Nuxo35M'
-                callback={fancyCallBack}
+                }}
+                value={searchText}
+                onChange={(value) => {
+                    setsearchText(value.target.value)
+                }}
             />
-            <Songcard
-                title='Two Hundred'
-                interpret='NF'
-                album='Perception'
-                coverURL='https://i.scdn.co/image/ab67616d0000b273cd733919ee57d0cc466e152f'
-                songID='spotify:track:0zdycLZKxVZ3EA8Nuxo35M'
-                callback={fancyCallBack}
-            />
-            <Songcard
-                title='Three Hundred'
-                interpret='NF'
-                album='Perception'
-                coverURL='https://i.scdn.co/image/ab67616d0000b273cd733919ee57d0cc466e152f'
-                songID='spotify:track:0zdycLZKxVZ3EA8Nuxo35M'
-                callback={fancyCallBack}
-            />
-            <div className={commonStyle.fullWidth + " " + style.lowerContainer}>
-                <SongListItem />
-                <SongListItem />
-                <SongListItem />
-                <SongListItem />
-                <SongListItem />
-            </div>
+
+            {songlist()}
+
         </div>
     )
 }
