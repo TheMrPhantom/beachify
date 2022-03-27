@@ -10,6 +10,7 @@ $corner-banner-height: 23px;
     justify-content: flex-start;
     align-items: center;
     align-content: stretch;
+    width: 100%;
     min-width: calc(350px - $padding * 2);
     background-image: linear-gradient(149deg, hsl(202deg 56% 70%), #225877);
 }

@@ -46,6 +46,7 @@ const SongArea = (props: Props) => {
             <TextField
                 placeholder='Song hinzufügen'
                 variant='standard'
+                fullWidth
                 className={style.textbox}
                 InputProps={{
                     classes: {

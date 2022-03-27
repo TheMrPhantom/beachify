@@ -11,6 +11,7 @@ import { CssBaseline } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
 import SongArea from './Components/SongSearch/SongArea';
 import QueueArea from "./Components/SongQueue/QueueArea";
+import style from './app.module.scss';
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
@@ -26,7 +27,7 @@ function App() {
         <div className="App">
           <CssBaseline />
           <Provider store={store}>
-            <div>
+            <div className={style.app}>
               <SongArea />
               <QueueArea />
             </div>

@@ -5,6 +5,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: $flex-gap;
+    max-width: 75%;
 }
 
 .currentNextContainer {
