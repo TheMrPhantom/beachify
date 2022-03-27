@@ -37,13 +37,7 @@ const SongArea = (props: Props) => {
         return songs.map((song: any) => {
             return <Songcard
                 key={song.trackID}
-                song={{
-                    songname: song.songname,
-                    interpret: song.interprets[0],
-                    album: song.album,
-                    coverURL: song.coverURL,
-                    trackID: song.trackID,
-                }}
+                song={song}
                 callback={addSongtoQueue}
             />
         })

@@ -21,11 +21,17 @@ const Songcard = (props: Props) => {
     const theme = useTheme();
 
     const getTopCorner = () => {
-        if (props.callback !== undefined
-        ) {
-            return <div className={style.topCorner}>
-                Hinzufügen
-            </div>
+        if (props.callback !== undefined) {
+            if (props.song.alreadyAdded) {
+                return <div className={style.topCorner}>
+                    Bereits hinzugefügt
+                </div>
+            } else {
+                return <div className={style.topCorner}>
+                    Hinzufügen
+                </div>
+            }
+
         } else {
             return <div className={style.topCorner}>
                 {props.song.upvotes}
@@ -37,9 +43,20 @@ const Songcard = (props: Props) => {
         }
     }
 
+    const getPaperClasses = () => {
+        let output = style.cardContainer
+        if (props.callback !== undefined && !props.song.alreadyAdded) {
+            output += " " + style.cursorPointer
+        }
+        if (props.song.alreadyAdded) {
+            output += " " + style.transparent
+        }
+        return output
+    }
+
     return (
         <Paper
-            className={style.cardContainer + " " + " " + (props.callback !== undefined ? style.cursorPointer : '')}
+            className={getPaperClasses()}
             sx={{
                 borderRadius: "0px 25px 5px 0px",
                 position: "relative",
@@ -73,7 +90,7 @@ const Songcard = (props: Props) => {
                 <Typography variant='body1'>{props.song.album}</Typography>
             </div>
             {getTopCorner()}
-        </Paper>
+        </Paper >
     )
 }
 

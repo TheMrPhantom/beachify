@@ -67,7 +67,9 @@ def authenticated(fn):
 
 @app.route('/api/search/song/<string:seach_term>', methods=["GET"])
 def search_for_song(seach_term):
-    return util.build_response(util.simplify_spotify_tracks(sp.search(seach_term, limit=10)))
+    songs = util.simplify_spotify_tracks(sp.search(seach_term, limit=10))
+    db.flag_queued_songs(songs)
+    return util.build_response(songs)
 
 
 @app.route('/api/queue/song', methods=["GET"])

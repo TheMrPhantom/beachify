@@ -5,5 +5,6 @@ export type Song = {
     coverURL: string,
     interpret: string,
     upvotes?: number,
-    downvotes?: number
+    downvotes?: number,
+    alreadyAdded?: boolean
 }

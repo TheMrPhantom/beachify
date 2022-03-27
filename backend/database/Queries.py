@@ -45,3 +45,12 @@ class Queries:
                 "interpret": s.interpret
             })
         return output
+
+    def flag_queued_songs(self, songs):
+        for s in songs:
+            search_result = self.session.query(
+                Song).filter_by(track_id=s["trackID"]).first()
+            if search_result is None:
+                s["alreadyAdded"] = False
+            else:
+                s["alreadyAdded"] = True
