@@ -26,7 +26,7 @@ function App() {
         <div className="App">
           <CssBaseline />
           <Provider store={store}>
-           <SongArea />
+            <SongArea />
             <QueueArea />
           </Provider>
         </div>
