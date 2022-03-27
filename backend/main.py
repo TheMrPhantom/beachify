@@ -77,7 +77,6 @@ def get_songs_from_queue():
 
 @app.route('/api/queue/song', methods=["PUT"])
 def add_song_to_queue():
-    print(request.json)
     db.add_song_to_queue(request.json)
     return util.build_response("Song added")
 
