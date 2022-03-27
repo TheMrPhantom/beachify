@@ -1,4 +1,5 @@
 export type Song = {
+    databaseID?: number,
     songname: string,
     album: string,
     trackID: string,

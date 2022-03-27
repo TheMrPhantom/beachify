@@ -36,6 +36,7 @@ class Queries:
             s: Song = s
 
             output.append({
+                "databaseID": s.id,
                 "songname": s.songname,
                 "album": s.album,
                 "trackID": s.track_id,
@@ -54,3 +55,13 @@ class Queries:
                 s["alreadyAdded"] = False
             else:
                 s["alreadyAdded"] = True
+
+    def upvote_song(self, song_id):
+        song: Song = self.session.query(Song).filter_by(id=song_id).first()
+        song.upvotes += 1
+        self.session.commit()
+
+    def downvote_song(self, song_id):
+        song: Song = self.session.query(Song).filter_by(id=song_id).first()
+        song.downvotes += 1
+        self.session.commit()

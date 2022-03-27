@@ -59,6 +59,7 @@ const QueueArea = (props: Props) => {
                     return <Songcard
                         key={song.trackID}
                         song={song}
+                        votingPossible
                     />
                 })}
             </>

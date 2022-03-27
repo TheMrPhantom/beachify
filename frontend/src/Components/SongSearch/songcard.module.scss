@@ -26,6 +26,7 @@ $corner-banner-height: 23px;
     justify-content: space-evenly;
     padding: $padding;
     padding-top: calc($padding / 2) + $corner-banner-height;
+    width: 100%;
 }
 
 .image {
@@ -54,4 +55,11 @@ $corner-banner-height: 23px;
 
 .transparent {
     opacity: 0.3;
+}
+
+.upDownButtons {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
 }

@@ -1,4 +1,4 @@
-import { Paper, useTheme } from '@mui/material'
+import { Button, Divider, Paper, useTheme } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
@@ -7,9 +7,14 @@ import { Song } from '../Common/Types';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import Spacer from '../Common/Spacer';
+import Cookies from 'js-cookie';
+import { doGetRequest, doRequest } from '../Common/StaticFunctions';
+import { useDispatch } from 'react-redux';
+import { setQueueSongs } from '../../Actions/QueueAction';
 
 type Props = {
     song: Song,
+    votingPossible?: boolean
     callback?: (song: Song) => void
 }
 
@@ -17,6 +22,8 @@ const Songcard = (props: Props) => {
     const [isHovered, setisHovered] = useState(false);
     const refPaper: React.RefObject<HTMLInputElement> = useRef(null);
     const [imgLoaded, setimgLoaded] = useState(false)
+    const dispatch = useDispatch()
+
     const theme = useTheme();
 
     const getTopCorner = () => {
@@ -40,6 +47,53 @@ const Songcard = (props: Props) => {
                 <ThumbDownIcon style={{ height: "20px" }} />
             </div>
         }
+    }
+
+    const voteUp = () => {
+        doRequest("queue/song/upvote", "PATCH", props.song.databaseID).then(() => {
+            setVotedCookie().then(() => {
+                doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                    dispatch(setQueueSongs(value.content))
+                })
+            })
+        })
+    }
+
+    const voteDown = () => {
+        doRequest("queue/song/downvote", "PATCH", props.song.databaseID).then(() => {
+            setVotedCookie().then(() => {
+                doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                    dispatch(setQueueSongs(value.content))
+                })
+            })
+        })
+    }
+
+    const setVotedCookie = async () => {
+        const cookieRaw = Cookies.get("voted-songs")
+        const cookie = cookieRaw ? cookieRaw : ""
+        Cookies.set("voted-songs", cookie + ";" + props.song.databaseID)
+    }
+
+    const getVotingButtons = () => {
+        if (props.votingPossible) {
+            const cookieRaw = Cookies.get("voted-songs")
+            const cookie = cookieRaw ? cookieRaw : ""
+
+            const queueID = props.song.databaseID ? props.song.databaseID.toString() : "?"
+            if (!cookie.includes(queueID)) {
+                return <>
+                    <Spacer vertical={5} />
+                    <Divider style={{ width: "100%" }} />
+                    <Spacer vertical={5} />
+                    <div className={style.upDownButtons}>
+                        <Button sx={{ color: theme.palette.text.secondary }} onClick={() => voteUp()} ><ThumbUpIcon /></Button>
+                        <Button sx={{ color: theme.palette.text.secondary }} onClick={() => voteDown()} ><ThumbDownIcon /></Button>
+                    </div >
+                </>
+            }
+        }
+        return <></>
     }
 
     const getPaperClasses = () => {
@@ -87,6 +141,7 @@ const Songcard = (props: Props) => {
                 <Typography variant='h5'><b>{props.song.songname}</b></Typography>
                 <Typography variant='h5'>{props.song.interpret}</Typography>
                 <Typography variant='body1'>{props.song.album}</Typography>
+                {getVotingButtons()}
             </div>
             {getTopCorner()}
         </Paper >
