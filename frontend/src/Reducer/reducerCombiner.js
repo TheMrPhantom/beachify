@@ -1,8 +1,8 @@
 import { combineReducers } from "redux";
-import SampleReducer from "./SampleReducer";
+import QueueReducer from "./QueueReducer";
 
 const allReducer = combineReducers({
-    someReducer: SampleReducer
+    queueReducer: QueueReducer
 })
 
 export default allReducer;

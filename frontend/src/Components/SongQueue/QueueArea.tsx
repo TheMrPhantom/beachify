@@ -1,32 +1,39 @@
 import { Paper, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import Typography from '@mui/material/Typography';
 import { title } from 'process';
 import style from './queuearea.module.scss';
 import commonStyle from '../Common/common.module.scss';
 import Songcard from "../SongSearch/Songcard";
 import Spacer from "../Common/Spacer";
-import { getAndStore } from '../Common/StaticFunctions';
+import { doGetRequest, getAndStore } from '../Common/StaticFunctions';
 import { Song } from '../Common/Types';
+import { QueueReducerType } from '../../Reducer/QueueReducer';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import { setQueueSongs } from '../../Actions/QueueAction';
 
 type Props = {
 }
 
 const QueueArea = (props: Props) => {
-    const [songs, setsongs] = useState<Array<Song>>([])
+
+    const dispatch = useDispatch()
+    const queueState: QueueReducerType = useSelector((state: RootStateOrAny) => state.queueReducer);
 
     useEffect(() => {
-        getAndStore("queue/song", setsongs)
+        doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+            dispatch(setQueueSongs(value.content))
+        })
     }, [])
 
 
     const currentlyPlaying = () => {
-        if (songs.length > 0) {
+        if (queueState.songs.length > 0) {
             return <>
                 <Typography variant='h4'>Aktuell spielt:</Typography>
                 <Songcard
-                    key={songs[0].trackID}
-                    song={songs[0]}
+                    key={queueState.songs[0].trackID}
+                    song={queueState.songs[0]}
                 />
             </>
         } else {
@@ -35,12 +42,12 @@ const QueueArea = (props: Props) => {
     }
 
     const nextSong = () => {
-        if (songs.length > 1) {
+        if (queueState.songs.length > 1) {
             return <>
                 <Typography variant='h4'>Nächster Song:</Typography>
                 <Songcard
-                    key={songs[1].trackID}
-                    song={songs[1]}
+                    key={queueState.songs[1].trackID}
+                    song={queueState.songs[1]}
                 />
             </>
         } else {
@@ -49,10 +56,10 @@ const QueueArea = (props: Props) => {
     }
 
     const queue = () => {
-        if (songs.length > 2) {
+        if (queueState.songs.length > 2) {
             return <>
                 <Typography variant='h4'>Warteschlange:</Typography>
-                {songs.slice(2).map((song: Song) => {
+                {queueState.songs.slice(2).map((song: Song) => {
                     return <Songcard
                         key={song.trackID}
                         song={song}

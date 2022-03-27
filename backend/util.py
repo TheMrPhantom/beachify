@@ -44,14 +44,11 @@ def simplify_spotify_tracks(song):
     output = []
 
     for s in songs:
-        interprets = []
-        for i in s["artists"]:
-            interprets.append(i["name"])
         output.append({
             "trackID": s["uri"],
             "album": s["album"]["name"],
             "coverURL": s["album"]["images"][1]["url"],
-            "interprets": interprets,
+            "interpret": s["artists"][0]["name"],
             "songname": s["name"]})
     return output
 

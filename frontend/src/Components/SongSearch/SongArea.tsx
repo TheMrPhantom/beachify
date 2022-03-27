@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react'
 import { TextField } from '@mui/material';
 import Songcard from './Songcard';
 import style from './songarea.module.scss'
-import { doRequest, getAndStore } from '../Common/StaticFunctions';
+import { doGetRequest, doRequest, getAndStore } from '../Common/StaticFunctions';
 import { Song } from '../Common/Types';
 import Cookies from 'js-cookie';
+import { useDispatch } from 'react-redux';
+import { setQueueSongs } from '../../Actions/QueueAction';
+
 type Props = {}
 
 const SongArea = (props: Props) => {
     const [searchText, setsearchText] = useState("")
     const [songs, setsongs] = useState([])
-    const [searchUsed, setsearchUsed] = useState(false)
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (searchText !== "" && Cookies.get("search-help") === undefined) {
@@ -29,7 +32,12 @@ const SongArea = (props: Props) => {
 
 
     const addSongtoQueue = async (song: Song) => {
-        doRequest("queue/song", "PUT", song)
+        await doRequest("queue/song", "PUT", song).then((value) => {
+            doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                dispatch(setQueueSongs(value.content))
+            })
+        })
+        setsearchText("")
     }
 
     const songlist = (): Array<JSX.Element> => {
@@ -60,7 +68,9 @@ const SongArea = (props: Props) => {
                     setsearchText(value.target.value)
                 }}
             />
-            {songs.length === 0 && Cookies.get("show-search-help") === undefined ? <img src="downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> : <></>}
+            {songs.length === 0 && Cookies.get("show-search-help") === undefined ?
+                <img src="downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> :
+                <></>}
             {songlist()}
 
         </div>
