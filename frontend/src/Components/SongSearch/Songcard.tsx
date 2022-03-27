@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 import commonStyle from '../Common/common.module.scss';
 import config from '../../environment.json'
 import { Song } from '../Common/Types';
+import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
+import Spacer from '../Common/Spacer';
 
 type Props = {
     song: Song,
@@ -24,7 +26,13 @@ const Songcard = (props: Props) => {
                 Hinzufügen
             </div>
         } else {
-            return <></>
+            return <div className={style.topCorner}>
+                2
+                <Spacer horizontal={5} />
+                <ThumbsUpDownIcon style={{ height: "20px" }} />
+                <Spacer horizontal={5} />
+                5
+            </div>
         }
     }
 
