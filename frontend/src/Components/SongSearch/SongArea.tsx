@@ -4,12 +4,20 @@ import Songcard from './Songcard';
 import style from './songarea.module.scss'
 import { doRequest, getAndStore } from '../Common/StaticFunctions';
 import { Song } from '../Common/Types';
-
+import Cookies from 'js-cookie';
 type Props = {}
 
 const SongArea = (props: Props) => {
     const [searchText, setsearchText] = useState("")
     const [songs, setsongs] = useState([])
+    const [searchUsed, setsearchUsed] = useState(false)
+
+    useEffect(() => {
+        if (searchText !== "" && Cookies.get("search-help") === undefined) {
+            Cookies.set("show-search-help", "false")
+        }
+    }, [searchText])
+
 
     useEffect(() => {
         if (searchText.length === 0) {
@@ -58,7 +66,7 @@ const SongArea = (props: Props) => {
                     setsearchText(value.target.value)
                 }}
             />
-
+            {songs.length === 0 && Cookies.get("show-search-help") === undefined ? <img src="downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> : <></>}
             {songlist()}
 
         </div>

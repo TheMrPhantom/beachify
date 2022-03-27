@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography';
 import commonStyle from '../Common/common.module.scss';
 import config from '../../environment.json'
 import { Song } from '../Common/Types';
-import ThumbsUpDownIcon from '@mui/icons-material/ThumbsUpDown';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import Spacer from '../Common/Spacer';
 
 type Props = {
@@ -27,11 +28,11 @@ const Songcard = (props: Props) => {
             </div>
         } else {
             return <div className={style.topCorner}>
-                2
+                {props.song.upvotes}
+                <ThumbUpIcon style={{ height: "20px" }} />
                 <Spacer horizontal={5} />
-                <ThumbsUpDownIcon style={{ height: "20px" }} />
-                <Spacer horizontal={5} />
-                5
+                {props.song.downvotes}
+                <ThumbDownIcon style={{ height: "20px" }} />
             </div>
         }
     }

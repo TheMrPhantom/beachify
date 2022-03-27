@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="160.84137mm"
+   height="79.849281mm"
+   viewBox="0 0 160.84137 79.849281"
+   version="1.1"
+   id="svg5"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2">
+    <rect
+       x="96.721962"
+       y="179.82111"
+       width="374.62732"
+       height="58.578087"
+       id="rect2272" />
+    <linearGradient
+       id="a"
+       x1="104.73"
+       x2="494.51999"
+       y1="335.72"
+       y2="895.84003"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.26458333,0,0,0.26458333,30.671479,-56.197473)">
+      <stop
+         stop-color="#e00"
+         offset="0"
+         id="stop824" />
+      <stop
+         stop-color="#9a0000"
+         offset="1"
+         id="stop826" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-13.060096,-4.1378977)">
+    <path
+       d="m 164.40103,4.1389677 c 1.78322,9.8999903 9.50043,30.9243703 9.50043,30.9243703 -3.35154,-3.65627 -6.93192,-5.38029 -9.33294,-6.18344 -1.48219,16.09891 -18.78882,53.454982 -51.01645,55.107282 11.59888,-9.87557 -2.43842,-10.76176 -19.648918,-10.53541 28.643068,-1.61371 60.568098,-16.456302 65.378478,-44.970712 -2.34527,0.39735 -6.20537,1.36782 -10.90018,3.7674 0,0 14.35846,-18.70185 16.01909,-28.1105603 z"
+       fill="url(#a)"
+       id="path831"
+       style="fill:#77b5d9;fill-opacity:1;stroke-width:0.119127" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.3773437,0,0,0.3773437,-24.683118,-36.823957)"
+       id="text2270"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect2272);fill:#77b5d9;fill-opacity:1;stroke:none"><tspan
+         x="96.722656"
+         y="216.31353"
+         id="tspan10908"><tspan
+           style="font-family:Roboto;-inkscape-font-specification:Roboto"
+           id="tspan10906">Füge Songs hinzu</tspan></tspan></text>
+  </g>
+</svg>
