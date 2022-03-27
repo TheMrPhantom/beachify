@@ -1,12 +1,8 @@
-import { Paper, TextField } from '@mui/material'
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography';
-import { title } from 'process';
 import style from './queuearea.module.scss';
-import commonStyle from '../Common/common.module.scss';
 import Songcard from "../SongSearch/Songcard";
-import Spacer from "../Common/Spacer";
-import { doGetRequest, getAndStore } from '../Common/StaticFunctions';
+import { doGetRequest } from '../Common/StaticFunctions';
 import { Song } from '../Common/Types';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
@@ -24,7 +20,7 @@ const QueueArea = (props: Props) => {
         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
             dispatch(setQueueSongs(value.content))
         })
-    }, [])
+    }, [dispatch])
 
 
     const currentlyPlaying = () => {

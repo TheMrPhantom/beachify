@@ -2,7 +2,6 @@ import { Paper, useTheme } from '@mui/material'
 import React, { useRef, useState } from 'react'
 import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
-import commonStyle from '../Common/common.module.scss';
 import config from '../../environment.json'
 import { Song } from '../Common/Types';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
