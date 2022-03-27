@@ -1,15 +1,12 @@
 @import "../Common/variables.module.scss";
 
 .container {
-    width: 50%;
-    min-width: 380px;
     display: flex;
     flex-direction: column;
     align-items: center;
 
     background-color: transparent !important;
     margin: $padding;
-    padding: $padding;
     justify-content: center;
     gap: $flex-gap;
 }

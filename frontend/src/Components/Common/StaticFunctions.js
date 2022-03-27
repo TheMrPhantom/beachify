@@ -1,10 +1,15 @@
 import Config from "../../environment.json";
 
 export const doPostRequest = async (path, data) => {
+    const resp = await doRequest(path, "POST", data)
+    return resp
+};
+
+export const doRequest = async (path, method, data) => {
     const resp = await fetch(Config.DOMAIN + path,
         {
             credentials: 'include',
-            method: "POST",
+            method: method,
             headers: { "Content-type": "application/json", "Access-Control-Allow-Origin": "/*" },
             body: JSON.stringify(data)
         });

@@ -31,6 +31,15 @@ def build_response(message: object, code: int = 200, type: str = "application/js
 
 
 def simplify_spotify_tracks(song):
+    """
+    {
+            "trackID": trackID
+            "album":  album
+            "coverURL": coverURL
+            "interprets": interprets[],
+            "songname": songname
+    }
+    """
     songs = song["tracks"]["items"]
     output = []
 

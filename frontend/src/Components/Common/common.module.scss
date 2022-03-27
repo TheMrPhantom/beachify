@@ -38,8 +38,8 @@
     background-color: $success-color !important;
 }
 
-.fullWidth{
-    width: -moz-available;          /* WebKit-based browsers will ignore this. */
-    width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
+.fullWidth {
+    width: -moz-available; /* WebKit-based browsers will ignore this. */
+    width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
     width: stretch;
 }

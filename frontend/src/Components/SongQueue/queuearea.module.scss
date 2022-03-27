@@ -1,0 +1,24 @@
+@import "../Common/variables.module.scss";
+
+.outterContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: $flex-gap;
+}
+
+.currentNextContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding: $padding;
+    gap: $flex-gap;
+}
+
+.queueContainer {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: $flex-gap;
+}

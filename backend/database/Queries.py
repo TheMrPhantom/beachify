@@ -17,43 +17,31 @@ class Queries:
         self.db: SQLAlchemy = db
         self.session: session.Session = self.db.session
         self.db.create_all()
-        if self.session.query(Event).first() is None:
-            self.create_dummy_data()
 
+    def add_song_to_queue(self, song):
+        songname = song["songname"]
+        album = song["album"]
+        trackID = song["trackID"]
+        coverURL = song["coverURL"]
+        interpret = song["interpret"]
+        song = Song(songname=songname, album=album,
+                    track_id=trackID, cover_URL=coverURL, interpret=interpret)
+        self.session.add(song)
+        self.session.commit()
 
-    def create_dummy_data(self) -> None:
-        for i in range(5000):
-            print(f"Inserting {i}/{5000}")
-            event = Event(name=f"Event {i}", place=f"Am Ort {i}", informations=f"Informationen {i}",
-                          secret_url=f"secret{i}", public_url=f"public{i}",
-                          owner_name=f"tom{i}", owner_mail=f"tom{i}@la.de", optional_selection=True,
-                          max_Participants=4, only_one_option=False, secret_poll=False, send_result=False)
-            self.session.add(event)
-            self.session.commit()
+    def get_queued_songs(self):
+        songs = self.session.query(Song).all()
+        output = []
+        for s in songs:
+            s: Song = s
 
-            event_id = event.id
-            day1 = EventDay(event_id=event_id,
-                            date=datetime.now()+timedelta(days=i))
-            day2 = EventDay(event_id=event_id,
-                            date=datetime.now()+timedelta(days=i+1))
-
-            self.session.add(day1)
-            self.session.add(day2)
-            self.session.commit()
-
-            event_day_id1 = day1.id
-            event_day_id2 = day2.id
-            time1 = EventTime(event_day_id=event_day_id1, start=datetime.now(
-            )+timedelta(hours=i), end=datetime.now()+timedelta(hours=i+1))
-            time2 = EventTime(event_day_id=event_day_id1, start=datetime.now(
-            )+timedelta(hours=i+2), end=datetime.now()+timedelta(hours=i+3))
-            time3 = EventTime(event_day_id=event_day_id2, start=datetime.now(
-            )+timedelta(hours=i+4), end=datetime.now()+timedelta(hours=i+5))
-            time4 = EventTime(event_day_id=event_day_id2, start=datetime.now(
-            )+timedelta(hours=i+6), end=datetime.now()+timedelta(hours=i+7))
-
-            self.session.add(time1)
-            self.session.add(time2)
-            self.session.add(time3)
-            self.session.add(time4)
-            self.session.commit()
+            output.append({
+                "songname": s.songname,
+                "album": s.album,
+                "trackID": s.track_id,
+                "coverURL": s.cover_URL,
+                "upvotes": s.upvotes,
+                "downvotes": s.downvotes,
+                "interpret": s.interpret
+            })
+        return output

@@ -4,14 +4,11 @@ import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
 import commonStyle from '../Common/common.module.scss';
 import config from '../../environment.json'
+import { Song } from '../Common/Types';
 
 type Props = {
-    title: string,
-    interpret: string,
-    album: string,
-    coverURL: string,
-    songID: string,
-    callback?: (songID: string) => void
+    song: Song,
+    callback?: (song: Song) => void
 }
 
 const Songcard = (props: Props) => {
@@ -20,21 +17,32 @@ const Songcard = (props: Props) => {
     const [imgLoaded, setimgLoaded] = useState(false)
     const theme = useTheme();
 
+    const getTopCorner = () => {
+        if (props.callback !== undefined
+        ) {
+            return <div className={style.topCorner}>
+                Hinzufügen
+            </div>
+        } else {
+            return <></>
+        }
+    }
+
     return (
         <Paper
-            className={style.cardContainer + " " + commonStyle.fullWidth + " " + (props.callback !== undefined ? style.cursorPointer : '')}
+            className={style.cardContainer + " " + " " + (props.callback !== undefined ? style.cursorPointer : '')}
             sx={{
                 borderRadius: "0px 25px 5px 0px",
                 position: "relative",
                 color: theme.palette.secondary.contrastText
             }}
-            elevation={!isHovered ? 2 : 7}
+            elevation={!isHovered ? 1 : 3}
             onClick={() => {
                 if (config.DEBUG === true) {
-                    console.log('In Songcard: ' + props.songID);
+                    console.log('In Songcard: ' + props.song.trackID);
                 }
                 if (props.callback !== undefined) {
-                    props.callback(props.songID);
+                    props.callback(props.song);
                 }
             }}
             onMouseEnter={(value) => {
@@ -44,21 +52,18 @@ const Songcard = (props: Props) => {
                 setisHovered(false);
             }}
         >
-            <img src={props.coverURL}
+            <img src={props.song.coverURL}
                 alt='album cover'
                 className={style.image}
                 style={{ height: refPaper != null && refPaper.current != null ? refPaper.current.offsetHeight : "" }}
                 onLoad={() => setimgLoaded(!imgLoaded)}
             />
             <div className={style.textContainer} ref={refPaper}>
-                <Typography variant='h5'><b>{props.title}</b></Typography>
-                <Typography variant='h5'>{props.interpret}</Typography>
-                <Typography variant='body1'>{props.album}</Typography>
+                <Typography variant='h5'><b>{props.song.songname}</b></Typography>
+                <Typography variant='h5'>{props.song.interpret}</Typography>
+                <Typography variant='body1'>{props.song.album}</Typography>
             </div>
-            <div className={style.topCorner}>
-                Hinzufügen
-            </div>
-
+            {getTopCorner()}
         </Paper>
     )
 }

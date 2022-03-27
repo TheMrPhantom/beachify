@@ -1,6 +1,7 @@
 @import "../Common/variables.module.scss";
 
 $image-size: 130px;
+$corner-banner-height: 23px;
 
 .cardContainer {
     display: flex;
@@ -9,6 +10,8 @@ $image-size: 130px;
     justify-content: flex-start;
     align-items: center;
     align-content: stretch;
+    min-width: calc(350px - $padding * 2);
+    background-image: linear-gradient(149deg, hsl(202deg 56% 70%), #225877);
 }
 
 .cursorPointer {
@@ -21,6 +24,7 @@ $image-size: 130px;
     flex-wrap: wrap;
     justify-content: space-evenly;
     padding: $padding;
+    padding-top: calc($padding / 2) + $corner-banner-height;
 }
 
 .image {
@@ -38,5 +42,6 @@ $image-size: 130px;
     color: #062c30;
     border-radius: 0px 25px 0px 25px;
     padding-left: 20px;
+    height: $corner-banner-height;
     width: 120px;
 }

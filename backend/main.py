@@ -70,13 +70,16 @@ def search_for_song(seach_term):
     return util.build_response(util.simplify_spotify_tracks(sp.search(seach_term, limit=10)))
 
 
-@app.route('/api/event/infos/<string:event_URL>', methods=["GET"])
-def get_event_infos(event_URL):
-    event_infos = db.get_event_infos(event_URL)
-    if event_infos is not None:
-        return util.build_response(event_infos)
-    else:
-        return util.build_response("Event not found", code=404)
+@app.route('/api/queue/song', methods=["GET"])
+def get_songs_from_queue():
+    return util.build_response(db.get_queued_songs())
+
+
+@app.route('/api/queue/song', methods=["PUT"])
+def add_song_to_queue():
+    print(request.json)
+    db.add_song_to_queue(request.json)
+    return util.build_response("Song added")
 
 
 @app.route('/api/login/check', methods=["GET"])

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { TextField } from '@mui/material';
 import Songcard from './Songcard';
 import style from './songarea.module.scss'
-import { getAndStore } from '../Common/StaticFunctions';
+import { doRequest, getAndStore } from '../Common/StaticFunctions';
+import { Song } from '../Common/Types';
 
 type Props = {}
 
@@ -19,8 +20,8 @@ const SongArea = (props: Props) => {
     }, [searchText])
 
 
-    const fancyCallBack = (songID: string) => {
-        console.log('callback: ' + songID);
+    const addSongtoQueue = async (song: Song) => {
+        doRequest("queue/song", "PUT", song)
     }
 
     const songlist = (): Array<JSX.Element> => {
@@ -28,12 +29,14 @@ const SongArea = (props: Props) => {
         return songs.map((song: any) => {
             return <Songcard
                 key={song.trackID}
-                title={song.songname}
-                interpret={song.interprets[0]}
-                album={song.album}
-                coverURL={song.coverURL}
-                songID={song.trackID}
-                callback={fancyCallBack}
+                song={{
+                    songname: song.songname,
+                    interpret: song.interprets[0],
+                    album: song.album,
+                    coverURL: song.coverURL,
+                    trackID: song.trackID,
+                }}
+                callback={addSongtoQueue}
             />
         })
     }
@@ -41,7 +44,7 @@ const SongArea = (props: Props) => {
     return (
         <div className={style.container}>
             <TextField
-                placeholder='Songtitel'
+                placeholder='Song hinzufügen'
                 variant='standard'
                 className={style.textbox}
                 InputProps={{
