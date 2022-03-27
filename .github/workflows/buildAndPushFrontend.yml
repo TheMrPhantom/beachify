@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: <frontend docker>:latest
+          tags: themrphantom/beachify-frontend:latest
           file: frontend/Dockerfile
           context: ./frontend
           platforms: linux/amd64,linux/arm/v7
