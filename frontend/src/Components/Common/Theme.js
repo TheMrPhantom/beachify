@@ -343,12 +343,19 @@ export const darkTheme2 = createTheme({
         }
     },
 });
-
+/*
 const normalPrimary = '#39AEA9'
 const normalBackground = '#062C30'
 const normalText = '#F5F5F5'
 const normalSecondary = '#067779'
 const normalAction='#E2D784'
+*/
+const normalPrimary = '#39AEA9'
+const normalBackground = '#0e2858'
+const normalText = '#77b5d9'
+const normalSecondary = '#77b5d9'
+const normalAction = '#E2D784'
+
 
 export const normalTheme = createTheme({
     palette: {

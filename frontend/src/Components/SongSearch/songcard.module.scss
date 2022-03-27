@@ -27,5 +27,16 @@ $image-size: 130px;
     width: $image-size;
     height: $image-size;
     object-fit: cover;
-    display:inline-block;
+    display: inline-block;
+}
+
+.topCorner {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: rgba($color: #d7eaf3, $alpha: 1);
+    color: #062c30;
+    border-radius: 0px 25px 0px 25px;
+    padding-left: 20px;
+    width: 120px;
 }
