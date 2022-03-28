@@ -36,7 +36,7 @@ def simplify_spotify_tracks(song):
             "trackID": trackID
             "album":  album
             "coverURL": coverURL
-            "interprets": interprets[],
+            "interpret": interpret,
             "songname": songname
     }
     """

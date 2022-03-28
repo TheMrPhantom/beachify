@@ -70,3 +70,18 @@ class Queries:
         song: Song = self.session.query(Song).filter_by(id=song_id).first()
         self.session.delete(song)
         self.session.commit()
+    
+    def add_song_to_songlist(self, songlist):
+        for element in songlist:
+            song_from_database = self.session.query(Song).filter_by(track_id=element["track_id"]).first()
+            if song_from_database is None:
+                songname = element["songname"]
+                interpret = element["interpret"]
+                album = element["album"]
+                track_id = element["trackID"]
+                cover_URL = element["coverURL"]
+
+                newSong = Song(songname = songname, interpret = interpret, album = album, track_id = track_id, cover_URL = cover_URL)
+
+                self.session.add(newSong)
+                self.session.commit()

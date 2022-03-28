@@ -68,6 +68,8 @@ def authenticated(fn):
 @app.route('/api/search/song/<string:seach_term>', methods=["GET"])
 def search_for_song(seach_term):
     songs = util.simplify_spotify_tracks(sp.search(seach_term, limit=10))
+    db.add_song_to_songlist(songs)
+
     db.flag_queued_songs(songs)
     return util.build_response(songs)
 
@@ -79,6 +81,7 @@ def get_songs_from_queue():
 
 @app.route('/api/queue/song', methods=["PUT"])
 def add_song_to_queue():
+
     db.add_song_to_queue(request.json)
     return util.build_response("Song added")
 
@@ -105,7 +108,7 @@ def loginCheck():
 @authenticated
 def logout():
     token_manager.delete_token(request.cookies.get('token'))
-    util.log("Logout", f"MemberID: {request.cookies.get('memberID')}")
+   # util.log("Logout", f"MemberID: {request.cookies.get('memberID')}")
     return util.build_response("OK")
 
 
