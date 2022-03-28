@@ -65,3 +65,8 @@ class Queries:
         song: Song = self.session.query(Song).filter_by(id=song_id).first()
         song.downvotes += 1
         self.session.commit()
+
+    def delete_song(self, song_id):
+        song: Song = self.session.query(Song).filter_by(id=song_id).first()
+        self.session.delete(song)
+        self.session.commit()
