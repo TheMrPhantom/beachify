@@ -1,3 +1,4 @@
+import queue
 from authenticator import TokenManager
 import util
 from datetime import datetime, timedelta
@@ -18,51 +19,48 @@ class Queries:
         self.session: session.Session = self.db.session
         self.db.create_all()
 
-    def add_song_to_queue(self, song):
-        songname = song["songname"]
-        album = song["album"]
-        trackID = song["trackID"]
-        coverURL = song["coverURL"]
-        interpret = song["interpret"]
-        song = Song(songname=songname, album=album,
-                    track_id=trackID, cover_URL=coverURL, interpret=interpret)
-        self.session.add(song)
+    def add_song_to_queue(self, songID):
+        search_result: Song = self.session.query(
+            Song).filter_by(track_id=songID).first()
+        queue_element = Queue(song_id=search_result.id)
+        self.session.add(queue_element)
         self.session.commit()
 
     def get_queued_songs(self):
-        songs = self.session.query(Song).all()
+        songs = self.session.query(Queue).all()
         output = []
         for s in songs:
-            s: Song = s
+            queueElement: Queue = s
+            song: Song = queueElement.song
 
             output.append({
-                "databaseID": s.id,
-                "songname": s.songname,
-                "album": s.album,
-                "trackID": s.track_id,
-                "coverURL": s.cover_URL,
-                "upvotes": s.upvotes,
-                "downvotes": s.downvotes,
-                "interpret": s.interpret
+                "databaseID": song.id,
+                "songname": song.songname,
+                "album": song.album,
+                "trackID": song.track_id,
+                "coverURL": song.cover_URL,
+                "upvotes": queueElement.upvotes,
+                "downvotes": queueElement.downvotes,
+                "interpret": song.interpret
             })
         return output
 
     def flag_queued_songs(self, songs):
         for s in songs:
-            search_result = self.session.query(
-                Song).filter_by(track_id=s["trackID"]).first()
+            search_result = self.session.query(Queue).filter(Queue.song.has(track_id=s["trackID"])).first()
+        
             if search_result is None:
                 s["alreadyAdded"] = False
             else:
                 s["alreadyAdded"] = True
 
     def upvote_song(self, song_id):
-        song: Song = self.session.query(Song).filter_by(id=song_id).first()
+        song: Song = self.session.query(Queue).filter(Queue.song.has(track_id=song_id)).first()
         song.upvotes += 1
         self.session.commit()
 
     def downvote_song(self, song_id):
-        song: Song = self.session.query(Song).filter_by(id=song_id).first()
+        song: Song = self.session.query(Queue).filter(Queue.song.has(track_id=song_id)).first()
         song.downvotes += 1
         self.session.commit()
 
@@ -70,10 +68,11 @@ class Queries:
         song: Song = self.session.query(Song).filter_by(id=song_id).first()
         self.session.delete(song)
         self.session.commit()
-    
+
     def add_song_to_songlist(self, songlist):
         for element in songlist:
-            song_from_database = self.session.query(Song).filter_by(track_id=element["track_id"]).first()
+            song_from_database = self.session.query(Song).filter_by(
+                track_id=element["trackID"]).first()
             if song_from_database is None:
                 songname = element["songname"]
                 interpret = element["interpret"]
@@ -81,7 +80,8 @@ class Queries:
                 track_id = element["trackID"]
                 cover_URL = element["coverURL"]
 
-                newSong = Song(songname = songname, interpret = interpret, album = album, track_id = track_id, cover_URL = cover_URL)
+                newSong = Song(songname=songname, interpret=interpret,
+                               album=album, track_id=track_id, cover_URL=cover_URL)
 
                 self.session.add(newSong)
                 self.session.commit()
