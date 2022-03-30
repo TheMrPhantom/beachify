@@ -89,3 +89,49 @@ class Queries:
 
                 self.session.add(newSong)
                 self.session.commit()
+
+    def insert_default_settings(self):
+        list_mode = os.environ.get(
+            "list_mode") if os.environ.get("list_mode") else "blacklist"
+        trust_mode = os.environ.get(
+            "trust_mode") if os.environ.get("trust_mode") else "untrusted"
+        default_playlist = os.environ.get(
+            "default_playlist") if os.environ.get("default_playlist") else ""
+        default_playlist_active = os.environ.get(
+            "default_playlist_active") if os.environ.get("default_playlist_active") else "false"
+        guest_token = os.environ.get(
+            "guest_token") if os.environ.get("guest_token") else "beachify"
+        waiting_time = os.environ.get(
+            "waiting_time") if os.environ.get("waiting_time") else "60"
+        default_ban_time = os.environ.get(
+            "default_ban_time") if os.environ.get("default_ban_time") else "3600"
+        queue_state = os.environ.get(
+            "queue_state") if os.environ.get("queue_state") else "true"
+        queue_submitable = os.environ.get(
+            "queue_submitable") if os.environ.get("queue_submitable") else "true"
+        retention_time = os.environ.get(
+            "retention_time") if os.environ.get("retention_time") else "360"
+
+        self.session.add(
+            Setting(key="list_mode", value=list_mode))
+        self.session.add(
+            Setting(key="trust_mode", value=trust_mode))
+        self.session.add(
+            Setting(key="default_playlist", value=default_playlist))
+        self.session.add(
+            Setting(key="default_playlist_active",
+                    value=default_playlist_active))
+        self.session.add(
+            Setting(key="guest_token", value=guest_token))
+        self.session.add(
+            Setting(key="waiting_time", value=waiting_time))
+        self.session.add(
+            Setting(key="default_ban_time", value=default_ban_time))
+        self.session.add(
+            Setting(key="queue_state", value=queue_state))
+        self.session.add(
+            Setting(key="queue_submitable", value=queue_submitable))
+        self.session.add(
+            Setting(key="retention_time", value=retention_time))
+
+        self.session.commit()
