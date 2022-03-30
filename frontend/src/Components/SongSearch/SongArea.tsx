@@ -41,7 +41,9 @@ const SongArea = (props: Props) => {
     }
 
     const songlist = (): Array<JSX.Element> => {
-
+        if (searchText.length === 0) {
+            return []
+        }
         return songs.map((song: any) => {
             return <Songcard
                 key={song.trackID}
