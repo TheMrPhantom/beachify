@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 import TaskScheduler
-from flask import helpers
+from flask import helpers, url_for, session, redirect
 from flask import request
 from flask.wrappers import Request
 from functools import wraps
@@ -11,7 +11,9 @@ from web import *
 from database import Queries
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
+from authlib.integrations.flask_client import OAuth
 
+# Spotify Stuff
 scope = "user-read-playback-state user-modify-playback-state user-read-currently-playing streaming playlist-read-private playlist-read-collaborative"
 
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
@@ -19,14 +21,35 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 auth_manager = SpotifyClientCredentials()
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
-
+# Database
 token_manager = authenticator.TokenManager()
 
 db = Queries.Queries(sql_database)
 
+# Tasks
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.start()
 
+# OAuth
+oauth = OAuth(app)
+
+oAuthConfigUrl = os.environ.get("oAuthConfigUrl") if int(os.environ.get("oAuthConfigUrl")) else None
+oAuthClientSecret = os.environ.get("oAuthClientSecret") if int(os.environ.get("oAuthClientSecret")) else None
+oAuthClientId = os.environ.get("oAuthClientId") if int(os.environ.get("oAuthClientId")) else None
+
+def check_oauth_configured():
+    return oAuthClientId != None and oAuthClientSecret != None and oAuthConfigUrl != None
+
+if():
+    oauth.register(
+        name='openid_provider',
+        server_metadata_url = oAuthConfigUrl,
+        client_kwargs = {
+            'scope': 'openid profile email'
+        },
+        client_id=oAuthClientId,
+        client_secret=oAuthClientSecret
+    )
 
 def authenticated(fn):
     @wraps(fn)
@@ -111,7 +134,6 @@ def logout():
     token_manager.delete_token(request.cookies.get('token'))
    # util.log("Logout", f"MemberID: {request.cookies.get('memberID')}")
     return util.build_response("OK")
-
 
 if __name__ == "__main__":
     if util.logging_enabled:

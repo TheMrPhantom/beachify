@@ -3,5 +3,6 @@
     "COMPACT_SIZE_THRESHOLD": 900,
     "DOMAIN": "http://127.0.0.1:5000/api/",
     "VERSION": "Alpha",
-    "DEBUG": false
+    "DEBUG": false,
+    "WEBSOCKET_URL": "ws://127.0.0.1:9001/"
 }
