@@ -13,14 +13,16 @@ import SongArea from './Components/SongSearch/SongArea';
 import QueueArea from "./Components/SongQueue/QueueArea";
 import style from './app.module.scss';
 import Socket from './SocketClient';
+import { secureRandomNumber } from './Components/Common/StaticFunctions';
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
   const store = createStore(allReducer, composeWithDevTools())
+  const [oidcState, setoidcState] = useState(secureRandomNumber())
 
   useEffect(() => {
     setthemeCookie(Cookies.get("theme") !== undefined ? Number(Cookies.get("theme")) : 0)
-    Socket()
+    setoidcState(secureRandomNumber())
   }, [])
 
   const onSuccess = (response: any) => console.log(response);
@@ -34,13 +36,14 @@ function App() {
           <Provider store={store}>
             <OAuth2Login
               authorizationUrl="https://auth.stuvus.uni-stuttgart.de/oauth2/auth"
-              responseType="token"
+              scope="email profile openid"
               clientId=""
+              responseType="code"
+              state={oidcState}
               redirectUri="https://beachify.fius.de/"
               onSuccess={onSuccess}
               onFailure={onFailure} />
             <div className={style.app}>
-
               <SongArea />
               <QueueArea />
             </div>
