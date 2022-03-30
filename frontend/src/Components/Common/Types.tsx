@@ -7,5 +7,6 @@ export type Song = {
     interpret: string,
     upvotes?: number,
     downvotes?: number,
-    alreadyAdded?: boolean
+    alreadyAdded?: boolean,
+    approvalPending?: boolean
 }

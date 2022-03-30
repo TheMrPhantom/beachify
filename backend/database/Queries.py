@@ -41,26 +41,30 @@ class Queries:
                 "coverURL": song.cover_URL,
                 "upvotes": queueElement.upvotes,
                 "downvotes": queueElement.downvotes,
-                "interpret": song.interpret
+                "interpret": song.interpret,
+                "approvalPending": queueElement.approval_pending
             })
         return output
 
     def flag_queued_songs(self, songs):
         for s in songs:
-            search_result = self.session.query(Queue).filter(Queue.song.has(track_id=s["trackID"])).first()
-        
+            search_result = self.session.query(Queue).filter(
+                Queue.song.has(track_id=s["trackID"])).first()
+
             if search_result is None:
                 s["alreadyAdded"] = False
             else:
                 s["alreadyAdded"] = True
 
     def upvote_song(self, song_id):
-        song: Song = self.session.query(Queue).filter(Queue.song.has(track_id=song_id)).first()
+        song: Song = self.session.query(Queue).filter(
+            Queue.song.has(track_id=song_id)).first()
         song.upvotes += 1
         self.session.commit()
 
     def downvote_song(self, song_id):
-        song: Song = self.session.query(Queue).filter(Queue.song.has(track_id=song_id)).first()
+        song: Song = self.session.query(Queue).filter(
+            Queue.song.has(track_id=song_id)).first()
         song.downvotes += 1
         self.session.commit()
 

@@ -39,13 +39,19 @@ const Songcard = (props: Props) => {
             }
 
         } else {
-            return <div className={style.topCorner}>
-                {props.song.upvotes}
-                <ThumbUpIcon style={{ height: "20px" }} />
-                <Spacer horizontal={5} />
-                {props.song.downvotes}
-                <ThumbDownIcon style={{ height: "20px" }} />
-            </div>
+            if (!props.song.approvalPending) {
+                return <div className={style.topCorner}>
+                    {props.song.upvotes}
+                    <ThumbUpIcon style={{ height: "20px" }} />
+                    <Spacer horizontal={5} />
+                    {props.song.downvotes}
+                    <ThumbDownIcon style={{ height: "20px" }} />
+                </div>
+            } else {
+                return <div className={style.topCorner}>
+                    Warte auf Bestätigung
+                </div>
+            }
         }
     }
 
