@@ -85,13 +85,13 @@ def add_song_to_queue():
     return util.build_response("Song added")
 
 
-@app.route('/api/queue/song/upvote', methods=["PATCH"])
+@app.route('/api/queue/song/upvote', methods=["PUT"])
 def song_from_queue_upvote():
     db.upvote_song(request.json)
     return util.build_response("Song upvoted")
 
 
-@app.route('/api/queue/song/downvote', methods=["PATCH"])
+@app.route('/api/queue/song/downvote', methods=["PUT"])
 def song_from_queue_downvote():
     db.downvote_song(request.json)
     return util.build_response("Song downvoted")
