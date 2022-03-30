@@ -30,6 +30,7 @@ const QueueArea = (props: Props) => {
                 <Songcard
                     key={queueState.songs[0].trackID}
                     song={queueState.songs[0]}
+                    noLabel
                 />
             </>
         } else {

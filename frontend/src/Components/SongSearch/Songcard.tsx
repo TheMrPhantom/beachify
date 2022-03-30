@@ -15,6 +15,7 @@ import { setQueueSongs } from '../../Actions/QueueAction';
 type Props = {
     song: Song,
     votingPossible?: boolean
+    noLabel?: boolean
     callback?: (song: Song) => void
 }
 
@@ -27,6 +28,10 @@ const Songcard = (props: Props) => {
     const theme = useTheme();
 
     const getTopCorner = () => {
+        if (props.noLabel) {
+            return <></>
+        }
+
         if (props.callback !== undefined) {
             if (props.song.alreadyAdded) {
                 return <div className={style.topCorner}>
