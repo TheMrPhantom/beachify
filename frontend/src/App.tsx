@@ -12,6 +12,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import SongArea from './Components/SongSearch/SongArea';
 import QueueArea from "./Components/SongQueue/QueueArea";
 import style from './app.module.scss';
+import Socket from './SocketClient';
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
@@ -19,6 +20,7 @@ function App() {
 
   useEffect(() => {
     setthemeCookie(Cookies.get("theme") !== undefined ? Number(Cookies.get("theme")) : 0)
+    Socket()
   }, [])
 
   return (
@@ -28,6 +30,7 @@ function App() {
           <CssBaseline />
           <Provider store={store}>
             <div className={style.app}>
+
               <SongArea />
               <QueueArea />
             </div>
