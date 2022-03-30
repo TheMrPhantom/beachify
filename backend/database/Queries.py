@@ -90,6 +90,9 @@ class Queries:
                 self.session.add(newSong)
                 self.session.commit()
 
+    def adding_song_to_queue_possible(self):
+        self.session.query(Setting).filter_by(key="")
+
     def insert_default_settings(self):
         list_mode = os.environ.get(
             "list_mode") if os.environ.get("list_mode") else "blacklist"
