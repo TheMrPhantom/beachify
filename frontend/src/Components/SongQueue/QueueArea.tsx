@@ -63,7 +63,6 @@ const QueueArea = (props: Props) => {
                     {queueState.songs.slice(2).map((song: Song) => {
                         return <Collapse key={song.trackID}>
                             <Songcard
-                                key={song.trackID}
                                 song={song}
                                 votingPossible
                                 playsIn={song.startsAt}
