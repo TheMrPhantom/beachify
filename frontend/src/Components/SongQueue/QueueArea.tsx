@@ -47,6 +47,7 @@ const QueueArea = (props: Props) => {
                 <Songcard
                     key={queueState.songs[1].trackID}
                     song={queueState.songs[1]}
+                    playsIn={queueState.songs[1].startsAt}
                 />
             </>
         } else {
@@ -65,6 +66,7 @@ const QueueArea = (props: Props) => {
                                 key={song.trackID}
                                 song={song}
                                 votingPossible
+                                playsIn={song.startsAt}
                             />
                         </Collapse>
                     })}

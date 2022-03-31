@@ -1,5 +1,5 @@
 import { Button, Divider, Paper, useTheme } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
 import config from '../../environment.json'
@@ -14,8 +14,9 @@ import { setQueueSongs } from '../../Actions/QueueAction';
 
 type Props = {
     song: Song,
-    votingPossible?: boolean
-    noLabel?: boolean
+    votingPossible?: boolean,
+    noLabel?: boolean,
+    playsIn?: number,
     callback?: (song: Song) => void
 }
 
@@ -23,9 +24,36 @@ const Songcard = (props: Props) => {
     const [isHovered, setisHovered] = useState(false);
     const refPaper: React.RefObject<HTMLInputElement> = useRef(null);
     const [imgLoaded, setimgLoaded] = useState(false)
+    const [currentTime, setcurrentTime] = useState<Date>(new Date())
+
     const dispatch = useDispatch()
     const cornerElevation = 5
     const theme = useTheme();
+
+    useEffect(() => {
+        setInterval(() => setcurrentTime(new Date()), 30000);
+    }, [])
+
+    const appendTime = () => {
+        if (!props.playsIn) {
+            return <></>
+        }
+        return <>
+            <Typography variant='caption'>Spielt in {calcTime()} min</Typography>
+            <Divider orientation='vertical' className={style.divider} />
+        </>
+    }
+
+    const calcTime = () => {
+        if (props.playsIn) {
+
+            const timeDif = new Date(props.playsIn).getTime() - currentTime.getTime();
+            return (timeDif / 1000 / 60).toFixed(0)
+        } else {
+            return 0;
+        }
+
+    }
 
     const getTopCorner = () => {
         if (props.noLabel) {
@@ -46,6 +74,7 @@ const Songcard = (props: Props) => {
         } else {
             if (!props.song.approvalPending) {
                 return <Paper className={style.topCorner} elevation={cornerElevation}>
+                    {appendTime()}
                     {props.song.upvotes}
                     <ThumbUpIcon style={{ height: "20px" }} />
                     <Spacer horizontal={5} />

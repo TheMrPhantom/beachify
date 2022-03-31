@@ -89,6 +89,12 @@ class Queries:
 
         final_output.extend(output)
 
+        time_elapsed = 0
+        for song in final_output:
+            song["startsAt"] = util.toNumberDateTime(datetime.now(
+            )+timedelta(milliseconds=time_elapsed))
+            time_elapsed += song["duration"]
+
         return final_output
 
     def flag_queued_songs(self, songs):

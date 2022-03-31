@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Response
 import json
 import os
@@ -77,5 +78,14 @@ def format_song(queue_element: Queue, song: Song, trust_mode_on: bool):
         "downvotes": queue_element.downvotes,
         "interpret": song.interpret,
         "approvalPending": queue_element.approval_pending if trust_mode_on else False,
+        "duration": song.duration,
         "insertion_time": queue_element.insertion_time
     }
+
+
+def toJSDateTime(time: datetime.datetime):
+    return time.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+
+def toNumberDateTime(time: datetime.datetime):
+    return time.timestamp()*1000
