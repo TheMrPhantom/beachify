@@ -10,3 +10,4 @@ class Song(db.Model):
     track_id = sql.Column(sql.String(100), nullable=False, unique=True)
     album = sql.Column(sql.String(100), nullable=False)
     cover_URL = sql.Column(sql.String(100), nullable=False)
+    duration = sql.Column(sql.Integer, nullable=False)

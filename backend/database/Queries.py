@@ -128,9 +128,9 @@ class Queries:
                 album = element["album"]
                 track_id = element["trackID"]
                 cover_URL = element["coverURL"]
-
+                duration = element["duration"]
                 newSong = Song(songname=songname, interpret=interpret,
-                               album=album, track_id=track_id, cover_URL=cover_URL)
+                               album=album, track_id=track_id, cover_URL=cover_URL, duration=duration)
 
                 self.session.add(newSong)
                 self.session.commit()

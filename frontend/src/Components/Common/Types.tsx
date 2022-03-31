@@ -5,6 +5,7 @@ export type Song = {
     trackID: string,
     coverURL: string,
     interpret: string,
+    duration: number,
     upvotes?: number,
     downvotes?: number,
     alreadyAdded?: boolean,

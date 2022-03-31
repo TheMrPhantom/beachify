@@ -40,7 +40,8 @@ def simplify_spotify_tracks(song):
             "album":  album
             "coverURL": coverURL
             "interpret": interpret,
-            "songname": songname
+            "songname": songname,
+            "duration": duration
     }
     """
     songs = song["tracks"]["items"]
@@ -52,7 +53,8 @@ def simplify_spotify_tracks(song):
             "album": s["album"]["name"],
             "coverURL": s["album"]["images"][1]["url"],
             "interpret": s["artists"][0]["name"],
-            "songname": s["name"]})
+            "songname": s["name"],
+            "duration": s["duration_ms"]})
     return output
 
 
