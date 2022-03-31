@@ -12,7 +12,7 @@ $corner-banner-height: 23px;
     align-content: stretch;
     width: 100%;
     min-width: calc(350px - $padding * 2);
-    background-image: linear-gradient(149deg, #27abc1, hsl(189, 66%, 35%)) !important;
+    background-image: $paper-background;
 }
 
 .cursorPointer {

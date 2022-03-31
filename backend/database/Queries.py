@@ -182,9 +182,6 @@ class Queries:
         self.session.add(
             Setting(key="default_playlist", value=default_playlist))
         self.session.add(
-            Setting(key="default_playlist_active",
-                    value=default_playlist_active))
-        self.session.add(
             Setting(key="guest_token", value=guest_token))
         self.session.add(
             Setting(key="waiting_time", value=waiting_time))

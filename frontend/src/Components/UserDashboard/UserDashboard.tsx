@@ -5,7 +5,6 @@ import style from './userdashboard.module.scss';
 import { useParams } from 'react-router-dom';
 import { getAndStoreAsync } from '../Common/StaticFunctions';
 import Cookies from 'js-cookie';
-import { Typography } from '@mui/material';
 import ErrorPage from '../ErrorPage/ErrorPage';
 
 type Props = {}

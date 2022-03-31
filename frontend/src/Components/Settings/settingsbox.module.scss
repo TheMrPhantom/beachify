@@ -1,0 +1,24 @@
+@import "../Common/variables.module.scss";
+
+.sideContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-right: $padding;
+}
+
+.paper {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    height: fit-content;
+    background-image: $paper-background;
+    padding: $padding;
+    max-width: 600px;
+}
+
+.icon {
+    width: 50px !important;
+    height: 50px !important;
+}
