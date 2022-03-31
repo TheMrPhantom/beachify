@@ -19,6 +19,7 @@ class Queries:
         self.db: SQLAlchemy = db
         self.session: session.Session = self.db.session
         self.db.create_all()
+        self.insert_default_settings()
 
     def add_song_to_queue(self, songID):
         if self.session.query(Queue).filter(
@@ -45,7 +46,7 @@ class Queries:
     def get_queued_songs(self):
         songs = self.session.query(Queue).filter_by(fixed_place=-1).all()
         trust_mode_on = self.session.query(Setting).filter_by(
-            key="trust_mode").first() == "trusted"
+            key="trust_mode").first().value == "trusted"
         output = []
         for s in songs:
             queueElement: Queue = s
@@ -142,9 +143,17 @@ class Queries:
                 self.session.commit()
 
     def adding_song_to_queue_possible(self):
-        self.session.query(Setting).filter_by(key="")
+        return self.session.query(Setting).filter_by(key="queue_submitable").first().value == "true"
+
+    def check_secret(self, secret):
+        if secret is None:
+            return False
+        return self.session.query(Setting).filter_by(key="guest_token").first().value == secret
 
     def insert_default_settings(self):
+        if self.session.query(Setting).first() is not None:
+            return
+
         list_mode = os.environ.get(
             "list_mode") if os.environ.get("list_mode") else "blacklist"
         trust_mode = os.environ.get(

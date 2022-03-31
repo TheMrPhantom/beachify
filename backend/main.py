@@ -82,7 +82,7 @@ def get_songs_from_queue():
 
 @app.route('/api/queue/song', methods=["PUT"])
 def add_song_to_queue():
-    if db.adding_song_to_queue_possible():
+    if not db.adding_song_to_queue_possible():
         return util.build_response("Currently not possible", code=503)
     db.add_song_to_songlist([request.json])
     success = db.add_song_to_queue(request.json["trackID"])
@@ -103,6 +103,14 @@ def song_from_queue_upvote():
 def song_from_queue_downvote():
     db.downvote_song(request.json)
     return util.build_response("Song downvoted")
+
+
+@app.route('/api/auth/secret/check/<string:secret>', methods=["GET"])
+def checkSecret(secret):
+    if db.check_secret(secret):
+        return util.build_response("OK")
+    else:
+        return util.build_response("Wrong token", code=401)
 
 
 @app.route('/api/login/check', methods=["GET"])

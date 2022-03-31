@@ -99,6 +99,10 @@ export const getAndStore = (path, stateFunction) => {
     getInfos()
 };
 
+export const getAndStoreAsync = async (path, stateFunction) => {
+    return getAndStore(path, stateFunction)
+};
+
 export const getHoursFromMember = (members) => {
     var currentWork = 0
     members.currentWork.forEach(element => {
