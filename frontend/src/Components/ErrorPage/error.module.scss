@@ -1,0 +1,30 @@
+@import "../Common/variables.module.scss";
+
+.login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: $padding;
+    gap: $flex-gap * 3;
+}
+
+.errorMessage {
+    padding: $padding;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $flex-gap * 4;
+}
+
+.passwordField {
+    width: 40%;
+    max-width: 600px;
+    min-width: 300px;
+}
+
+.loginButton {
+    width: 180px;
+    height: 50px;
+}

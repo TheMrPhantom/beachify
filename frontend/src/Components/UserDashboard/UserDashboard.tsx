@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { getAndStoreAsync } from '../Common/StaticFunctions';
 import Cookies from 'js-cookie';
 import { Typography } from '@mui/material';
+import ErrorPage from '../ErrorPage/ErrorPage';
 
 type Props = {}
 
@@ -34,10 +35,7 @@ const UserDashboard = (props: Props) => {
                 </div>
             )
         } else {
-            return <div className={style.errorMessage}>
-                <Typography variant='h2' align='center'>Bitte öffne den aktuellen Link</Typography>
-                <img src="/svg/Palm-White.svg" alt="Palm" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} />
-            </div>
+            return <ErrorPage />
         }
     }
     return <></>

@@ -4,7 +4,7 @@ const normalPrimary = '#27abc1'
 const normalBackground = '#064f61'
 const normalText = '#ffffff'
 const normalSecondary = '#77b5d9'
-const normalAction = '#E2D784'
+const normalAction = '#ffffff'
 
 export const normalTheme = createTheme({
     palette: {
@@ -44,6 +44,12 @@ export const normalTheme = createTheme({
             styleOverrides: {
                 root: {
                     backgroundColor: normalPrimary
+                }
+            }
+        }, MuiOutlinedInput: {
+            styleOverrides: {
+                notchedOutline: {
+                    borderColor: normalText
                 }
             }
         }
