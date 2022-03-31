@@ -1,32 +1,27 @@
-import Config from "./environment.json";
-import {doGetRequest} from "./Components/Common/StaticFunctions";
-import {setQueueSongs} from "./Actions/QueueAction";
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import {useState} from "react";
+import { setQueueSongs } from '../../Actions/QueueAction';
+import Config from "../../environment.json";
+import { doGetRequest } from './StaticFunctions';
 
-const SocketClient = () => {
+type Props = {}
 
-
-    let ws;
+const SocketClient = (props: Props) => {
+    const [ws, setws] = useState(new WebSocket(Config.WEBSOCKET_URL));
+    const dispatch = useDispatch();
     const minTimeout = 10000;
     const maxTimeout = 40000;
-    const dispatch = useDispatch();
 
-    const init = () => {
+    useEffect(() => {
+        ws.onmessage = (e: MessageEvent) => {
 
-        ws = new WebSocket(Config.WEBSOCKET_URL);
-
-
-        ws.onmessage = (e:MessageEvent) => {
-
-            if(Config.DEBUG == true) {
+            if (Config.DEBUG === true) {
                 console.log(e.data)
             }
 
             let message = JSON.parse(e.data);
 
             switch (message.action) {
-
                 case "refreshQueue":
                     doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
                         dispatch(setQueueSongs(value.content))
@@ -38,13 +33,15 @@ const SocketClient = () => {
 
         ws.onerror = () => {
             setTimeout(() => {
-                init();
+                setws(new WebSocket(Config.WEBSOCKET_URL));
             }, Math.random() * (maxTimeout - minTimeout) + minTimeout);
         }
-    }
 
-    init();
-    return null;
+    }, [ws])
+
+    return (
+        <></>
+    )
 }
 
-export default SocketClient;
+export default SocketClient

@@ -131,6 +131,9 @@ const Songcard = (props: Props) => {
                 if (config.DEBUG === true) {
                     console.log('In Songcard: ' + props.song.trackID);
                 }
+                if (props.song.alreadyAdded) {
+                    return
+                }
                 if (props.callback !== undefined) {
                     props.callback(props.song);
                 }

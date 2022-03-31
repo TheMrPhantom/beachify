@@ -26,7 +26,7 @@ const QueueArea = (props: Props) => {
     const currentlyPlaying = () => {
         if (queueState.songs.length > 0) {
             return <>
-                <Typography variant='h4'>Aktuell spielt:</Typography>
+                <Typography variant='h4'>Aktuell spielt</Typography>
                 <Songcard
                     key={queueState.songs[0].trackID}
                     song={queueState.songs[0]}
@@ -41,7 +41,7 @@ const QueueArea = (props: Props) => {
     const nextSong = () => {
         if (queueState.songs.length > 1) {
             return <>
-                <Typography variant='h4'>Nächster Song:</Typography>
+                <Typography variant='h4'>Nächster Song</Typography>
                 <Songcard
                     key={queueState.songs[1].trackID}
                     song={queueState.songs[1]}
@@ -55,7 +55,7 @@ const QueueArea = (props: Props) => {
     const queue = () => {
         if (queueState.songs.length > 2) {
             return <>
-                <Typography variant='h4'>Warteschlange:</Typography>
+                <Typography variant='h4'>Warteschlange</Typography>
                 {queueState.songs.slice(2).map((song: Song) => {
                     return <Songcard
                         key={song.trackID}

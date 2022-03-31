@@ -11,7 +11,6 @@ from web import *
 from database import Queries
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-from authlib.integrations.flask_client import OAuth
 
 # Spotify Stuff
 scope = "user-read-playback-state user-modify-playback-state user-read-currently-playing streaming playlist-read-private playlist-read-collaborative"
@@ -30,26 +29,6 @@ db = Queries.Queries(sql_database)
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.start()
 
-# OAuth
-oauth = OAuth(app)
-
-oAuthConfigUrl = os.environ.get("oAuthConfigUrl") if int(os.environ.get("oAuthConfigUrl")) else None
-oAuthClientSecret = os.environ.get("oAuthClientSecret") if int(os.environ.get("oAuthClientSecret")) else None
-oAuthClientId = os.environ.get("oAuthClientId") if int(os.environ.get("oAuthClientId")) else None
-
-def check_oauth_configured():
-    return oAuthClientId != None and oAuthClientSecret != None and oAuthConfigUrl != None
-
-if():
-    oauth.register(
-        name='openid_provider',
-        server_metadata_url = oAuthConfigUrl,
-        client_kwargs = {
-            'scope': 'openid profile email'
-        },
-        client_id=oAuthClientId,
-        client_secret=oAuthClientSecret
-    )
 
 def authenticated(fn):
     @wraps(fn)
@@ -106,8 +85,12 @@ def add_song_to_queue():
     if db.adding_song_to_queue_possible():
         return util.build_response("Currently not possible", code=503)
     db.add_song_to_songlist([request.json])
-    db.add_song_to_queue(request.json["trackID"])
-    return util.build_response("Song added")
+    success = db.add_song_to_queue(request.json["trackID"])
+
+    if success:
+        return util.build_response("Song added")
+    else:
+        return util.build_response("Song cant be added", code=409)
 
 
 @app.route('/api/queue/song/upvote', methods=["PUT"])
@@ -134,6 +117,7 @@ def logout():
     token_manager.delete_token(request.cookies.get('token'))
    # util.log("Logout", f"MemberID: {request.cookies.get('memberID')}")
     return util.build_response("OK")
+
 
 if __name__ == "__main__":
     if util.logging_enabled:

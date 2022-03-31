@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlalchemy as sql
 from web import sql_database as db
 from sqlalchemy.orm import relationship
@@ -12,3 +13,6 @@ class Queue(db.Model):
     approval_pending = sql.Column(sql.Boolean, nullable=False, default=True)
     upvotes = sql.Column(sql.Integer, nullable=False, default=0)
     downvotes = sql.Column(sql.Integer, nullable=False, default=0)
+    insertion_time = sql.Column(
+        sql.DateTime, nullable=False, default=datetime.now)
+    fixed_place = sql.Column(sql.Integer, nullable=False, default=-1)

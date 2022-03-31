@@ -3,6 +3,9 @@ import json
 import os
 import datetime
 import time
+from database.Queue import Queue
+from database.Song import Song
+
 cookie_expire = int(os.environ.get("cookie_expire_time")) * \
     60*60 if os.environ.get("cookie_expire_time") else 60**3
 domain = os.environ.get("domain") if os.environ.get(
@@ -59,3 +62,18 @@ def log(prefix, message):
         output_string = f"[{time}] {prefix} -> {message}"
         with open("logs/log.txt", 'a+') as f:
             f.write(f"{output_string}\n")
+
+
+def format_song(queue_element: Queue, song: Song, trust_mode_on: bool):
+    return {
+        "databaseID": queue_element.id,
+        "songname": song.songname,
+        "album": song.album,
+        "trackID": song.track_id,
+        "coverURL": song.cover_URL,
+        "upvotes": queue_element.upvotes,
+        "downvotes": queue_element.downvotes,
+        "interpret": song.interpret,
+        "approvalPending": queue_element.approval_pending if trust_mode_on else False,
+        "insertion_time": queue_element.insertion_time
+    }

@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import session
 from sqlalchemy.sql import func
 from database.Models import *
+from functools import cmp_to_key
 
 from typing import List
 import constants
@@ -20,31 +21,75 @@ class Queries:
         self.db.create_all()
 
     def add_song_to_queue(self, songID):
+        if self.session.query(Queue).filter(
+                Queue.song.has(track_id=songID)).first() is not None:
+            return False
         search_result: Song = self.session.query(
             Song).filter_by(track_id=songID).first()
-        queue_element = Queue(song_id=search_result.id)
+        first = self.session.query(Queue).filter_by(fixed_place=0).first()
+        second = self.session.query(Queue).filter_by(fixed_place=1).first()
+
+        queue_element = None
+        if first is None:
+            queue_element = Queue(song_id=search_result.id, fixed_place=0)
+        else:
+            if second is None:
+                queue_element = Queue(song_id=search_result.id, fixed_place=1)
+            else:
+                queue_element = Queue(song_id=search_result.id)
+
         self.session.add(queue_element)
         self.session.commit()
+        return True
 
     def get_queued_songs(self):
-        songs = self.session.query(Queue).all()
+        songs = self.session.query(Queue).filter_by(fixed_place=-1).all()
+        trust_mode_on = self.session.query(Setting).filter_by(
+            key="trust_mode").first() == "trusted"
         output = []
         for s in songs:
             queueElement: Queue = s
             song: Song = queueElement.song
 
-            output.append({
-                "databaseID": song.id,
-                "songname": song.songname,
-                "album": song.album,
-                "trackID": song.track_id,
-                "coverURL": song.cover_URL,
-                "upvotes": queueElement.upvotes,
-                "downvotes": queueElement.downvotes,
-                "interpret": song.interpret,
-                "approvalPending": queueElement.approval_pending
-            })
-        return output
+            output.append(util.format_song(queueElement, song, trust_mode_on))
+
+        def compare(s1, s2):
+            waiting_time_s1 = (
+                datetime.now()-s1["insertion_time"]).total_seconds()
+            waiting_time_s2 = (
+                datetime.now()-s2["insertion_time"]).total_seconds()
+
+            def song_value(w, u, d):
+                return (w/240)+u-d*2
+
+            return song_value(waiting_time_s2, s2["upvotes"], s2["downvotes"])-song_value(waiting_time_s1, s1["upvotes"], s1["downvotes"])
+
+        output.sort(key=cmp_to_key(compare))
+
+        for o in output:
+            del o["insertion_time"]
+
+        first: Queue = self.session.query(
+            Queue).filter_by(fixed_place=0).first()
+        second: Queue = self.session.query(
+            Queue).filter_by(fixed_place=1).first()
+        final_output = []
+
+        if first is not None:
+            f = util.format_song(
+                first, first.song, trust_mode_on)
+            del f["insertion_time"]
+            final_output.append(f)
+
+            if second is not None:
+                s = util.format_song(
+                    second, second.song, trust_mode_on)
+                del s["insertion_time"]
+                final_output.append(s)
+
+        final_output.extend(output)
+
+        return final_output
 
     def flag_queued_songs(self, songs):
         for s in songs:
