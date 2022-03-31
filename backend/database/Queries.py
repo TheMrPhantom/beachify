@@ -160,8 +160,6 @@ class Queries:
             "trust_mode") if os.environ.get("trust_mode") else "untrusted"
         default_playlist = os.environ.get(
             "default_playlist") if os.environ.get("default_playlist") else ""
-        default_playlist_active = os.environ.get(
-            "default_playlist_active") if os.environ.get("default_playlist_active") else "false"
         guest_token = os.environ.get(
             "guest_token") if os.environ.get("guest_token") else "beachify"
         waiting_time = os.environ.get(

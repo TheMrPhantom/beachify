@@ -25,7 +25,7 @@ const Settings = (props: Props) => {
     const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
 
     useEffect(() => {
-        doGetRequest("settings").then((value) => {
+        doGetRequest("setting").then((value) => {
             dispatch(setAllSettings(value.content))
         })
     }, [dispatch])

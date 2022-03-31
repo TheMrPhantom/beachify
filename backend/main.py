@@ -91,6 +91,66 @@ def checkSecret(secret):
         return util.build_response("Wrong token", code=401)
 
 
+@app.route('/api/setting', methods=["GET"])
+def get_settings():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/listMode', methods=["PUT"])
+def set_listmode():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/trustMode', methods=["PUT"])
+def set_trustmode():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/defaultPlaylist', methods=["PUT"])
+def set_dp():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/guestToken', methods=["PUT"])
+def set_guest_token():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/waitingTime', methods=["PUT"])
+def set_waiting_time():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/defaultBanTime', methods=["PUT"])
+def set_default_ban_time():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/queueState', methods=["PUT"])
+def set_queue_state():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/queueSubmittable', methods=["PUT"])
+def set_queue_submittable():
+    # TODO
+    return util.build_response("OK")
+
+
+@app.route('/api/setting/retentionTime', methods=["PUT"])
+def set_retention_time():
+    # TODO
+    return util.build_response("OK")
+
+
 @app.route('/api/login/check', methods=["GET"])
 def loginCheck():
     return util.build_response("OK")
