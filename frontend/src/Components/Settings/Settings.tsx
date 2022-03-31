@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import Settingsbox from './Settingsbox'
 import ContrastIcon from '@mui/icons-material/Contrast';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -13,25 +13,43 @@ import HotelIcon from '@mui/icons-material/Hotel';
 import Texts from '../../texts.json';
 import style from './settings.module.scss'
 import { MenuItem, Select, TextField, Typography } from '@mui/material';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import { setAllSettings, setDefaultBantime, setDefaultplaylist, setGuestToken, setListmode, setQueueState, setQueueSubmittable, setRetentionTime, setTrustmode, setWaitingTime } from '../../Actions/SettingsAction';
+import { doGetRequest, doRequest } from '../Common/StaticFunctions';
+import { SettingsType } from '../../Reducer/SettingsReducer';
 
 type Props = {}
 
 const Settings = (props: Props) => {
-    const [listmode, setlistmode] = useState("0")
+    const dispatch = useDispatch()
+    const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
 
-    const listModeElement: JSX.Element = <Select value={listmode} onChange={value => setlistmode(value.target.value)} fullWidth>
-        <MenuItem value="0">Blacklist</MenuItem>
-        <MenuItem value="1">Whitelist</MenuItem>
+    useEffect(() => {
+        doGetRequest("settings").then((value) => {
+            dispatch(setAllSettings(value.content))
+        })
+    }, [dispatch])
+
+
+    const listModeElement: JSX.Element = <Select
+        value={settingsState.listMode}
+        onChange={value => doRequest("setting/listMode", "PUT", value.target.value).then((value) => dispatch(setListmode(value.content)))}
+        fullWidth
+    >
+        <MenuItem value="blacklist">Blacklist</MenuItem>
+        <MenuItem value="whitelist">Whitelist</MenuItem>
     </Select>
 
-    const [trustmode, settrustmode] = useState("1")
 
-    const trustmodeElement: JSX.Element = <Select value={trustmode} onChange={value => settrustmode(value.target.value)} fullWidth>
+    const trustmodeElement: JSX.Element = <Select
+        value={settingsState.trustMode}
+        onChange={value => doRequest("setting/trustMode", "PUT", value.target.value).then((value) => dispatch(setTrustmode(value.content)))}
+        fullWidth
+    >
         <MenuItem value="0">Genehmigung Benötigt</MenuItem>
         <MenuItem value="1">Freie Wahl</MenuItem>
     </Select>
 
-    const [defaultPlaylist, setdefaultPlaylist] = useState("")
 
     const defaultPlaylistElement: JSX.Element = <TextField
         placeholder='Standard Playlist'
@@ -42,13 +60,11 @@ const Settings = (props: Props) => {
                 input: style.resize,
             },
         }}
-        value={defaultPlaylist}
-        onChange={(value) => {
-            setdefaultPlaylist(value.target.value)
-        }}
+        value={settingsState.defaultPlaylist}
+        onChange={value => doRequest("setting/defaultPlaylist", "PUT", value.target.value).then((value) => dispatch(setDefaultplaylist(value.content)))}
     />
 
-    const [guesttoken, setguesttoken] = useState("")
+
 
     const guesttokenElement: JSX.Element = <TextField
         placeholder='Gäste-Token Text'
@@ -59,13 +75,10 @@ const Settings = (props: Props) => {
                 input: style.resize,
             },
         }}
-        value={guesttoken}
-        onChange={(value) => {
-            setguesttoken(value.target.value)
-        }}
+        value={settingsState.guestToken}
+        onChange={value => doRequest("setting/guestToken", "PUT", value.target.value).then((value) => dispatch(setGuestToken(value.content)))}
     />
 
-    const [waitingTime, setwaitingTime] = useState("")
 
     const waitingTimeElement: JSX.Element = <TextField
         placeholder='Wartezeit'
@@ -78,13 +91,11 @@ const Settings = (props: Props) => {
                 input: style.resize,
             },
         }}
-        value={waitingTime}
-        onChange={(value) => {
-            setwaitingTime(value.target.value)
-        }}
+        value={settingsState.waitingTime}
+        onChange={value => doRequest("setting/waitingTime", "PUT", value.target.value).then((value) => dispatch(setWaitingTime(value.content)))}
     />
 
-    const [banTime, setbanTime] = useState("")
+
 
     const banTimeElement: JSX.Element = <TextField
         placeholder='Banzeit'
@@ -97,29 +108,33 @@ const Settings = (props: Props) => {
                 input: style.resize,
             },
         }}
-        value={banTime}
-        onChange={(value) => {
-            setbanTime(value.target.value)
-        }}
+        value={settingsState.defaultBanTime}
+        onChange={value => doRequest("setting/defaultBanTime", "PUT", value.target.value).then((value) => dispatch(setDefaultBantime(value.content)))}
     />
 
 
-    const [queuestate, setqueuestate] = useState("0")
 
-    const queuestateElement: JSX.Element = <Select value={queuestate} onChange={value => setqueuestate(value.target.value)} fullWidth>
+
+    const queuestateElement: JSX.Element = <Select
+        value={settingsState.queueState}
+        onChange={value => doRequest("setting/queueState", "PUT", value.target.value).then((value) => dispatch(setQueueState(value.content)))}
+        fullWidth
+    >
         <MenuItem value="0">Aktiviert</MenuItem>
         <MenuItem value="1">Deaktiviert</MenuItem>
     </Select>
 
-    const [uploadAccepted, setuploadAccepted] = useState("0")
 
-    const uploadAcceptedElement: JSX.Element = <Select value={uploadAccepted} onChange={value => setuploadAccepted(value.target.value)} fullWidth>
+
+    const uploadAcceptedElement: JSX.Element = <Select
+        value={settingsState.queueSubmittable}
+        onChange={value => doRequest("setting/queueSubmittable", "PUT", value.target.value).then((value) => dispatch(setQueueSubmittable))}
+        fullWidth
+    >
         <MenuItem value="0">Aktiviert</MenuItem>
         <MenuItem value="1">Deaktiviert</MenuItem>
     </Select>
 
-
-    const [retentionTime, setretentionTime] = useState("")
 
     const retentionTimeElement: JSX.Element = <TextField
         placeholder='Verbleibezeit'
@@ -132,10 +147,8 @@ const Settings = (props: Props) => {
                 input: style.resize,
             },
         }}
-        value={retentionTime}
-        onChange={(value) => {
-            setretentionTime(value.target.value)
-        }}
+        value={settingsState.retentionTime}
+        onChange={value => doRequest("setting/retentionTime", "PUT", value.target.value).then((value) => dispatch(setRetentionTime(value.content)))}
     />
 
 
