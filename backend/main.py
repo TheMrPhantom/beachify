@@ -30,44 +30,18 @@ taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.start()
 
 
-def authenticated(fn):
+def with_beachify_token(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if not token_manager.check_token(request.cookies.get('memberID'), request.cookies.get('token')):
-            return util.build_response("Unauthorized", 403)
+        if not db.check_secret(request.cookies.get('beachifyToken')):
+            return util.build_response("Wrong token", 401)
         return fn(*args, **kwargs)
     wrapper.__name__ = fn.__name__
     return wrapper
 
 
-# def checkTrainer(request: Request):
-#     if not token_manager.check_token(request.cookies.get('memberID'), request.cookies.get('token')):
-#         return util.build_response("Unauthorized", 403)
-
-#     if not (db.isTrainer(request.cookies.get('memberID')) or db.isExecutive(request.cookies.get('memberID'))):
-#         return util.build_response("Unauthorized", 403)
-#     return None
-
-
-# def checkExecutive(request: Request):
-#     if not token_manager.check_token(request.cookies.get('memberID'), request.cookies.get('token')):
-#         return util.build_response("Unauthorized", 403)
-#     if not db.isExecutive(request.cookies.get('memberID')):
-#         return util.build_response("Unauthorized", 403)
-#     return None
-
-
-# def memberIDFromRequest(request: Request):
-#     return request.cookies.get('memberID')
-
-
-# def infosAboutSelfOrTrainer(request: Request, memberID):
-#     if checkTrainer(request):
-#         if not int(memberID) == int(memberIDFromRequest(request)):
-#             return util.build_response("Unauthorized", 403)
-#     return None
-
 @app.route('/api/search/song/<string:seach_term>', methods=["GET"])
+@with_beachify_token
 def search_for_song(seach_term):
     songs = util.simplify_spotify_tracks(sp.search(seach_term, limit=10))
 
@@ -76,11 +50,13 @@ def search_for_song(seach_term):
 
 
 @app.route('/api/queue/song', methods=["GET"])
+@with_beachify_token
 def get_songs_from_queue():
     return util.build_response(db.get_queued_songs())
 
 
 @app.route('/api/queue/song', methods=["PUT"])
+@with_beachify_token
 def add_song_to_queue():
     if not db.adding_song_to_queue_possible():
         return util.build_response("Currently not possible", code=503)
@@ -94,12 +70,14 @@ def add_song_to_queue():
 
 
 @app.route('/api/queue/song/upvote', methods=["PUT"])
+@with_beachify_token
 def song_from_queue_upvote():
     db.upvote_song(request.json)
     return util.build_response("Song upvoted")
 
 
 @app.route('/api/queue/song/downvote', methods=["PUT"])
+@with_beachify_token
 def song_from_queue_downvote():
     db.downvote_song(request.json)
     return util.build_response("Song downvoted")
@@ -114,13 +92,11 @@ def checkSecret(secret):
 
 
 @app.route('/api/login/check', methods=["GET"])
-@authenticated
 def loginCheck():
     return util.build_response("OK")
 
 
 @app.route('/api/logout', methods=["POST"])
-@authenticated
 def logout():
     token_manager.delete_token(request.cookies.get('token'))
    # util.log("Logout", f"MemberID: {request.cookies.get('memberID')}")

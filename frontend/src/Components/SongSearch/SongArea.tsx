@@ -71,7 +71,7 @@ const SongArea = (props: Props) => {
                 }}
             />
             {songs.length === 0 && Cookies.get("show-search-help") === undefined ?
-                <img src="downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> :
+                <img src="/svg/downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> :
                 <></>}
             {songlist()}
 

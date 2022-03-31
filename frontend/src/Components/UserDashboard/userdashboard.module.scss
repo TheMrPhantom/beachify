@@ -1,6 +1,17 @@
+@import "../Common/variables.module.scss";
+
 .app {
     display: flex;
     flex-direction: row-reverse;
     flex-wrap: wrap;
     justify-content: flex-end;
+}
+
+.errorMessage {
+    padding: $padding;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $flex-gap * 4;
 }
