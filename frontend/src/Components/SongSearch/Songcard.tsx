@@ -92,7 +92,7 @@ const Songcard = (props: Props) => {
             const cookie = cookieRaw ? cookieRaw : ""
 
             const queueID = props.song.databaseID ? props.song.databaseID.toString() : "?"
-            if (!cookie.includes(queueID)) {
+            if (!cookie.split(";").includes(queueID)) {
                 return <>
                     <Spacer vertical={5} />
                     <Divider style={{ width: "100%" }} />
