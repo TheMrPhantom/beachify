@@ -7,6 +7,8 @@ import { Song } from '../Common/Types';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { setQueueSongs } from '../../Actions/QueueAction';
+import { TransitionGroup } from 'react-transition-group';
+import Collapse from '@mui/material/Collapse';
 
 type Props = {
 }
@@ -56,14 +58,19 @@ const QueueArea = (props: Props) => {
         if (queueState.songs.length > 2) {
             return <>
                 <Typography variant='h4'>Warteschlange</Typography>
-                {queueState.songs.slice(2).map((song: Song) => {
-                    return <Songcard
-                        key={song.trackID}
-                        song={song}
-                        votingPossible
-                    />
-                })}
+                <TransitionGroup className={style.queueContainer + ' ' + style.noPadding} >
+                    {queueState.songs.slice(2).map((song: Song) => {
+                        return <Collapse key={song.trackID}>
+                            <Songcard
+                                key={song.trackID}
+                                song={song}
+                                votingPossible
+                            />
+                        </Collapse>
+                    })}
+                </TransitionGroup>
             </>
+
         } else {
             return <></>
         }

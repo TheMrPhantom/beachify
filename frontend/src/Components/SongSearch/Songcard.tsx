@@ -24,7 +24,7 @@ const Songcard = (props: Props) => {
     const refPaper: React.RefObject<HTMLInputElement> = useRef(null);
     const [imgLoaded, setimgLoaded] = useState(false)
     const dispatch = useDispatch()
-
+    const cornerElevation = 5
     const theme = useTheme();
 
     const getTopCorner = () => {
@@ -34,28 +34,28 @@ const Songcard = (props: Props) => {
 
         if (props.callback !== undefined) {
             if (props.song.alreadyAdded) {
-                return <div className={style.topCorner}>
+                return <Paper className={style.topCorner} elevation={cornerElevation}>
                     Bereits hinzugefügt
-                </div>
+                </Paper>
             } else {
-                return <div className={style.topCorner}>
+                return <Paper className={style.topCorner} elevation={cornerElevation}>
                     Hinzufügen
-                </div>
+                </Paper>
             }
 
         } else {
             if (!props.song.approvalPending) {
-                return <div className={style.topCorner}>
+                return <Paper className={style.topCorner} elevation={cornerElevation}>
                     {props.song.upvotes}
                     <ThumbUpIcon style={{ height: "20px" }} />
                     <Spacer horizontal={5} />
                     {props.song.downvotes}
                     <ThumbDownIcon style={{ height: "20px" }} />
-                </div>
+                </Paper>
             } else {
-                return <div className={style.topCorner}>
+                return <Paper className={style.topCorner} elevation={cornerElevation}>
                     Warte auf Bestätigung
-                </div>
+                </Paper>
             }
         }
     }
@@ -122,11 +122,10 @@ const Songcard = (props: Props) => {
         <Paper
             className={getPaperClasses()}
             sx={{
-                borderRadius: "0px 25px 5px 0px",
                 position: "relative",
                 color: theme.palette.secondary.contrastText
             }}
-            elevation={!isHovered ? 1 : 3}
+            elevation={!isHovered ? 3 : 8}
             onClick={() => {
                 if (config.DEBUG === true) {
                     console.log('In Songcard: ' + props.song.trackID);

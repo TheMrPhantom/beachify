@@ -12,7 +12,7 @@ $corner-banner-height: 23px;
     align-content: stretch;
     width: 100%;
     min-width: calc(350px - $padding * 2);
-    background-image: linear-gradient(149deg, hsl(202deg 56% 70%), #225877);
+    background-image: linear-gradient(149deg, #27abc1, hsl(189, 66%, 35%)) !important;
 }
 
 .cursorPointer {
@@ -40,9 +40,8 @@ $corner-banner-height: 23px;
     position: absolute;
     right: 0;
     top: 0;
-    background-color: rgba($color: #d7eaf3, $alpha: 1);
-    color: #062c30;
-    border-radius: 0px 25px 0px 25px;
+    background-color: rgba($color: #d7eaf3, $alpha: 1) !important;
+    color: #062c30 !important;
     padding-left: 20px;
     padding-right: 20px;
     height: $corner-banner-height;

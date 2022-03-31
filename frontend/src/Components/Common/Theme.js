@@ -2,17 +2,11 @@ import { createTheme } from '@mui/material/styles';
 
 const normalPrimary = '#39AEA9'
 const normalBackground = '#0e2858'
-const normalText = '#77b5d9'
+const normalText = '#ffffff'
 const normalSecondary = '#77b5d9'
 const normalAction = '#E2D784'
-const shaddow = '#27678b'
 
 export const normalTheme = createTheme({
-    shadows: [...createTheme({}).shadows.map((shadow, i) => (
-        '0px ' + (1 + i) + 'px ' + 1 + i + 'px ' + (1 + i) + 'px ' + shaddow + ', 0px ' +
-        (1 + i) + 'px ' + (1 + i) + 'px 0px ' + shaddow + ', 0px ' +
-        (1 + i) + 'px ' + (1 + i) + 'px 1px ' + shaddow + ''
-    ))],
     palette: {
         primary: {
             main: normalPrimary
@@ -34,8 +28,7 @@ export const normalTheme = createTheme({
                     backgroundColor: normalSecondary
                 }
             }
-        },
-        MuiButton: {
+        }, MuiButton: {
             styleOverrides: {
                 root: {
                     color: normalAction,
@@ -47,12 +40,6 @@ export const normalTheme = createTheme({
                     }
                 }
             },
-        }, MuiCollapse: {
-            styleOverrides: {
-                root: {
-                    backgroundColor: "white"
-                }
-            }
         }, MuiAccordion: {
             styleOverrides: {
                 root: {
