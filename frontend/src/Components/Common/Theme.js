@@ -1,7 +1,7 @@
 import { createTheme } from '@mui/material/styles';
 
-const normalPrimary = '#39AEA9'
-const normalBackground = '#0e2858'
+const normalPrimary = '#27abc1'
+const normalBackground = '#064f61'
 const normalText = '#ffffff'
 const normalSecondary = '#77b5d9'
 const normalAction = '#E2D784'

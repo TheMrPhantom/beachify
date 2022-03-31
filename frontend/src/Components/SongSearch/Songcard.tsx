@@ -127,8 +127,18 @@ const Songcard = (props: Props) => {
                     <Divider style={{ width: "100%" }} />
                     <Spacer vertical={5} />
                     <div className={style.upDownButtons}>
-                        <Button sx={{ color: theme.palette.text.secondary }} onClick={() => voteUp()} ><ThumbUpIcon /></Button>
-                        <Button sx={{ color: theme.palette.text.secondary }} onClick={() => voteDown()} ><ThumbDownIcon /></Button>
+                        <Button
+                            variant='contained'
+                            sx={{ color: theme.palette.text.primary, backgroundColor: theme.palette.primary.dark }}
+                            onClick={() => voteUp()} >
+                            <ThumbUpIcon />
+                        </Button>
+                        <Button
+                            variant='contained'
+                            sx={{ color: theme.palette.text.primary, backgroundColor: theme.palette.primary.dark }}
+                            onClick={() => voteDown()} >
+                            <ThumbDownIcon />
+                        </Button>
                     </div >
                 </>
             }
