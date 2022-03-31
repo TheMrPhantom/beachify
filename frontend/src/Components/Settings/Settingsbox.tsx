@@ -13,7 +13,7 @@ type Props = {
 
 const Settingsbox = (props: Props) => {
     return (
-        <Paper className={style.paper}>
+        <Paper className={style.paper} elevation={5}>
             <div className={style.sideContainer}>
                 {React.cloneElement(props.icon, { className: style.icon })}
             </div>

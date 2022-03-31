@@ -6,6 +6,8 @@
     align-items: center;
     justify-content: center;
     margin-right: $padding;
+    padding: $padding;
+    background-color: rgba($color: #000000, $alpha: 0.3);
 }
 
 .paper {
@@ -14,11 +16,14 @@
     width: fit-content;
     height: fit-content;
     background-image: $paper-background;
-    padding: $padding;
     max-width: 600px;
 }
 
 .icon {
     width: 50px !important;
     height: 50px !important;
+}
+
+.infoContainer {
+    padding: $padding;
 }
