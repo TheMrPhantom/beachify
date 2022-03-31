@@ -9,7 +9,7 @@ const AdminDashboard = (props: Props) => {
     const [loggedIn, setloggedIn] = useState(false)
 
     useEffect(() => {
-        doGetRequest("/auth/login/status").then((value) => {
+        doGetRequest("auth/login/status").then((value) => {
             if (value.code === 200) {
                 setloggedIn(true)
             } else {
