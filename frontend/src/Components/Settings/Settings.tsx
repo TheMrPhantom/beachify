@@ -12,11 +12,12 @@ import HotelIcon from '@mui/icons-material/Hotel';
 
 import Texts from '../../texts.json';
 import style from './settings.module.scss'
-import { MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { setAllSettings, setDefaultBantime, setDefaultplaylist, setGuestToken, setListmode, setQueueState, setQueueSubmittable, setRetentionTime, setTrustmode, setWaitingTime } from '../../Actions/SettingsAction';
 import { doGetRequest, doRequest } from '../Common/StaticFunctions';
 import { SettingsType } from '../../Reducer/SettingsReducer';
+import Spacer from '../Common/Spacer';
 
 type Props = {}
 
@@ -24,7 +25,7 @@ const Settings = (props: Props) => {
     const dispatch = useDispatch()
     const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
 
-console.log(settingsState)
+    console.log(settingsState)
 
     useEffect(() => {
         doGetRequest("setting").then((value) => {
@@ -225,6 +226,12 @@ console.log(settingsState)
                 icon={<HotelIcon />}
                 input={retentionTimeElement}
             />
+        </div>
+        <Spacer vertical={5} />
+        <div className={style.buttonContainer}>
+            <Button variant='contained' className={style.button}>
+                Zurück
+            </Button>
         </div>
     </div>
 

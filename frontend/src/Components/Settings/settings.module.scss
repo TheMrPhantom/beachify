@@ -10,3 +10,17 @@
     justify-content: space-around;
     align-items: center;
 }
+
+.buttonContainer{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: $padding;
+
+    width: 100%;
+}
+
+.button{
+    width: 250px;
+}
