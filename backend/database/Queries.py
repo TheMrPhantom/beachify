@@ -143,7 +143,7 @@ class Queries:
                 self.session.commit()
 
     def adding_song_to_queue_possible(self):
-        return self.session.query(Setting).filter_by(key="queue_submitable").first().value == "true"
+        return self.session.query(Setting).filter_by(key="queue_submittable").first().value == "activated"
 
     def check_secret(self, secret):
         if secret is None:
@@ -178,6 +178,18 @@ class Queries:
             "queueSubmittable": settings_map["queue_submittable"].value,
             "retentionTime": settings_map["retention_time"].value
         }
+
+    def delete_old_songs_from_queue(self):
+        retention_time = int(self.session.query(Setting).filter_by(key="retention_time").first().value)
+        songs = self.session.query(Queue).all()
+        
+        for element in songs:
+            song: Queue = element
+            
+            if song.insertion_time + timedelta(minutes=retention_time)  < datetime.now():
+                self.session.delete(song)
+        
+        self.session.commit()
 
     def insert_default_settings(self):
         if self.session.query(Setting).first() is not None:

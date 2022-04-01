@@ -28,6 +28,7 @@ db = Queries.Queries(sql_database)
 
 # Tasks
 taskScheduler = TaskScheduler.TaskScheduler()
+taskScheduler.add_minutely_task(db.delete_old_songs_from_queue)
 taskScheduler.start()
 
 
