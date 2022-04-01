@@ -34,28 +34,28 @@ const reducer = (state = initialState, { type, payload }: { type: string, payloa
             newState.listMode = payload
             return newState
         case "SET_TRUSTMODE":
-            newState.listMode = payload
+            newState.trustMode = payload
             return newState
         case "SET_DF_PLAYLIST":
-            newState.listMode = payload
+            newState.defaultPlaylist = payload
             return newState
         case "SET_GUEST_TOKEN":
-            newState.listMode = payload
+            newState.guestToken = payload
             return newState
         case "SET_WAITING_TIME":
-            newState.listMode = payload
+            newState.waitingTime = payload
             return newState
         case "SET_DEFAULT_BANTIME":
-            newState.listMode = payload
+            newState.defaultBanTime = payload
             return newState
         case "SET_QUEUE_STATE":
-            newState.listMode = payload
+            newState.queueState = payload
             return newState
         case "SET_QUEUESUBMITTABLE":
-            newState.listMode = payload
+            newState.queueSubmittable = payload
             return newState
         case "SET_RETENTIONTIME":
-            newState.listMode = payload
+            newState.retentionTime = payload
             return newState
         default:
             return state

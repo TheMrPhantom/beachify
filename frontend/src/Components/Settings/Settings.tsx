@@ -24,6 +24,8 @@ const Settings = (props: Props) => {
     const dispatch = useDispatch()
     const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
 
+console.log(settingsState)
+
     useEffect(() => {
         doGetRequest("setting").then((value) => {
             dispatch(setAllSettings(value.content))
@@ -46,8 +48,8 @@ const Settings = (props: Props) => {
         onChange={value => doRequest("setting/trustMode", "PUT", value.target.value).then((value) => dispatch(setTrustmode(value.content)))}
         fullWidth
     >
-        <MenuItem value="0">Genehmigung Benötigt</MenuItem>
-        <MenuItem value="1">Freie Wahl</MenuItem>
+        <MenuItem value="approval">Genehmigung Benötigt</MenuItem>
+        <MenuItem value="no_approval">Freie Wahl</MenuItem>
     </Select>
 
 
@@ -120,19 +122,19 @@ const Settings = (props: Props) => {
         onChange={value => doRequest("setting/queueState", "PUT", value.target.value).then((value) => dispatch(setQueueState(value.content)))}
         fullWidth
     >
-        <MenuItem value="0">Aktiviert</MenuItem>
-        <MenuItem value="1">Deaktiviert</MenuItem>
+        <MenuItem value="activated">Aktiviert</MenuItem>
+        <MenuItem value="deactivated">Deaktiviert</MenuItem>
     </Select>
 
 
 
     const uploadAcceptedElement: JSX.Element = <Select
         value={settingsState.queueSubmittable}
-        onChange={value => doRequest("setting/queueSubmittable", "PUT", value.target.value).then((value) => dispatch(setQueueSubmittable))}
+        onChange={value => doRequest("setting/queueSubmittable", "PUT", value.target.value).then((value) => dispatch(setQueueSubmittable(value.content)))}
         fullWidth
     >
-        <MenuItem value="0">Aktiviert</MenuItem>
-        <MenuItem value="1">Deaktiviert</MenuItem>
+        <MenuItem value="activated">Aktiviert</MenuItem>
+        <MenuItem value="deactivated">Deaktiviert</MenuItem>
     </Select>
 
 

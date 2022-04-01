@@ -1,5 +1,6 @@
 from datetime import datetime
 import os
+import queue
 import TaskScheduler
 from flask import helpers, url_for, session, redirect
 from flask import request
@@ -93,62 +94,89 @@ def checkSecret(secret):
 
 @app.route('/api/setting', methods=["GET"])
 def get_settings():
-    # TODO
-    return util.build_response("OK")
+    return util.build_response(db.get_settings())
 
 
 @app.route('/api/setting/listMode', methods=["PUT"])
 def set_listmode():
-    # TODO
-    return util.build_response("OK")
+    if "whitelist" == request.json or "blacklist" == request.json:
+        db.set_settings(value = request.json, setting_name = "list_mode")
+    else:
+        return util.build_response("Der übergebene Text war nicht Whitelist oder Blacklist.", code = 412)
+
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/trustMode', methods=["PUT"])
 def set_trustmode():
-    # TODO
-    return util.build_response("OK")
+    if request.json == "approval" or request.json == "no_approval":
+        db.set_settings(value = request.json, setting_name = "trust_mode")
+    else:
+        return util.build_response("Der übergebene Text ist weder Genehmigung Benötigt noch freue Wahl", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/defaultPlaylist', methods=["PUT"])
 def set_dp():
-    # TODO
-    return util.build_response("OK")
+    if sp.playlist(playlist_id=request.json) is not None:
+        db.set_settings(value=request.json, setting_name = "default_playlist")
+    else:
+        return util.build_response("Die übergebene Playlist existiert nicht", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/guestToken', methods=["PUT"])
 def set_guest_token():
-    # TODO
-    return util.build_response("OK")
+    if len(str(request.json)) != 0:
+        db.set_settings(value=request.json, setting_name = "guest_token")
+    else:
+        return util.build_response("Der übergebene Token ist fehlerhaft", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/waitingTime', methods=["PUT"])
 def set_waiting_time():
-    # TODO
-    return util.build_response("OK")
+    if int(request.json) > 0:
+        db.set_settings(value=request.json, setting_name="waiting_time")
+    else:
+        return util.build_response("Die übergebene Wartezeit ist keine gültige Zeit.", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/defaultBanTime', methods=["PUT"])
 def set_default_ban_time():
-    # TODO
-    return util.build_response("OK")
+    if int(request.json) > 0:
+        db.set_settings(value=request.json, setting_name="default_ban_time")
+    else:
+        return util.build_response("Die übergebene Ban Zeit ist keine gültige Zeit.", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/queueState', methods=["PUT"])
 def set_queue_state():
-    # TODO
-    return util.build_response("OK")
+    if request.json == "activated" or request.json == "deactivated":
+        db.set_settings(value=request.json, setting_name="queue_state")
+    else:
+        return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/queueSubmittable', methods=["PUT"])
 def set_queue_submittable():
-    # TODO
-    return util.build_response("OK")
+    if request.json == "activated" or request.json == "deactivated":
+        db.set_settings(value=request.json, setting_name="queue_submitable")
+    else:
+        return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/setting/retentionTime', methods=["PUT"])
 def set_retention_time():
-    # TODO
-    return util.build_response("OK")
+    if int(request.json) > 0:
+        db.set_settings(value=request.json, setting_name="retention_time")
+    else:
+        return util.build_response("Die übergebene Dauer ist keine gütlige Zeiteingabe.", code = 412)
+    return util.build_response(request.json)
 
 
 @app.route('/api/login/check', methods=["GET"])

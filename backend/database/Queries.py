@@ -150,6 +150,35 @@ class Queries:
             return False
         return self.session.query(Setting).filter_by(key="guest_token").first().value == secret
 
+    def set_settings(self, value, setting_name):
+        setting: Setting = self.session.query(
+            Setting).filter_by(key=setting_name).first()
+        if setting_name is None:
+            self.session.add(Setting(key=setting_name, value=value))
+        else:
+            setting.value = value
+        self.session.commit()
+
+    def get_settings(self):
+        settings = self.session.query(Setting).all()
+
+        settings_map = {}
+
+        for element in settings:
+            settings_map[element.key] = element
+        
+        return {
+            "listMode": settings_map["list_mode"].value,
+            "trustMode": settings_map["trust_mode"].value,
+            "defaultPlaylist": settings_map["default_playlist"].value,
+            "guestToken": settings_map["guest_token"].value,
+            "waitingTime": settings_map["waiting_time"].value,
+            "defaultBanTime": settings_map["default_ban_time"].value,
+            "queueState": settings_map["queue_state"].value,
+            "queueSubmittable": settings_map["queue_submittable"].value,
+            "retentionTime": settings_map["retention_time"].value
+        }
+
     def insert_default_settings(self):
         if self.session.query(Setting).first() is not None:
             return
@@ -157,7 +186,7 @@ class Queries:
         list_mode = os.environ.get(
             "list_mode") if os.environ.get("list_mode") else "blacklist"
         trust_mode = os.environ.get(
-            "trust_mode") if os.environ.get("trust_mode") else "untrusted"
+            "trust_mode") if os.environ.get("trust_mode") else "no_approval"
         default_playlist = os.environ.get(
             "default_playlist") if os.environ.get("default_playlist") else ""
         guest_token = os.environ.get(
@@ -167,9 +196,9 @@ class Queries:
         default_ban_time = os.environ.get(
             "default_ban_time") if os.environ.get("default_ban_time") else "3600"
         queue_state = os.environ.get(
-            "queue_state") if os.environ.get("queue_state") else "true"
-        queue_submitable = os.environ.get(
-            "queue_submitable") if os.environ.get("queue_submitable") else "true"
+            "queue_state") if os.environ.get("queue_state") else "activated"
+        queue_submittable = os.environ.get(
+            "queue_submittable") if os.environ.get("queue_submittable") else "activated"
         retention_time = os.environ.get(
             "retention_time") if os.environ.get("retention_time") else "360"
 
@@ -188,7 +217,7 @@ class Queries:
         self.session.add(
             Setting(key="queue_state", value=queue_state))
         self.session.add(
-            Setting(key="queue_submitable", value=queue_submitable))
+            Setting(key="queue_submittable", value=queue_submittable))
         self.session.add(
             Setting(key="retention_time", value=retention_time))
 
