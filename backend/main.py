@@ -195,7 +195,10 @@ def spotify_callback():
         request.args.get("code"), as_dict=False)
     sp = spotipy.Spotify(auth=auth_token)
 
-    return util.build_response(sp.current_playback())
+    if "127.0.0.1" in util.domain:
+        return redirect(f"http://{util.domain}/admin")
+    else:
+        return redirect(f"https://{util.domain}/admin")
 
 
 @app.route('/api/login/check', methods=["GET"])
