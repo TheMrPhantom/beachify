@@ -101,9 +101,9 @@ def get_settings():
 @app.route('/api/setting/listMode', methods=["PUT"])
 def set_listmode():
     if "whitelist" == request.json or "blacklist" == request.json:
-        db.set_settings(value = request.json, setting_name = "list_mode")
+        db.set_settings(value=request.json, setting_name="list_mode")
     else:
-        return util.build_response("Der übergebene Text war nicht Whitelist oder Blacklist.", code = 412)
+        return util.build_response("Der übergebene Text war nicht Whitelist oder Blacklist.", code=412)
 
     return util.build_response(request.json)
 
@@ -111,27 +111,27 @@ def set_listmode():
 @app.route('/api/setting/trustMode', methods=["PUT"])
 def set_trustmode():
     if request.json == "approval" or request.json == "no_approval":
-        db.set_settings(value = request.json, setting_name = "trust_mode")
+        db.set_settings(value=request.json, setting_name="trust_mode")
     else:
-        return util.build_response("Der übergebene Text ist weder Genehmigung Benötigt noch freue Wahl", code = 412)
+        return util.build_response("Der übergebene Text ist weder Genehmigung Benötigt noch freue Wahl", code=412)
     return util.build_response(request.json)
 
 
 @app.route('/api/setting/defaultPlaylist', methods=["PUT"])
 def set_dp():
     if sp.playlist(playlist_id=request.json) is not None:
-        db.set_settings(value=request.json, setting_name = "default_playlist")
+        db.set_settings(value=request.json, setting_name="default_playlist")
     else:
-        return util.build_response("Die übergebene Playlist existiert nicht", code = 412)
+        return util.build_response("Die übergebene Playlist existiert nicht", code=412)
     return util.build_response(request.json)
 
 
 @app.route('/api/setting/guestToken', methods=["PUT"])
 def set_guest_token():
     if len(str(request.json)) != 0:
-        db.set_settings(value=request.json, setting_name = "guest_token")
+        db.set_settings(value=request.json, setting_name="guest_token")
     else:
-        return util.build_response("Der übergebene Token ist fehlerhaft", code = 412)
+        return util.build_response("Der übergebene Token ist fehlerhaft", code=412)
     return util.build_response(request.json)
 
 
@@ -140,7 +140,7 @@ def set_waiting_time():
     if int(request.json) > 0:
         db.set_settings(value=request.json, setting_name="waiting_time")
     else:
-        return util.build_response("Die übergebene Wartezeit ist keine gültige Zeit.", code = 412)
+        return util.build_response("Die übergebene Wartezeit ist keine gültige Zeit.", code=412)
     return util.build_response(request.json)
 
 
@@ -149,7 +149,7 @@ def set_default_ban_time():
     if int(request.json) > 0:
         db.set_settings(value=request.json, setting_name="default_ban_time")
     else:
-        return util.build_response("Die übergebene Ban Zeit ist keine gültige Zeit.", code = 412)
+        return util.build_response("Die übergebene Ban Zeit ist keine gültige Zeit.", code=412)
     return util.build_response(request.json)
 
 
@@ -158,7 +158,7 @@ def set_queue_state():
     if request.json == "activated" or request.json == "deactivated":
         db.set_settings(value=request.json, setting_name="queue_state")
     else:
-        return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code = 412)
+        return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code=412)
     return util.build_response(request.json)
 
 
@@ -167,7 +167,7 @@ def set_queue_submittable():
     if request.json == "activated" or request.json == "deactivated":
         db.set_settings(value=request.json, setting_name="queue_submitable")
     else:
-        return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code = 412)
+        return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code=412)
     return util.build_response(request.json)
 
 
@@ -176,8 +176,26 @@ def set_retention_time():
     if int(request.json) > 0:
         db.set_settings(value=request.json, setting_name="retention_time")
     else:
-        return util.build_response("Die übergebene Dauer ist keine gütlige Zeiteingabe.", code = 412)
+        return util.build_response("Die übergebene Dauer ist keine gütlige Zeiteingabe.", code=412)
     return util.build_response(request.json)
+
+
+@app.route('/api/spotify/authorize', methods=["GET"])
+def authorize_spotify():
+    oauth_object = SpotifyOAuth(scope=scope)
+    token_url = oauth_object.get_authorize_url()
+
+    return redirect(token_url)
+
+
+@app.route('/api/spotify/authorize/callback', methods=["GET"])
+def spotify_callback():
+    oauth_object = SpotifyOAuth(scope=scope)
+    auth_token = oauth_object.get_access_token(
+        request.args.get("code"), as_dict=False)
+    sp = spotipy.Spotify(auth=auth_token)
+
+    return util.build_response(sp.current_playback())
 
 
 @app.route('/api/login/check', methods=["GET"])
