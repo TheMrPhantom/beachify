@@ -6,3 +6,18 @@
     align-items: center;
     width: 100%;
 }
+
+.firstSecondSongDiv{
+    padding:$padding;
+    display: flex;
+    flex-direction: column;
+    gap:$flex-gap;
+    max-width: 500px;
+}
+
+.outterFlex{
+    display:flex;
+    gap:$flex-gap;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

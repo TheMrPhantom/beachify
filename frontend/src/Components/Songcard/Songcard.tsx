@@ -11,12 +11,16 @@ import Cookies from 'js-cookie';
 import { doGetRequest, doRequest } from '../Common/StaticFunctions';
 import { useDispatch } from 'react-redux';
 import { setQueueSongs } from '../../Actions/QueueAction';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 
 type Props = {
     song: Song,
     votingPossible?: boolean,
     noLabel?: boolean,
     playsIn?: number,
+    playPauseControls?: boolean,
     callback?: (song: Song) => void
 }
 
@@ -125,7 +129,7 @@ const Songcard = (props: Props) => {
                 return <>
                     <Spacer vertical={5} />
                     <Divider style={{ width: "100%" }} />
-                    <Spacer vertical={5} />
+                    <Spacer vertical={10} />
                     <div className={style.upDownButtons}>
                         <Button
                             variant='contained'
@@ -144,6 +148,41 @@ const Songcard = (props: Props) => {
             }
         }
         return <></>
+    }
+
+    const getAdminButtons = () => {
+        if (props.playPauseControls) {
+
+            return <>
+                <Spacer vertical={5} />
+                <Divider style={{ width: "100%" }} />
+                <Spacer vertical={10} />
+                <div className={style.upDownButtons}>
+                    <Button
+                        variant='contained'
+                        sx={{ color: theme.palette.text.primary, backgroundColor: theme.palette.primary.dark }}
+                        onClick={() => switchPlayState()} >
+                        <PauseIcon />
+                    </Button>
+                    <Button
+                        variant='contained'
+                        sx={{ color: theme.palette.text.primary, backgroundColor: theme.palette.primary.dark }}
+                        onClick={() => skipSong()} >
+                        <SkipNextIcon />
+                    </Button>
+                </div >
+            </>
+
+        }
+        return <></>
+    }
+
+    const skipSong = () => {
+
+    }
+
+    const switchPlayState = () => {
+
     }
 
     const getPaperClasses = () => {
@@ -194,6 +233,7 @@ const Songcard = (props: Props) => {
                 <Typography variant='h5'>{props.song.interpret}</Typography>
                 <Typography variant='body1'>{props.song.album}</Typography>
                 {getVotingButtons()}
+                {getAdminButtons()}
             </div>
             {getTopCorner()}
         </Paper >

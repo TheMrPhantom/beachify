@@ -1,0 +1,69 @@
+@import "../../Common/variables.module.scss";
+
+.songtableContainer{
+    display:flex;
+    flex-direction: column;
+    padding:$padding;
+    align-items: stretch;
+    gap:5px;
+}
+
+.itemPaper{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap:$flex-gap;
+    background-image: $paper-background;
+}
+
+.songInfo{
+    height:100%;
+}
+
+.buttonContainer{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap:calc($flex-gap /2);
+}
+
+.disabled{
+    display: none !important;
+    //opacity: 0.3;
+}
+
+.approvalPending{
+    background-image: $approval-background;
+}
+
+.leftSide{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    gap:$flex-gap;
+    padding:$padding;
+}
+
+.rightSide{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap:$flex-gap;
+    height: 100%;
+}
+
+.dragger{
+    height:100%;
+    background-color: rgba($color: #000000, $alpha: 0.3);
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    padding:calc($padding / 2);
+    cursor: pointer;
+}
+
+.padRight{
+    padding-right:$flex-gap;
+}

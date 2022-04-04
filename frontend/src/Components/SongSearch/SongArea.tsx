@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { TextField } from '@mui/material';
-import Songcard from './Songcard';
+import Songcard from '../Songcard/Songcard';
 import style from './songarea.module.scss'
 import { doGetRequest, doRequest, getAndStore } from '../Common/StaticFunctions';
 import { Song } from '../Common/Types';
@@ -8,7 +8,9 @@ import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { setQueueSongs } from '../../Actions/QueueAction';
 
-type Props = {}
+type Props = {
+    placeholder?: string
+}
 
 const SongArea = (props: Props) => {
     const [searchText, setsearchText] = useState("")
@@ -56,7 +58,7 @@ const SongArea = (props: Props) => {
     return (
         <div className={style.container}>
             <TextField
-                placeholder='Song hinzufügen'
+                placeholder={props.placeholder ? props.placeholder : 'Song hinzufügen'}
                 variant='standard'
                 fullWidth
                 className={style.textbox}

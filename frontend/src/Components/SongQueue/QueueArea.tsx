@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography';
 import style from './queuearea.module.scss';
-import Songcard from "../SongSearch/Songcard";
+import Songcard from "../Songcard/Songcard";
 import { doGetRequest } from '../Common/StaticFunctions';
 import { Song } from '../Common/Types';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
