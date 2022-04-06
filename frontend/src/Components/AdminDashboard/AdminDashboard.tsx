@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { doGetRequest } from '../Common/StaticFunctions'
 import ErrorPage from '../ErrorPage/ErrorPage'
-import Settings from '../Settings/Settings'
 import UserDashboard from '../UserDashboard/UserDashboard'
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
@@ -23,7 +22,7 @@ const AdminDashboard = (props: Props) => {
         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
             dispatch(setQueueSongs(value.content))
         })
-    }, [])
+    }, [dispatch])
 
     useEffect(() => {
         doGetRequest("auth/login/status").then((value) => {
@@ -34,6 +33,7 @@ const AdminDashboard = (props: Props) => {
             }
         })
     }, [])
+
     if (queueState.songs.length > 1) {
         return <div className={style.outterFlex}>
             <div className={style.firstSecondSongDiv}>
@@ -45,9 +45,10 @@ const AdminDashboard = (props: Props) => {
                 <SongArea placeholder='Song zur Warteschlage' />
                 <SongArea placeholder='Default Playlist' />
             </div>
-            <SongTable />
+            <SongTable songs={queueState.songs.slice(2)} />
         </div>
     }
+
     if (!loggedIn) {
         return <ErrorPage loginRequired />
     }

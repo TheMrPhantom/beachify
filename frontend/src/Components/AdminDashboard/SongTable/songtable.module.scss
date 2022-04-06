@@ -5,7 +5,7 @@
     flex-direction: column;
     padding:$padding;
     align-items: stretch;
-    gap:5px;
+    position:relative;
 }
 
 .itemPaper{
@@ -62,8 +62,41 @@
     justify-content: center;
     padding:calc($padding / 2);
     cursor: pointer;
+    border-radius: 0px 4px 4px 0px;
 }
 
 .padRight{
     padding-right:$flex-gap;
+}
+
+.leftContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.dragDropContainer{
+    height: 10px;
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    &.expanded{
+        height: 50px;
+    }
+}
+
+.dragDropIndicatorInner{
+    background-color: rgba($color: $list-item-hover, $alpha: 0.7);
+    &.expanded{
+        height: 2px;
+        width:100%;
+    }
+}
+
+.songSelected{
+    opacity: 0.6;
 }

@@ -201,6 +201,26 @@ def spotify_callback():
         return redirect(f"https://{util.domain}/admin")
 
 
+@app.route('/api/spotiy/playstate/play', methods=["POST"])
+def play():
+    return util.build_response("OK")
+
+
+@app.route('/api/spotiy/playstate/pause', methods=["POST"])
+def pause():
+    return util.build_response("OK")
+
+
+@app.route('/api/spotiy/playstate/toggle', methods=["POST"])
+def toggle_playstate():
+    return util.build_response("OK")
+
+
+@app.route('/api/spotiy/playstate/skip', methods=["POST"])
+def skip_song():
+    return util.build_response("OK")
+
+
 @app.route('/api/login/check', methods=["GET"])
 def loginCheck():
     return util.build_response("OK")
