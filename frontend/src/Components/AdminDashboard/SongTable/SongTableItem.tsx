@@ -61,7 +61,7 @@ const SongTableItem = (props: Props) => {
 
     const dragField = () => {
         if (!props.song.approvalPending) {
-            return <div className={style.dragger}>
+            return <div className={style.dragger} onMouseDown={() => props.clickOnDrag()}>
                 <DragIndicatorIcon />
             </div>
         } else {
@@ -70,7 +70,7 @@ const SongTableItem = (props: Props) => {
     }
 
     return (
-        <Paper className={paperClasses()} onMouseDown={() => props.clickOnDrag()} style={props.style}>
+        <Paper className={paperClasses()} style={props.style}>
             <div className={style.leftContainer} ref={refOutterContainer}>
                 <Zoom in={ref != null && ref.current != null} mountOnEnter unmountOnExit key={props.song.trackID}>
                     <img src={props.song.coverURL} alt="album cover" style={{ height: ref != null && ref.current != null ? ref.current.offsetHeight : "" }} />

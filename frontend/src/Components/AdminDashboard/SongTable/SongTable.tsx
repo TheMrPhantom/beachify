@@ -25,7 +25,7 @@ const SongTable = (props: Props) => {
 
 
     const getDragDropClasses = (id: string) => {
-        if (id !== dragDropDiv) {
+        if (id !== dragDropDiv || dragDropID === '') {
             return style.dragDropContainer
         } else {
             return style.dragDropContainer + ' ' + style.expanded
@@ -33,7 +33,7 @@ const SongTable = (props: Props) => {
     }
 
     const getDragDropClassesInner = (id: string) => {
-        if (id !== dragDropDiv) {
+        if (id !== dragDropDiv || dragDropID === '') {
             return style.dragDropIndicatorInner
         } else {
             return style.dragDropIndicatorInner + ' ' + style.expanded
