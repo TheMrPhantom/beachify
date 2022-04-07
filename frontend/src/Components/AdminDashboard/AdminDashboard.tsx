@@ -41,9 +41,9 @@ const AdminDashboard = (props: Props) => {
                 <Songcard song={queueState.songs[0]} playPauseControls noLabel />
                 <Typography variant="h4">Nächster Song</Typography>
                 <Songcard song={queueState.songs[1]} />
-                <SongArea placeholder='Nächsten Song setzen' />
-                <SongArea placeholder='Song zur Warteschlage' />
-                <SongArea placeholder='Default Playlist' />
+                <SongArea placeholder='Nächsten Song setzen' fullwidth={false} noHelp />
+                <SongArea placeholder='Song zur Warteschlage' fullwidth={false} noHelp />
+                <SongArea placeholder='Default Playlist' fullwidth={false} noHelp />
             </div>
             <SongTable songs={queueState.songs.slice(2)} />
         </div>

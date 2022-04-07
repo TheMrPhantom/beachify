@@ -10,6 +10,8 @@ import { setQueueSongs } from '../../Actions/QueueAction';
 
 type Props = {
     placeholder?: string
+    fullwidth?: boolean
+    noHelp?: boolean
 }
 
 const SongArea = (props: Props) => {
@@ -56,7 +58,8 @@ const SongArea = (props: Props) => {
     }
 
     return (
-        <div className={style.container}>
+        <div className={style.container + (props.fullwidth || props.fullwidth == undefined ? (' ' + style.fullscreen) : '')
+        }>
             <TextField
                 placeholder={props.placeholder ? props.placeholder : 'Song hinzufügen'}
                 variant='standard'
@@ -72,12 +75,14 @@ const SongArea = (props: Props) => {
                     setsearchText(value.target.value)
                 }}
             />
-            {songs.length === 0 && Cookies.get("show-search-help") === undefined ?
-                <img src="/svg/downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> :
-                <></>}
+            {
+                songs.length === 0 && Cookies.get("show-search-help") === undefined && !props.noHelp ?
+                    <img src="/svg/downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> :
+                    <></>
+            }
             {songlist()}
 
-        </div>
+        </div >
     )
 }
 
