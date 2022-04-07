@@ -10,25 +10,20 @@ import authenticator
 import util
 from web import *
 from database import Queries
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-
-# Spotify Stuff
-scope = "user-read-playback-state user-modify-playback-state user-read-currently-playing streaming playlist-read-private playlist-read-collaborative"
-
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
-
-auth_manager = SpotifyClientCredentials()
-sp = spotipy.Spotify(auth_manager=auth_manager)
+import spotify
+import websocket
 
 # Database
 token_manager = authenticator.TokenManager()
 
 db = Queries.Queries(sql_database)
+ws = websocket.Websocket()
+sp = spotify.Spotify(ws)
 
 # Tasks
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.add_minutely_task(db.delete_old_songs_from_queue)
+taskScheduler.add_secondly_task(sp.checkCurrentSong)
 taskScheduler.start()
 
 
@@ -45,7 +40,8 @@ def with_beachify_token(fn):
 @app.route('/api/search/song/<string:seach_term>', methods=["GET"])
 @with_beachify_token
 def search_for_song(seach_term):
-    songs = util.simplify_spotify_tracks(sp.search(seach_term, limit=10))
+    songs = util.simplify_spotify_tracks(
+        sp.connector.search(seach_term, limit=10))
 
     db.flag_queued_songs(songs)
     return util.build_response(songs)
@@ -119,7 +115,7 @@ def set_trustmode():
 
 @app.route('/api/setting/defaultPlaylist', methods=["PUT"])
 def set_dp():
-    if sp.playlist(playlist_id=request.json) is not None:
+    if sp.connector.playlist(playlist_id=request.json) is not None:
         db.set_settings(value=request.json, setting_name="default_playlist")
     else:
         return util.build_response("Die übergebene Playlist existiert nicht", code=412)
@@ -182,7 +178,7 @@ def set_retention_time():
 
 @app.route('/api/spotify/authorize', methods=["GET"])
 def authorize_spotify():
-    oauth_object = SpotifyOAuth(scope=scope)
+    oauth_object = sp.SpotifyOAuth(scope=sp.scope)
     token_url = oauth_object.get_authorize_url()
 
     return redirect(token_url)
@@ -190,10 +186,10 @@ def authorize_spotify():
 
 @app.route('/api/spotify/authorize/callback', methods=["GET"])
 def spotify_callback():
-    oauth_object = SpotifyOAuth(scope=scope)
+    oauth_object = sp.SpotifyOAuth(scope=sp.scope)
     auth_token = oauth_object.get_access_token(
         request.args.get("code"), as_dict=False)
-    sp = spotipy.Spotify(auth=auth_token)
+    sp.connector = sp.spotipy.Spotify(auth=auth_token)
 
     if "127.0.0.1" in util.domain:
         return redirect(f"http://{util.domain}/admin")
@@ -203,38 +199,38 @@ def spotify_callback():
 
 @app.route('/api/spotiy/playstate/currentlyPlaying', methods=["GET"])
 def currently_playing():
-    return util.build_response(util.simplify_spotify_track(sp.currently_playing()['item']))
+    return util.build_response(util.simplify_spotify_track(sp.connector.currently_playing()['item']))
 
 
 @app.route('/api/spotiy/playstate/playing', methods=["GET"])
 def is_playing():
-    return util.build_response(sp.currently_playing()["is_playing"])
+    return util.build_response(sp.connector.currently_playing()["is_playing"])
 
 
 @app.route('/api/spotiy/playstate/play', methods=["POST"])
 def play():
-    sp.start_playback()
+    sp.connector.start_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotiy/playstate/pause', methods=["POST"])
 def pause():
-    sp.pause_playback()
+    sp.connector.pause_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotiy/playstate/toggle', methods=["POST"])
 def toggle_playstate():
-    if sp.currently_playing()["is_playing"]:
-        sp.pause_playback()
+    if sp.connector.currently_playing()["is_playing"]:
+        sp.connector.pause_playback()
     else:
-        sp.start_playback()
+        sp.connector.start_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotiy/playstate/skip', methods=["POST"])
 def skip_song():
-    sp.next_track()
+    sp.connector.next_track()
     return util.build_response("OK")
 
 

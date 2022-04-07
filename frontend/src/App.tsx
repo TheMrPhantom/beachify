@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import { CssBaseline } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Main from './Main';
+import SocketClient from './Components/Common/SocketClient';
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
@@ -25,6 +26,7 @@ function App() {
         <div className="App">
           <CssBaseline />
           <Provider store={store}>
+            <SocketClient />
             <Main />
           </Provider>
         </div>
