@@ -4,7 +4,6 @@ import style from './songtable.module.scss'
 import { Typography } from '@mui/material'
 import { Song } from '../../Common/Types'
 import Divider from '@mui/material/Divider';
-import { doPostRequest } from '../../Common/StaticFunctions'
 
 type Props = {
     songs: Array<Song>

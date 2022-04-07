@@ -53,7 +53,7 @@ const Songcard = (props: Props) => {
                 }
             })
         }
-    }, [dispatch])
+    }, [dispatch, props.playPauseControls, props.skeleton])
 
 
     const appendTime = () => {

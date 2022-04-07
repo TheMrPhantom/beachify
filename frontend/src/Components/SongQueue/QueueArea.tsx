@@ -29,7 +29,7 @@ const QueueArea = (props: Props) => {
                 }
             })
         }
-    }, [dispatch])
+    }, [dispatch, queueState.currentlyPlaying])
 
 
     const currentlyPlaying = () => {

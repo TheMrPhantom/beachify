@@ -41,7 +41,7 @@ const AdminDashboard = (props: Props) => {
                 }
             })
         }
-    }, [])
+    }, [dispatch, queueState.currentlyPlaying])
 
     const currentlyPlaying = () => {
         if (queueState.currentlyPlaying !== null) {
