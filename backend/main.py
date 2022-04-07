@@ -201,23 +201,40 @@ def spotify_callback():
         return redirect(f"https://{util.domain}/admin")
 
 
+@app.route('/api/spotiy/playstate/currentlyPlaying', methods=["GET"])
+def currently_playing():
+    return util.build_response(util.simplify_spotify_track(sp.currently_playing()['item']))
+
+
+@app.route('/api/spotiy/playstate/playing', methods=["GET"])
+def is_playing():
+    return util.build_response(sp.currently_playing()["is_playing"])
+
+
 @app.route('/api/spotiy/playstate/play', methods=["POST"])
 def play():
+    sp.start_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotiy/playstate/pause', methods=["POST"])
 def pause():
+    sp.pause_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotiy/playstate/toggle', methods=["POST"])
 def toggle_playstate():
+    if sp.currently_playing()["is_playing"]:
+        sp.pause_playback()
+    else:
+        sp.start_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotiy/playstate/skip', methods=["POST"])
 def skip_song():
+    sp.next_track()
     return util.build_response("OK")
 
 

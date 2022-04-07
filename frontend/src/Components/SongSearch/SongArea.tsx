@@ -58,7 +58,7 @@ const SongArea = (props: Props) => {
     }
 
     return (
-        <div className={style.container + (props.fullwidth || props.fullwidth == undefined ? (' ' + style.fullscreen) : '')
+        <div className={style.container + (props.fullwidth || props.fullwidth === undefined ? (' ' + style.fullscreen) : '')
         }>
             <TextField
                 placeholder={props.placeholder ? props.placeholder : 'Song hinzufügen'}

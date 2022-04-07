@@ -49,14 +49,18 @@ def simplify_spotify_tracks(song):
     output = []
 
     for s in songs:
-        output.append({
-            "trackID": s["uri"],
-            "album": s["album"]["name"],
-            "coverURL": s["album"]["images"][1]["url"],
-            "interpret": s["artists"][0]["name"],
-            "songname": s["name"],
-            "duration": s["duration_ms"]})
+        output.append(simplify_spotify_track(s))
     return output
+
+
+def simplify_spotify_track(song):
+    return {
+        "trackID": song["uri"],
+        "album": song["album"]["name"],
+        "coverURL": song["album"]["images"][1]["url"],
+        "interpret": song["artists"][0]["name"],
+        "songname": song["name"],
+        "duration": song["duration_ms"]}
 
 
 def log(prefix, message):

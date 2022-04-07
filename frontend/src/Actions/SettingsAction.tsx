@@ -31,6 +31,12 @@ export const setDefaultplaylist = (setting: string) => {
     }
 }
 
+export const setPlaystate = (setting: boolean) => {
+    return {
+        type: "SET_IS_PLAYING",
+        payload: setting
+    }
+}
 
 export const setGuestToken = (setting: string) => {
     return {

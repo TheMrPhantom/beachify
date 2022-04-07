@@ -7,7 +7,8 @@ const initialState: SettingsType = {
     defaultBanTime: "",
     queueState: "",
     queueSubmittable: "",
-    retentionTime: ""
+    retentionTime: "",
+    is_playing: false
 }
 
 export type SettingsType = {
@@ -19,7 +20,8 @@ export type SettingsType = {
     defaultBanTime: string,
     queueState: string,
     queueSubmittable: string,
-    retentionTime: string
+    retentionTime: string,
+    is_playing: boolean
 }
 
 
@@ -56,6 +58,9 @@ const reducer = (state = initialState, { type, payload }: { type: string, payloa
             return newState
         case "SET_RETENTIONTIME":
             newState.retentionTime = payload
+            return newState
+        case "SET_IS_PLAYING":
+            newState.is_playing = payload
             return newState
         default:
             return state

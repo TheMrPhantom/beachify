@@ -2,11 +2,11 @@ import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography';
 import style from './queuearea.module.scss';
 import Songcard from "../Songcard/Songcard";
-import { doGetRequest } from '../Common/StaticFunctions';
-import { Song } from '../Common/Types';
+import { doRequest, doGetRequest, secureRandomNumber } from '../Common/StaticFunctions';
+import { DummySong, Song } from '../Common/Types';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
-import { setQueueSongs } from '../../Actions/QueueAction';
+import { setNextSong, setQueueSongs } from '../../Actions/QueueAction';
 import { TransitionGroup } from 'react-transition-group';
 import Collapse from '@mui/material/Collapse';
 
@@ -22,21 +22,31 @@ const QueueArea = (props: Props) => {
         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
             dispatch(setQueueSongs(value.content))
         })
+        if (queueState.currentlyPlaying === null) {
+            doRequest("spotiy/playstate/currentlyPlaying", "GET").then((value) => {
+                if (value.code === 200) {
+                    dispatch(setNextSong(value.content))
+                }
+            })
+        }
     }, [dispatch])
 
 
     const currentlyPlaying = () => {
-        if (queueState.songs.length > 0) {
+        if (queueState.currentlyPlaying !== null) {
             return <>
                 <Typography variant='h4'>Aktuell spielt</Typography>
                 <Songcard
-                    key={queueState.songs[0].trackID}
-                    song={queueState.songs[0]}
+                    key={queueState.currentlyPlaying.trackID}
+                    song={queueState.currentlyPlaying}
                     noLabel
                 />
             </>
         } else {
-            return <></>
+            return <>
+                <Typography variant='h4'>Aktuell spielt</Typography>
+                <Songcard song={DummySong} key={secureRandomNumber()} skeleton />
+            </>
         }
     }
 

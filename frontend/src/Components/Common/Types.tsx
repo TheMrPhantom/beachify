@@ -12,3 +12,13 @@ export type Song = {
     alreadyAdded?: boolean,
     approvalPending?: boolean
 }
+
+export const DummySong: Song = {
+    songname: "",
+    album: "",
+    trackID: "",
+    coverURL: "",
+    interpret: "",
+    duration: 0,
+    startsAt: 0,
+}

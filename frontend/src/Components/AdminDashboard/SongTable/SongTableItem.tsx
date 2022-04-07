@@ -17,12 +17,11 @@ type Props = {
 
 const SongTableItem = (props: Props) => {
     const theme = useTheme();
-    const [reload, setreload] = useState(0)
+    const [, setreload] = useState(0)
     const ref: React.RefObject<HTMLDivElement> = useRef(null);
     const refOutterContainer: React.RefObject<HTMLDivElement> = useRef(null);
 
     useEffect(() => {
-        const r = reload;
         setreload(p => p + 1)
     }, [ref])
 
