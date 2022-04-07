@@ -15,4 +15,6 @@ class Queue(db.Model):
     downvotes = sql.Column(sql.Integer, nullable=False, default=0)
     insertion_time = sql.Column(
         sql.DateTime, nullable=False, default=datetime.now)
+    played_time = sql.Column(
+        sql.DateTime, nullable=True)
     fixed_place = sql.Column(sql.Integer, nullable=False, default=-1)

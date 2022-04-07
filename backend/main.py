@@ -18,12 +18,13 @@ token_manager = authenticator.TokenManager()
 
 db = Queries.Queries(sql_database)
 ws = websocket.Websocket()
-sp = spotify.Spotify(ws)
+sp = spotify.Spotify(ws, db)
 
 # Tasks
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.add_minutely_task(db.delete_old_songs_from_queue)
 taskScheduler.add_secondly_task(sp.checkCurrentSong)
+taskScheduler.add_secondly_task(sp.check_queue_insertion)
 taskScheduler.start()
 
 
@@ -178,18 +179,13 @@ def set_retention_time():
 
 @app.route('/api/spotify/authorize', methods=["GET"])
 def authorize_spotify():
-    oauth_object = sp.SpotifyOAuth(scope=sp.scope)
-    token_url = oauth_object.get_authorize_url()
 
-    return redirect(token_url)
+    return redirect(sp.get_token_url())
 
 
 @app.route('/api/spotify/authorize/callback', methods=["GET"])
 def spotify_callback():
-    oauth_object = sp.SpotifyOAuth(scope=sp.scope)
-    auth_token = oauth_object.get_access_token(
-        request.args.get("code"), as_dict=False)
-    sp.connector = sp.spotipy.Spotify(auth=auth_token)
+    sp.set_token(request.args.get("code"))
 
     if "127.0.0.1" in util.domain:
         return redirect(f"http://{util.domain}/admin")

@@ -1,4 +1,5 @@
 from datetime import datetime
+import string
 from flask import Response
 import json
 import os
@@ -71,7 +72,7 @@ def log(prefix, message):
             f.write(f"{output_string}\n")
 
 
-def format_song(queue_element: Queue, song: Song, trust_mode_on: bool):
+def format_song(queue_element: Queue, song: Song, trust_mode_on: bool, cant_add_reason: string):
     return {
         "databaseID": queue_element.id,
         "songname": song.songname,
@@ -83,7 +84,8 @@ def format_song(queue_element: Queue, song: Song, trust_mode_on: bool):
         "interpret": song.interpret,
         "approvalPending": queue_element.approval_pending if trust_mode_on else False,
         "duration": song.duration,
-        "insertion_time": queue_element.insertion_time
+        "insertion_time": queue_element.insertion_time,
+        "cant_add_reason": cant_add_reason
     }
 
 
