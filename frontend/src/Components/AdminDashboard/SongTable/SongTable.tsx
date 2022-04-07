@@ -58,7 +58,6 @@ const SongTable = (props: Props) => {
         }
     }
 
-    console.log(width)
     return (
         <div
             className={style.songtableContainer}
