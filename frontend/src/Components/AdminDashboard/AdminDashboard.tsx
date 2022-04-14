@@ -56,20 +56,31 @@ const AdminDashboard = (props: Props) => {
             </>
         }
     }
-
-    if (queueState.songs.length > 1) {
-        return <div className={style.outterFlex}>
-            <div className={style.firstSecondSongDiv}>
-                {currentlyPlaying()}
-                <Typography variant="h4">Nächster Song</Typography>
+    const nextSong = () => {
+        if (queueState.songs !== undefined && queueState.currentlyPlaying !== null) {
+            return <>
+                <Typography variant='h4'>Nächster Song</Typography>
                 <Songcard song={queueState.songs[1]} />
-                <SongArea placeholder='Nächsten Song setzen' fullwidth={false} noHelp />
-                <SongArea placeholder='Song zur Warteschlage' fullwidth={false} noHelp />
-                <SongArea placeholder='Default Playlist' fullwidth={false} noHelp />
-            </div>
-            <SongTable songs={queueState.songs.slice(2)} />
-        </div>
+            </>
+        } else {
+            return <>
+                <Typography variant='h4'>Nächster Song</Typography>
+                <Songcard song={DummySong} key={secureRandomNumber()} skeleton />
+            </>
+        }
     }
+
+    return <div className={style.outterFlex}>
+        <div className={style.firstSecondSongDiv}>
+            {currentlyPlaying()}
+            {nextSong()}
+            <SongArea placeholder='Nächsten Song setzen' fullwidth={false} noHelp />
+            <SongArea placeholder='Song zur Warteschlage' fullwidth={false} noHelp />
+            <SongArea placeholder='Default Playlist' fullwidth={false} noHelp />
+        </div>
+        {queueState !== undefined && queueState.songs !== undefined && queueState.songs.length > 2 ?
+            <SongTable songs={queueState.songs.slice(2)} /> : <></>}
+    </div>
 
     if (!loggedIn) {
         return <ErrorPage loginRequired />
