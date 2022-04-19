@@ -17,4 +17,4 @@ class Queue(db.Model):
         sql.DateTime, nullable=False, default=datetime.now)
     played_time = sql.Column(
         sql.DateTime, nullable=True)
-    fixed_place = sql.Column(sql.Integer, nullable=False, default=-1)
+    is_next_song = sql.Column(sql.Boolean, nullable=False, default=False)
