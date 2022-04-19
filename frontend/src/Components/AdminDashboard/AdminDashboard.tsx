@@ -6,18 +6,21 @@ import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
 import Songcard from '../Songcard/Songcard';
 import { setNextSong, setQueueSongs } from '../../Actions/QueueAction'
-import { Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import style from './dashboard.module.scss';
 import SongTable from './SongTable/SongTable'
 import SongArea from '../SongSearch/SongArea'
 import { DummySong } from '../Common/Types';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {}
 
 const AdminDashboard = (props: Props) => {
-    const [loggedIn, setloggedIn] = useState(false)
+    const [loggedIn, setloggedIn] = useState(false);
     const queueState: QueueReducerType = useSelector((state: RootStateOrAny) => state.queueReducer);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
@@ -70,7 +73,18 @@ const AdminDashboard = (props: Props) => {
         }
     }
 
+    const redirectToSettings = () => {
+        navigate("/admin/settings");
+    }
+
     return <div className={style.outterFlex}>
+        <Button
+            className={style.settingsButton}
+            onClick={() => redirectToSettings()}
+            variant='outlined'
+        >
+            <SettingsIcon />
+        </Button>
         <div className={style.firstSecondSongDiv}>
             {currentlyPlaying()}
             {nextSong()}

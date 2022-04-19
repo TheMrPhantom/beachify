@@ -21,3 +21,9 @@
     flex-direction: row;
     flex-wrap: wrap;
 }
+
+.settingsButton{
+    position: absolute !important;
+    right: $padding;
+    top: $padding;
+}

@@ -18,12 +18,14 @@ import { setAllSettings, setDefaultBantime, setDefaultplaylist, setGuestToken, s
 import { doGetRequest, doRequest } from '../Common/StaticFunctions';
 import { SettingsType } from '../../Reducer/SettingsReducer';
 import Spacer from '../Common/Spacer';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {}
 
 const Settings = (props: Props) => {
     const dispatch = useDispatch()
     const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
+    const navigate = useNavigate();
 
     useEffect(() => {
         doGetRequest("setting").then((value) => {
@@ -152,6 +154,9 @@ const Settings = (props: Props) => {
         onChange={value => doRequest("setting/retentionTime", "PUT", value.target.value).then((value) => dispatch(setRetentionTime(value.content)))}
     />
 
+    const toAdminPage = () => {
+        navigate("/admin")
+    }
 
     return (<div>
         <Typography variant='h4' className={style.container} align='center'>Einstellungen</Typography>
@@ -227,7 +232,11 @@ const Settings = (props: Props) => {
         </div>
         <Spacer vertical={5} />
         <div className={style.buttonContainer}>
-            <Button variant='contained' className={style.button}>
+            <Button
+                variant='contained'
+                className={style.button}
+                onClick={() => toAdminPage()}
+            >
                 Zurück
             </Button>
         </div>
