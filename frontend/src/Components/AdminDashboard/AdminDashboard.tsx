@@ -6,13 +6,15 @@ import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
 import Songcard from '../Songcard/Songcard';
 import { setNextSong, setQueueSongs } from '../../Actions/QueueAction'
-import { Button, Typography } from '@mui/material'
+import { Button, Link, Typography } from '@mui/material'
 import style from './dashboard.module.scss';
 import SongTable from './SongTable/SongTable'
 import SongArea from '../SongSearch/SongArea'
 import { DummySong } from '../Common/Types';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
+import { closeToast, openToast } from '../../Actions/CommonAction';
+import Spacer from '../Common/Spacer';
 
 type Props = {}
 
@@ -21,6 +23,29 @@ const AdminDashboard = (props: Props) => {
     const queueState: QueueReducerType = useSelector((state: RootStateOrAny) => state.queueReducer);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        doGetRequest("spotify/authentication").then((value) => {
+            if (value.code !== 200) {
+                dispatch(openToast({
+                    message: "", type: "error", duration: 15000, jsxElement: <>
+                        Spotify authentifizierung abgelaufen!
+                        <Spacer vertical={15} />
+                        <Button
+                            variant="outlined"
+                            onClick={() => {
+                                dispatch(closeToast())
+                                doGetRequest("spotify/authorize")
+                            }}
+                        >
+                            Erneuern
+                        </Button>
+                    </>
+                }))
+            }
+        })
+    }, [dispatch])
+
 
     useEffect(() => {
         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
@@ -38,7 +63,7 @@ const AdminDashboard = (props: Props) => {
         })
 
         if (queueState.currentlyPlaying === null) {
-            doRequest("spotiy/playstate/currentlyPlaying", "GET").then((value) => {
+            doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
                 if (value.code === 200) {
                     dispatch(setNextSong(value.content))
                 }
@@ -60,10 +85,10 @@ const AdminDashboard = (props: Props) => {
         }
     }
     const nextSong = () => {
-        if (queueState.songs !== undefined && queueState.currentlyPlaying !== null) {
+        if (queueState.songs !== undefined && queueState.songs.length > 0 && queueState.currentlyPlaying !== null) {
             return <>
                 <Typography variant='h4'>Nächster Song</Typography>
-                <Songcard song={queueState.songs[1]} />
+                <Songcard song={queueState.songs[0]} />
             </>
         } else {
             return <>
@@ -92,8 +117,9 @@ const AdminDashboard = (props: Props) => {
             <SongArea placeholder='Song zur Warteschlage' fullwidth={false} noHelp />
             <SongArea placeholder='Default Playlist' fullwidth={false} noHelp />
         </div>
-        {queueState !== undefined && queueState.songs !== undefined && queueState.songs.length > 2 ?
-            <SongTable songs={queueState.songs.slice(2)} /> : <></>}
+
+        {queueState !== undefined && queueState.songs !== undefined && queueState.songs.length > 1 ?
+            <SongTable songs={queueState.songs.slice(1)} /> : <></>}
     </div>
 
     if (!loggedIn) {

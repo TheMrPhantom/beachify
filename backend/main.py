@@ -179,8 +179,7 @@ def set_retention_time():
 
 @app.route('/api/spotify/authorize', methods=["GET"])
 def authorize_spotify():
-
-    return redirect(sp.get_token_url())
+    return util.build_response(sp.get_token_url())
 
 
 @app.route('/api/spotify/authorize/callback', methods=["GET"])
@@ -193,29 +192,29 @@ def spotify_callback():
         return redirect(f"https://{util.domain}/admin")
 
 
-@app.route('/api/spotiy/playstate/currentlyPlaying', methods=["GET"])
+@app.route('/api/spotify/playstate/currentlyPlaying', methods=["GET"])
 def currently_playing():
     return util.build_response(util.simplify_spotify_track(sp.connector.currently_playing()['item']))
 
 
-@app.route('/api/spotiy/playstate/playing', methods=["GET"])
+@app.route('/api/spotify/playstate/playing', methods=["GET"])
 def is_playing():
     return util.build_response(sp.connector.currently_playing()["is_playing"])
 
 
-@app.route('/api/spotiy/playstate/play', methods=["POST"])
+@app.route('/api/spotify/playstate/play', methods=["POST"])
 def play():
     sp.connector.start_playback()
     return util.build_response("OK")
 
 
-@app.route('/api/spotiy/playstate/pause', methods=["POST"])
+@app.route('/api/spotify/playstate/pause', methods=["POST"])
 def pause():
     sp.connector.pause_playback()
     return util.build_response("OK")
 
 
-@app.route('/api/spotiy/playstate/toggle', methods=["POST"])
+@app.route('/api/spotify/playstate/toggle', methods=["POST"])
 def toggle_playstate():
     if sp.connector.currently_playing()["is_playing"]:
         sp.connector.pause_playback()
@@ -224,9 +223,15 @@ def toggle_playstate():
     return util.build_response("OK")
 
 
-@app.route('/api/spotiy/playstate/skip', methods=["POST"])
+@app.route('/api/spotify/playstate/skip', methods=["POST"])
 def skip_song():
     sp.connector.next_track()
+    return util.build_response("OK")
+
+
+@app.route('/api/spotify/authentication', methods=["GET"])
+def spotify_state():
+    sp.connector.current_user()
     return util.build_response("OK")
 
 
@@ -245,6 +250,7 @@ def logout():
 if __name__ == "__main__":
     if util.logging_enabled:
         app.run("0.0.0.0", threaded=True)
+
     else:
         from waitress import serve
         serve(app, host="0.0.0.0", port=5000, threads=4)

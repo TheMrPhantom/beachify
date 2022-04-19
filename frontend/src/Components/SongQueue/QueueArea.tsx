@@ -23,7 +23,7 @@ const QueueArea = (props: Props) => {
             dispatch(setQueueSongs(value.content))
         })
         if (queueState.currentlyPlaying === null) {
-            doRequest("spotiy/playstate/currentlyPlaying", "GET").then((value) => {
+            doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
                 if (value.code === 200) {
                     dispatch(setNextSong(value.content))
                 }
@@ -51,13 +51,13 @@ const QueueArea = (props: Props) => {
     }
 
     const nextSong = () => {
-        if (queueState.songs.length > 1) {
+        if (queueState.songs.length > 0) {
             return <>
                 <Typography variant='h4'>Nächster Song</Typography>
                 <Songcard
-                    key={queueState.songs[1].trackID}
-                    song={queueState.songs[1]}
-                    playsIn={queueState.songs[1].startsAt}
+                    key={queueState.songs[0].trackID}
+                    song={queueState.songs[0]}
+                    playsIn={queueState.songs[0].startsAt}
                 />
             </>
         } else {
@@ -66,11 +66,11 @@ const QueueArea = (props: Props) => {
     }
 
     const queue = () => {
-        if (queueState.songs.length > 2) {
+        if (queueState.songs.length > 1) {
             return <>
                 <Typography variant='h4'>Warteschlange</Typography>
                 <TransitionGroup className={style.queueContainer + ' ' + style.noPadding} >
-                    {queueState.songs.slice(2).map((song: Song) => {
+                    {queueState.songs.slice(1).map((song: Song) => {
                         return <Collapse key={song.trackID}>
                             <Songcard
                                 song={song}

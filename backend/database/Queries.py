@@ -31,9 +31,9 @@ class Queries:
 
         queue_element = None
         if first is None:
-            queue_element = Queue(song_id=songID, is_next_song=True)
+            queue_element = Queue(song_id=search_result.id, is_next_song=True)
         else:
-            queue_element = Queue(song_id=songID)
+            queue_element = Queue(song_id=search_result.id)
 
         self.session.add(queue_element)
         self.session.commit()
@@ -75,6 +75,15 @@ class Queries:
             )+timedelta(milliseconds=time_elapsed))
             time_elapsed += song["duration"]
 
+        try:
+            next: Queue = self.session.query(
+                Queue).filter_by(is_next_song=True).first()
+            d = util.format_song(
+                next, next.song, trust_mode_on, None)
+            del d["insertion_time"]
+            output.insert(0, d)
+        except Exception as a:
+            print("get_queued_songs", a)
         return output
 
     def flag_queued_songs(self, songs):
@@ -177,7 +186,7 @@ class Queries:
         next.is_next_song = False
         next.played_time = datetime.now()
         self.session.commit()
-
+        add_to_queue = None
         try:
             queue = self.get_queued_songs()
 

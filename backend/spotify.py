@@ -42,15 +42,18 @@ class Spotify:
                 self.currentSong = received
 
         except Exception as a:
-            print(a)
+            print("checkCurrentSong", a)
 
     def check_queue_insertion(self):
         try:
             queue = self.db.get_queued_songs()
             if len(queue) > 1:
-                if queue[1]["trackID"] == self.currentSong["trackID"]:
+                if self.currentSong is None or queue[0]["trackID"] == self.currentSong["trackID"]:
+
+                    self.connector.current_user()
                     song: Song = self.db.set_next_song_queue()
+                    self.currentSong = song
                     self.connector.add_to_queue(song.track_id)
                     self.ws.send({"action": "reload_queue"})
         except Exception as a:
-            print(a)
+            print("check_queue_insertion", a)

@@ -30,12 +30,12 @@ const SocketClient = (props: Props) => {
                 console.log(message)
                 switch (message.action) {
                     case "reload_current_song":
-                        doRequest("spotiy/playstate/currentlyPlaying", "GET").then((value) => {
+                        doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
                             if (value.code === 200) {
                                 dispatch(setNextSong(value.content))
                             }
                         })
-                        doRequest("spotiy/playstate/playing", "GET").then((value) => {
+                        doRequest("spotify/playstate/playing", "GET").then((value) => {
                             if (value.code === 200) {
                                 dispatch(setPlaystate(value.content))
                             }

@@ -10,6 +10,7 @@ import { CssBaseline } from '@mui/material';
 import { BrowserRouter as Router } from 'react-router-dom';
 import Main from './Main';
 import SocketClient from './Components/Common/SocketClient';
+import Toast from './Components/Common/Toast';
 
 function App() {
   const [themeCookie, setthemeCookie] = useState(0)
@@ -28,6 +29,7 @@ function App() {
           <Provider store={store}>
             <SocketClient />
             <Main />
+            <Toast />
           </Provider>
         </div>
       </Router>

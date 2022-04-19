@@ -42,12 +42,12 @@ const Songcard = (props: Props) => {
         setInterval(() => setcurrentTime(new Date()), 30000);
 
         if (props.playPauseControls && !props.skeleton) {
-            doRequest("spotiy/playstate/currentlyPlaying", "GET").then((value) => {
+            doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
                 if (value.code === 200) {
                     dispatch(setNextSong(value.content))
                 }
             })
-            doRequest("spotiy/playstate/playing", "GET").then((value) => {
+            doRequest("spotify/playstate/playing", "GET").then((value) => {
                 if (value.code === 200) {
                     dispatch(setPlaystate(value.content))
                 }
@@ -197,10 +197,10 @@ const Songcard = (props: Props) => {
     }
 
     const skipSong = () => {
-        doPostRequest("spotiy/playstate/skip").then(value => {
+        doPostRequest("spotify/playstate/skip").then(value => {
             new Promise(v => setTimeout(() => {
                 if (value.code === 200) {
-                    doRequest("spotiy/playstate/currentlyPlaying", "GET").then((value) => {
+                    doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
                         if (value.code === 200) {
                             dispatch(setNextSong(value.content))
                         }
@@ -211,9 +211,9 @@ const Songcard = (props: Props) => {
     }
 
     const switchPlayState = () => {
-        doPostRequest("spotiy/playstate/toggle").then(value => {
+        doPostRequest("spotify/playstate/toggle").then(value => {
             if (value.code === 200) {
-                doRequest("spotiy/playstate/playing", "GET").then((value) => {
+                doRequest("spotify/playstate/playing", "GET").then((value) => {
                     if (value.code === 200) {
                         dispatch(setPlaystate(!settingsState.is_playing))
                     }
