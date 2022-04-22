@@ -84,6 +84,12 @@ def song_from_queue_downvote():
     db.downvote_song(request.json)
     return util.build_response("Song downvoted")
 
+@app.route('/api/queue/song/delete', methods=["DELETE"])
+@with_beachify_token
+def delete_song_from_queue():
+    
+    return 
+
 
 @app.route('/api/auth/secret/check/<string:secret>', methods=["GET"])
 def checkSecret(secret):
@@ -165,7 +171,7 @@ def set_queue_state():
 @app.route('/api/setting/queueSubmittable', methods=["PUT"])
 def set_queue_submittable():
     if request.json == "activated" or request.json == "deactivated":
-        db.set_settings(value=request.json, setting_name="queue_submitable")
+        db.set_settings(value=request.json, setting_name="queue_submittable")
     else:
         return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code = 412)
     return util.build_response(request.json)
