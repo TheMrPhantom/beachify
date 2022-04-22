@@ -1,43 +1,63 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
-import { setQueueSongs } from '../../Actions/QueueAction';
+import { setNextSong, setQueueSongs } from '../../Actions/QueueAction';
+import { setPlaystate } from '../../Actions/SettingsAction';
 import Config from "../../environment.json";
-import { doGetRequest } from './StaticFunctions';
+import { doGetRequest, doRequest } from './StaticFunctions';
 
 type Props = {}
 
 const SocketClient = (props: Props) => {
-    const [ws, setws] = useState(new WebSocket(Config.WEBSOCKET_URL));
+    const [ws, setws] = useState<WebSocket | null>(null);
     const dispatch = useDispatch();
     const minTimeout = 10000;
     const maxTimeout = 40000;
 
     useEffect(() => {
-        ws.onmessage = (e: MessageEvent) => {
+        setws(new WebSocket(Config.WEBSOCKET_URL))
 
-            if (Config.DEBUG === true) {
-                console.log(e.data)
+    }, [])
+
+    useEffect(() => {
+        if (ws !== null) {
+            ws.onmessage = (e: MessageEvent) => {
+
+                if (Config.DEBUG === true) {
+                    console.log(e.data)
+                }
+
+                const message = JSON.parse(e.data);
+                console.log(message)
+                switch (message.action) {
+                    case "reload_current_song":
+                        doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
+                            if (value.code === 200) {
+                                dispatch(setNextSong(value.content))
+                            }
+                        })
+                        doRequest("spotify/playstate/playing", "GET").then((value) => {
+                            if (value.code === 200) {
+                                dispatch(setPlaystate(value.content))
+                            }
+                        })
+                        break;
+                    case "reload_queue":
+                        doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                            dispatch(setQueueSongs(value.content))
+                        });
+                        break;
+                }
+
+            };
+
+            ws.onerror = () => {
+                setTimeout(() => {
+                    setws(new WebSocket(Config.WEBSOCKET_URL));
+                }, Math.random() * (maxTimeout - minTimeout) + minTimeout);
             }
 
-            let message = JSON.parse(e.data);
-
-            switch (message.action) {
-                case "refreshQueue":
-                    doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                        dispatch(setQueueSongs(value.content))
-                    });
-                    break;
-            }
-
-        };
-
-        ws.onerror = () => {
-            setTimeout(() => {
-                setws(new WebSocket(Config.WEBSOCKET_URL));
-            }, Math.random() * (maxTimeout - minTimeout) + minTimeout);
         }
-
-    }, [ws])
+    }, [dispatch, ws])
 
     return (
         <></>

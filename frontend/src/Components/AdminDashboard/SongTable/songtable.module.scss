@@ -1,0 +1,103 @@
+@import "../../Common/variables.module.scss";
+
+.songtableContainer{
+    display:flex;
+    flex-direction: column;
+    padding:$padding;
+    align-items: stretch;
+    position:relative;
+}
+
+.itemPaper{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap:$flex-gap;
+    background-image: $paper-background;
+}
+
+.songInfo{
+    height:100%;
+}
+
+.buttonContainer{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap:calc($flex-gap /2);
+}
+
+.disabled{
+    display: none !important;
+    //opacity: 0.3;
+}
+
+.approvalPending{
+    background-image: $approval-background;
+}
+
+.leftSide{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    gap:$flex-gap;
+    padding:$padding;
+    height: min-content;
+}
+
+.rightSide{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap:$flex-gap;
+    height: 100%;
+}
+
+.dragger{
+    height:100%;
+    background-color: rgba($color: #000000, $alpha: 0.3);
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    padding:calc($padding / 2);
+    cursor: pointer;
+    border-radius: 0px 4px 4px 0px;
+}
+
+.padRight{
+    padding-right:$flex-gap;
+}
+
+.leftContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.dragDropContainer{
+    height: 10px;
+    width:100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    &.expanded{
+        height: 50px;
+    }
+}
+
+.dragDropIndicatorInner{
+    background-color: rgba($color: $list-item-hover, $alpha: 0.7);
+    &.expanded{
+        height: 2px;
+        width:100%;
+    }
+}
+
+.songSelected{
+    opacity: 0.6;
+}

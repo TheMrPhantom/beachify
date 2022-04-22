@@ -8,9 +8,12 @@
     margin: $padding;
     justify-content: flex-start;
     gap: $flex-gap;
-    width: 100%;
-    @media (min-width: 1600px) {
-        max-width: 25%;
+
+    &.fullscreen{
+        width: 100%;
+        @media (min-width: 1600px) {
+            max-width: 25%;
+        }
     }
 }
 

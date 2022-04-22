@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import Typography from '@mui/material/Typography';
 import style from './queuearea.module.scss';
-import Songcard from "../SongSearch/Songcard";
-import { doGetRequest } from '../Common/StaticFunctions';
-import { Song } from '../Common/Types';
+import Songcard from "../Songcard/Songcard";
+import { doRequest, doGetRequest, secureRandomNumber } from '../Common/StaticFunctions';
+import { DummySong, Song } from '../Common/Types';
 import { QueueReducerType } from '../../Reducer/QueueReducer';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
-import { setQueueSongs } from '../../Actions/QueueAction';
+import { setNextSong, setQueueSongs } from '../../Actions/QueueAction';
 import { TransitionGroup } from 'react-transition-group';
 import Collapse from '@mui/material/Collapse';
 
@@ -22,32 +22,42 @@ const QueueArea = (props: Props) => {
         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
             dispatch(setQueueSongs(value.content))
         })
-    }, [dispatch])
+        if (queueState.currentlyPlaying === null) {
+            doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
+                if (value.code === 200) {
+                    dispatch(setNextSong(value.content))
+                }
+            })
+        }
+    }, [dispatch, queueState.currentlyPlaying])
 
 
     const currentlyPlaying = () => {
-        if (queueState.songs.length > 0) {
+        if (queueState.currentlyPlaying !== null) {
             return <>
                 <Typography variant='h4'>Aktuell spielt</Typography>
                 <Songcard
-                    key={queueState.songs[0].trackID}
-                    song={queueState.songs[0]}
+                    key={queueState.currentlyPlaying.trackID}
+                    song={queueState.currentlyPlaying}
                     noLabel
                 />
             </>
         } else {
-            return <></>
+            return <>
+                <Typography variant='h4'>Aktuell spielt</Typography>
+                <Songcard song={DummySong} key={secureRandomNumber()} skeleton />
+            </>
         }
     }
 
     const nextSong = () => {
-        if (queueState.songs.length > 1) {
+        if (queueState.songs.length > 0) {
             return <>
                 <Typography variant='h4'>Nächster Song</Typography>
                 <Songcard
-                    key={queueState.songs[1].trackID}
-                    song={queueState.songs[1]}
-                    playsIn={queueState.songs[1].startsAt}
+                    key={queueState.songs[0].trackID}
+                    song={queueState.songs[0]}
+                    playsIn={queueState.songs[0].startsAt}
                 />
             </>
         } else {
@@ -56,11 +66,11 @@ const QueueArea = (props: Props) => {
     }
 
     const queue = () => {
-        if (queueState.songs.length > 2) {
+        if (queueState.songs.length > 1) {
             return <>
                 <Typography variant='h4'>Warteschlange</Typography>
                 <TransitionGroup className={style.queueContainer + ' ' + style.noPadding} >
-                    {queueState.songs.slice(2).map((song: Song) => {
+                    {queueState.songs.slice(1).map((song: Song) => {
                         return <Collapse key={song.trackID}>
                             <Songcard
                                 song={song}

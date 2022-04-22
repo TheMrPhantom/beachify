@@ -7,3 +7,10 @@ export const setQueueSongs = (songs: Array<Song>) => {
         payload: songs
     }
 }
+
+export const setNextSong = (song: Song) => {
+    return {
+        type: "SET_NEXT_SONG",
+        payload: song
+    }
+}

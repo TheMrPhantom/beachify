@@ -8,3 +8,4 @@ waitress
 spotipy
 six>=1.15.0
 websocket-client>=1.1.1
+websocket-server

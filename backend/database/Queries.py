@@ -27,32 +27,31 @@ class Queries:
             return False
         search_result: Song = self.session.query(
             Song).filter_by(track_id=songID).first()
-        first = self.session.query(Queue).filter_by(fixed_place=0).first()
-        second = self.session.query(Queue).filter_by(fixed_place=1).first()
+        first = self.session.query(Queue).filter_by(is_next_song=True).first()
 
         queue_element = None
         if first is None:
-            queue_element = Queue(song_id=search_result.id, fixed_place=0)
+            queue_element = Queue(song_id=search_result.id, is_next_song=True)
         else:
-            if second is None:
-                queue_element = Queue(song_id=search_result.id, fixed_place=1)
-            else:
-                queue_element = Queue(song_id=search_result.id)
+            queue_element = Queue(song_id=search_result.id)
 
         self.session.add(queue_element)
         self.session.commit()
         return True
 
     def get_queued_songs(self):
-        songs = self.session.query(Queue).filter_by(fixed_place=-1).all()
+        songs = self.session.query(Queue).filter_by(
+            is_next_song=False, played_time=None).all()
         trust_mode_on = self.session.query(Setting).filter_by(
             key="trust_mode").first().value == "trusted"
         output = []
+
         for s in songs:
             queueElement: Queue = s
             song: Song = queueElement.song
 
-            output.append(util.format_song(queueElement, song, trust_mode_on))
+            output.append(util.format_song(
+                queueElement, song, trust_mode_on, None))
 
         def compare(s1, s2):
             waiting_time_s1 = (
@@ -70,33 +69,22 @@ class Queries:
         for o in output:
             del o["insertion_time"]
 
-        first: Queue = self.session.query(
-            Queue).filter_by(fixed_place=0).first()
-        second: Queue = self.session.query(
-            Queue).filter_by(fixed_place=1).first()
-        final_output = []
-
-        if first is not None:
-            f = util.format_song(
-                first, first.song, trust_mode_on)
-            del f["insertion_time"]
-            final_output.append(f)
-
-            if second is not None:
-                s = util.format_song(
-                    second, second.song, trust_mode_on)
-                del s["insertion_time"]
-                final_output.append(s)
-
-        final_output.extend(output)
-
         time_elapsed = 0
-        for song in final_output:
+        for song in output:
             song["startsAt"] = util.toNumberDateTime(datetime.now(
             )+timedelta(milliseconds=time_elapsed))
             time_elapsed += song["duration"]
 
-        return final_output
+        try:
+            next: Queue = self.session.query(
+                Queue).filter_by(is_next_song=True).first()
+            d = util.format_song(
+                next, next.song, trust_mode_on, None)
+            del d["insertion_time"]
+            output.insert(0, d)
+        except Exception as a:
+            print("get_queued_songs", a)
+        return output
 
     def flag_queued_songs(self, songs):
         for s in songs:
@@ -166,7 +154,7 @@ class Queries:
 
         for element in settings:
             settings_map[element.key] = element
-        
+
         return {
             "listMode": settings_map["list_mode"].value,
             "trustMode": settings_map["trust_mode"].value,
@@ -180,16 +168,40 @@ class Queries:
         }
 
     def delete_old_songs_from_queue(self):
-        retention_time = int(self.session.query(Setting).filter_by(key="retention_time").first().value)
+        retention_time = int(self.session.query(
+            Setting).filter_by(key="retention_time").first().value)
         songs = self.session.query(Queue).all()
-        
+
         for element in songs:
             song: Queue = element
-            
-            if song.insertion_time + timedelta(minutes=retention_time)  < datetime.now():
+
+            if song.insertion_time + timedelta(minutes=retention_time) < datetime.now():
                 self.session.delete(song)
-        
+
         self.session.commit()
+
+    def set_next_song_queue(self):
+        next: Queue = self.session.query(
+            Queue).filter_by(is_next_song=True).first()
+        next.is_next_song = False
+        next.played_time = datetime.now()
+        self.session.commit()
+        add_to_queue = None
+        try:
+            queue = self.get_queued_songs()
+
+            add_to_queue: Queue = self.session.query(Queue).filter(
+                Queue.song.has(
+                    track_id=queue[0]["trackID"])
+            ).first()
+
+            add_to_queue.is_next_song = True
+
+            self.session.commit()
+        except:
+            util.log("Info", "Queue is empty, cant set next song")
+
+        return add_to_queue.song if add_to_queue is not None else None
 
     def insert_default_settings(self):
         if self.session.query(Setting).first() is not None:

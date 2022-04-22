@@ -12,4 +12,5 @@ $day-background-selected: hsl(64, 49%, 54%);
 $day-height: 15px;
 $day-height-mobile: 20px;
 $list-item-hover: #fafafa;
-$paper-background: linear-gradient(149deg, #27abc1, hsl(189, 66%, 35%)) !important;
+$paper-background: linear-gradient(149deg, hsl(189, 66%, 45%), hsl(189, 66%, 35%)) !important;
+$approval-background: linear-gradient(149deg, hsl(59, 66%, 45%), hsl(59, 66%, 35%)) !important;

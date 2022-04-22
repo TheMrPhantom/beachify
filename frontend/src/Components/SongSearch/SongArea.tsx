@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { TextField } from '@mui/material';
-import Songcard from './Songcard';
+import Songcard from '../Songcard/Songcard';
 import style from './songarea.module.scss'
 import { doGetRequest, doRequest, getAndStore } from '../Common/StaticFunctions';
 import { Song } from '../Common/Types';
@@ -8,7 +8,11 @@ import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { setQueueSongs } from '../../Actions/QueueAction';
 
-type Props = {}
+type Props = {
+    placeholder?: string
+    fullwidth?: boolean
+    noHelp?: boolean
+}
 
 const SongArea = (props: Props) => {
     const [searchText, setsearchText] = useState("")
@@ -54,9 +58,10 @@ const SongArea = (props: Props) => {
     }
 
     return (
-        <div className={style.container}>
+        <div className={style.container + (props.fullwidth || props.fullwidth === undefined ? (' ' + style.fullscreen) : '')
+        }>
             <TextField
-                placeholder='Song hinzufügen'
+                placeholder={props.placeholder ? props.placeholder : 'Song hinzufügen'}
                 variant='standard'
                 fullWidth
                 className={style.textbox}
@@ -70,12 +75,14 @@ const SongArea = (props: Props) => {
                     setsearchText(value.target.value)
                 }}
             />
-            {songs.length === 0 && Cookies.get("show-search-help") === undefined ?
-                <img src="/svg/downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> :
-                <></>}
+            {
+                songs.length === 0 && Cookies.get("show-search-help") === undefined && !props.noHelp ?
+                    <img src="/svg/downloadArrow.svg" alt="React Logo" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} /> :
+                    <></>
+            }
             {songlist()}
 
-        </div>
+        </div >
     )
 }
 

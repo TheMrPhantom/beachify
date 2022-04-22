@@ -1,4 +1,4 @@
-import { Button, Divider, Paper, useTheme } from '@mui/material'
+import { Button, Divider, Paper, Skeleton, useTheme } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
@@ -8,15 +8,22 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import Spacer from '../Common/Spacer';
 import Cookies from 'js-cookie';
-import { doGetRequest, doRequest } from '../Common/StaticFunctions';
-import { useDispatch } from 'react-redux';
-import { setQueueSongs } from '../../Actions/QueueAction';
+import { doGetRequest, doPostRequest, doRequest } from '../Common/StaticFunctions';
+import { setNextSong, setQueueSongs } from '../../Actions/QueueAction';
+import SkipNextIcon from '@mui/icons-material/SkipNext';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
+import { SettingsType } from '../../Reducer/SettingsReducer';
+import { setPlaystate } from '../../Actions/SettingsAction';
 
 type Props = {
     song: Song,
     votingPossible?: boolean,
     noLabel?: boolean,
     playsIn?: number,
+    playPauseControls?: boolean,
+    skeleton?: boolean,
     callback?: (song: Song) => void
 }
 
@@ -27,12 +34,27 @@ const Songcard = (props: Props) => {
     const [currentTime, setcurrentTime] = useState<Date>(new Date())
 
     const dispatch = useDispatch()
+    const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
     const cornerElevation = 5
     const theme = useTheme();
 
     useEffect(() => {
         setInterval(() => setcurrentTime(new Date()), 30000);
-    }, [])
+
+        if (props.playPauseControls && !props.skeleton) {
+            doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
+                if (value.code === 200) {
+                    dispatch(setNextSong(value.content))
+                }
+            })
+            doRequest("spotify/playstate/playing", "GET").then((value) => {
+                if (value.code === 200) {
+                    dispatch(setPlaystate(value.content))
+                }
+            })
+        }
+    }, [dispatch, props.playPauseControls, props.skeleton])
+
 
     const appendTime = () => {
         if (!props.playsIn) {
@@ -56,7 +78,7 @@ const Songcard = (props: Props) => {
     }
 
     const getTopCorner = () => {
-        if (props.noLabel) {
+        if (props.noLabel || props.skeleton) {
             return <></>
         }
 
@@ -125,7 +147,7 @@ const Songcard = (props: Props) => {
                 return <>
                     <Spacer vertical={5} />
                     <Divider style={{ width: "100%" }} />
-                    <Spacer vertical={5} />
+                    <Spacer vertical={10} />
                     <div className={style.upDownButtons}>
                         <Button
                             variant='contained'
@@ -144,6 +166,60 @@ const Songcard = (props: Props) => {
             }
         }
         return <></>
+    }
+
+    const getAdminButtons = () => {
+        if (props.playPauseControls) {
+
+            return <>
+                <Spacer vertical={5} />
+                <Divider style={{ width: "100%" }} />
+                <Spacer vertical={10} />
+                <div className={style.upDownButtons}>
+                    <Button
+                        variant='contained'
+                        sx={{ color: theme.palette.text.primary, backgroundColor: theme.palette.primary.dark }}
+                        onClick={() => switchPlayState()} >
+                        {settingsState.is_playing ? <PauseIcon /> : <PlayArrowIcon />}
+
+                    </Button>
+                    <Button
+                        variant='contained'
+                        sx={{ color: theme.palette.text.primary, backgroundColor: theme.palette.primary.dark }}
+                        onClick={() => skipSong()} >
+                        <SkipNextIcon />
+                    </Button>
+                </div >
+            </>
+
+        }
+        return <></>
+    }
+
+    const skipSong = () => {
+        doPostRequest("spotify/playstate/skip").then(value => {
+            new Promise(v => setTimeout(() => {
+                if (value.code === 200) {
+                    doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
+                        if (value.code === 200) {
+                            dispatch(setNextSong(value.content))
+                        }
+                    })
+                }
+            }, 1000))
+        })
+    }
+
+    const switchPlayState = () => {
+        doPostRequest("spotify/playstate/toggle").then(value => {
+            if (value.code === 200) {
+                doRequest("spotify/playstate/playing", "GET").then((value) => {
+                    if (value.code === 200) {
+                        dispatch(setPlaystate(!settingsState.is_playing))
+                    }
+                })
+            }
+        })
     }
 
     const getPaperClasses = () => {
@@ -183,17 +259,29 @@ const Songcard = (props: Props) => {
                 setisHovered(false);
             }}
         >
-            <img src={props.song.coverURL}
-                alt='album cover'
-                className={style.image}
-                style={{ height: refPaper != null && refPaper.current != null ? refPaper.current.offsetHeight : "" }}
-                onLoad={() => setimgLoaded(!imgLoaded)}
-            />
+            {!props.skeleton ?
+                <img src={props.song.coverURL}
+                    alt='album cover'
+                    className={style.image}
+                    style={{ height: refPaper != null && refPaper.current != null ? refPaper.current.offsetHeight : "" }}
+                    onLoad={() => setimgLoaded(!imgLoaded)}
+                /> : <></>
+            }
             <div className={style.textContainer} ref={refPaper}>
-                <Typography variant='h5'><b>{props.song.songname}</b></Typography>
-                <Typography variant='h5'>{props.song.interpret}</Typography>
-                <Typography variant='body1'>{props.song.album}</Typography>
+                {props.skeleton ?
+                    <Skeleton animation="wave" /> :
+                    <Typography variant='h5'><b>{props.song.songname}</b></Typography>
+                }
+                {props.skeleton ?
+                    <Skeleton animation="wave" /> :
+                    <Typography variant='h5'>{props.song.interpret}</Typography>
+                }
+                {props.skeleton ?
+                    <Skeleton animation="wave" /> :
+                    <Typography variant='body1'>{props.song.album}</Typography>
+                }
                 {getVotingButtons()}
+                {getAdminButtons()}
             </div>
             {getTopCorner()}
         </Paper >
