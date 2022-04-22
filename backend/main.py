@@ -81,11 +81,11 @@ def song_from_queue_downvote():
     db.downvote_song(request.json)
     return util.build_response("Song downvoted")
 
-@app.route('/api/queue/song/delete', methods=["DELETE"])
+@app.route('/api/queue/song/delete', methods=["POST"])
 @with_beachify_token
 def delete_song_from_queue():
-    
-    return 
+    db.delete_song_from_queue(song_id=request.json)
+    return util.build_response("Song deleted")
 
 
 @app.route('/api/auth/secret/check/<string:secret>', methods=["GET"])
