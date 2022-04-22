@@ -8,6 +8,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import { Song } from '../../Common/Types';
 import Zoom from '@mui/material/Zoom';
+import { doPostRequest } from '../../Common/StaticFunctions';
 
 type Props = {
     song: Song,
@@ -68,6 +69,10 @@ const SongTableItem = (props: Props) => {
         }
     }
 
+    const deleteSong = () => {
+        doPostRequest("queue/song/delete", props.song.trackID)
+    }
+
     return (
         <Paper className={paperClasses()} style={props.style}>
             <div className={style.leftContainer} ref={refOutterContainer}>
@@ -84,7 +89,7 @@ const SongTableItem = (props: Props) => {
             <div className={style.rightSide}>
                 <div className={buttonContainerClasses()}>
                     {controllButton(<BlockIcon />, () => { }, false, true)}
-                    {controllButton(<DeleteIcon />, () => { }, true, true)}
+                    {controllButton(<DeleteIcon />, () => deleteSong(), true, true)}
                     {controllButton(<CheckIcon />, () => { }, true)}
                 </div>
                 {dragField()}

@@ -203,6 +203,11 @@ class Queries:
 
         return add_to_queue.song if add_to_queue is not None else None
 
+    def delete_song_from_queue(self, song_id):
+        first_song:Queue = self.session.query(Queue).filter_by(song_id=song_id).first()
+        first_song.played_time = datetime.now()
+        self.session.commit()
+
     def insert_default_settings(self):
         if self.session.query(Setting).first() is not None:
             return
