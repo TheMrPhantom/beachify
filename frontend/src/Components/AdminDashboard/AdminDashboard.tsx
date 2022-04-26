@@ -35,7 +35,11 @@ const AdminDashboard = (props: Props) => {
                             variant="outlined"
                             onClick={() => {
                                 dispatch(closeToast())
-                                doGetRequest("spotify/authorize")
+                                doGetRequest("spotify/authorize").then(value => {
+                                    if (value.code === 200) {
+                                        window.location = value.content
+                                    }
+                                })
                             }}
                         >
                             Erneuern

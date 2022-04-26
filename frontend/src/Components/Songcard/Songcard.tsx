@@ -32,7 +32,7 @@ const Songcard = (props: Props) => {
     const refPaper: React.RefObject<HTMLInputElement> = useRef(null);
     const [imgLoaded, setimgLoaded] = useState(false)
     const [currentTime, setcurrentTime] = useState<Date>(new Date())
-
+    const [skipButtonDisabled, setskipButtonDisabled] = useState(false)
     const dispatch = useDispatch()
     const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
     const cornerElevation = 5
@@ -188,6 +188,7 @@ const Songcard = (props: Props) => {
 
                     </Button>
                     <Button
+                        disabled={skipButtonDisabled}
                         variant='contained'
                         sx={{ color: theme.palette.text.primary, backgroundColor: theme.palette.primary.dark }}
                         onClick={() => skipSong()} >
@@ -201,6 +202,8 @@ const Songcard = (props: Props) => {
     }
 
     const skipSong = () => {
+        setskipButtonDisabled(true)
+        setTimeout(() => { setskipButtonDisabled(false) }, 6000)
         doPostRequest("spotify/playstate/skip").then(value => {
             new Promise(v => setTimeout(() => {
                 if (value.code === 200) {

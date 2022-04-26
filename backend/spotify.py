@@ -1,6 +1,7 @@
 import queue
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
+from sqlalchemy import true
 from database.Queue import Queue
 from database.Song import Song
 import util
@@ -21,15 +22,21 @@ class Spotify:
         self.ws = ws
         self.db = db
         self.currentSong = None
+        self.login_state = util.randomString()
 
     def get_token_url(self):
-        return SpotifyOAuth(scope=self.scope).get_authorize_url()
+        self.login_state = util.randomString()
+        return SpotifyOAuth(scope=self.scope).get_authorize_url(state=self.login_state)
 
-    def set_token(self, token):
-        oauth_object = SpotifyOAuth(scope=self.scope)
-        auth_token = oauth_object.get_access_token(
-            token, as_dict=False)
-        self.connector = spotipy.Spotify(auth=auth_token)
+    def set_token(self, token, state):
+        if self.login_state == state:
+            oauth_object = SpotifyOAuth(scope=self.scope)
+            auth_token = oauth_object.get_access_token(
+                token, as_dict=False)
+            self.connector = spotipy.Spotify(auth=auth_token)
+            return True
+        else:
+            return False
 
     def checkCurrentSong(self):
         try:

@@ -222,7 +222,7 @@ def authorize_spotify():
 
 @app.route('/api/spotify/authorize/callback', methods=["GET"])
 def spotify_callback():
-    sp.set_token(request.args.get("code"))
+    sp.set_token(request.args.get("code"), request.args.get("state"))
 
     if "127.0.0.1" in util.domain:
         return redirect(f"http://{util.domain}/admin")

@@ -7,6 +7,7 @@ import datetime
 import time
 from database.Queue import Queue
 from database.Song import Song
+import secrets
 
 cookie_expire = int(os.environ.get("cookie_expire_time")) * \
     60*60 if os.environ.get("cookie_expire_time") else 60**3
@@ -95,3 +96,7 @@ def toJSDateTime(time: datetime.datetime):
 
 def toNumberDateTime(time: datetime.datetime):
     return time.timestamp()*1000
+
+
+def randomString():
+    return secrets.token_urlsafe(64)
