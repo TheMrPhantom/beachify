@@ -88,13 +88,20 @@ class Queries:
 
     def flag_queued_songs(self, songs):
         for s in songs:
-            search_result = self.session.query(Queue).filter(
+            search_result_queue = self.session.query(Queue).filter(
                 Queue.song.has(track_id=s["trackID"])).first()
+            search_result_ban = self.session.query(Ban).filter_by(
+                track_id=s["trackID"]).first()
 
-            if search_result is None:
+            if search_result_queue is None:
                 s["alreadyAdded"] = False
             else:
                 s["alreadyAdded"] = True
+
+            if search_result_ban is None:
+                s["banned"] = False
+            else:
+                s["banned"] = True
 
     def upvote_song(self, song_id):
         song: Song = self.session.query(Queue).filter(
@@ -130,8 +137,20 @@ class Queries:
                 self.session.add(newSong)
                 self.session.commit()
 
-    def adding_song_to_queue_possible(self):
-        return self.session.query(Setting).filter_by(key="queue_submittable").first().value == "activated"
+    def adding_song_to_queue_possible(self, song_id=None):
+        queue_enabled = self.session.query(Setting).filter_by(
+            key="queue_submittable").first().value == "activated"
+        song_not_banned = True
+        if song_id is not None:
+            song_not_banned = self.session.query(Ban).filter_by(
+                track_id=song_id).first() is None
+
+        if not queue_enabled:
+            return 1
+        if not song_not_banned:
+            return 2
+
+        return 0
 
     def check_secret(self, secret):
         if secret is None:
@@ -204,11 +223,26 @@ class Queries:
         return add_to_queue.song if add_to_queue is not None else None
 
     def delete_song_from_queue(self, song_id):
-        print(song_id)
         first_song: Queue = self.session.query(Queue).filter(
             Queue.song.has(track_id=song_id)).first()
-        print(first_song)
         first_song.played_time = datetime.now()
+        self.session.commit()
+
+    def ban_song(self, song_id):
+        self.session.add(Ban(track_id=song_id))
+        self.session.commit()
+
+    def delete_old_songs_from_ban(self):
+        retention_time = int(self.session.query(
+            Setting).filter_by(key="default_ban_time").first().value)
+        songs = self.session.query(Ban).all()
+
+        for element in songs:
+            song: Ban = element
+
+            if song.ban_time + timedelta(minutes=retention_time) < datetime.now():
+                self.session.delete(song)
+
         self.session.commit()
 
     def insert_default_settings(self):

@@ -83,7 +83,11 @@ const Songcard = (props: Props) => {
         }
 
         if (props.callback !== undefined) {
-            if (props.song.alreadyAdded) {
+            if (props.song.banned) {
+                return <Paper className={style.topCorner} elevation={cornerElevation}>
+                    Song gebannt
+                </Paper>
+            } else if (props.song.alreadyAdded) {
                 return <Paper className={style.topCorner} elevation={cornerElevation}>
                     Bereits hinzugefügt
                 </Paper>

@@ -23,6 +23,7 @@ sp = spotify.Spotify(ws, db)
 # Tasks
 taskScheduler = TaskScheduler.TaskScheduler()
 taskScheduler.add_minutely_task(db.delete_old_songs_from_queue)
+taskScheduler.add_minutely_task(db.delete_old_songs_from_ban)
 taskScheduler.add_secondly_task(sp.checkCurrentSong)
 taskScheduler.add_secondly_task(sp.check_queue_insertion)
 taskScheduler.start()
@@ -69,8 +70,14 @@ def get_songs_from_queue():
 @with_beachify_token
 @trigger_reload
 def add_song_to_queue():
-    if not db.adding_song_to_queue_possible():
-        return util.build_response("Currently not possible", code=503)
+    possible = db.adding_song_to_queue_possible()
+    if possible != 0:
+        if possible == 1:
+            return util.build_response("Aktuell ist die Warteschlange deaktiviert", code=503)
+        elif possible == 2:
+            return util.build_response("Der Song wurde vorübergehend gebannt", code=503)
+        else:
+            return util.build_response("Aktuell nicht möglich", code=503)
     db.add_song_to_songlist([request.json])
     success = db.add_song_to_queue(request.json["trackID"])
 
@@ -102,6 +109,15 @@ def song_from_queue_downvote():
 def delete_song_from_queue():
     db.delete_song_from_queue(song_id=request.json)
     return util.build_response("Song deleted")
+
+
+@app.route('/api/queue/song/ban', methods=["PUT"])
+@with_beachify_token
+@trigger_reload
+def ban_song():
+    db.ban_song(request.json)
+    db.delete_song_from_queue(request.json)
+    return util.build_response("Song banned")
 
 
 @app.route('/api/auth/secret/check/<string:secret>', methods=["GET"])

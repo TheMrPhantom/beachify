@@ -7,7 +7,7 @@ from sqlalchemy.orm import relationship
 class Queue(db.Model):
     id = sql.Column(sql.Integer, primary_key=True)
     song_id = sql.Column(sql.Integer, sql.ForeignKey(
-        'song.id'), nullable=False)
+        'song.id'), nullable=False, unique=True)
     song = relationship(
         'database.Song.Song', lazy="joined")
     approval_pending = sql.Column(sql.Boolean, nullable=False, default=True)

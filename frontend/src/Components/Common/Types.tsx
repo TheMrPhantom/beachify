@@ -10,6 +10,7 @@ export type Song = {
     upvotes?: number,
     downvotes?: number,
     alreadyAdded?: boolean,
+    banned?: boolean,
     approvalPending?: boolean
 }
 

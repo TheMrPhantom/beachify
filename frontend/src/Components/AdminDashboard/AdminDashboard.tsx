@@ -85,7 +85,7 @@ const AdminDashboard = (props: Props) => {
         }
     }
     const nextSong = () => {
-        if (queueState.songs !== undefined && queueState.songs.length > 0 && queueState.currentlyPlaying !== null) {
+        if (queueState.songs !== undefined && queueState.songs.length > 0) {
             return <>
                 <Typography variant='h4'>Nächster Song</Typography>
                 <Songcard song={queueState.songs[0]} />
