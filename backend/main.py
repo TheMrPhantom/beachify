@@ -11,13 +11,13 @@ import util
 from web import *
 from database import Queries
 import spotify
-import websocket
+import bwebsocket
 
 # Database
 token_manager = authenticator.TokenManager()
 
 db = Queries.Queries(sql_database)
-ws = websocket.Websocket()
+ws = bwebsocket.Websocket()
 sp = spotify.Spotify(ws, db)
 
 # Tasks
@@ -34,6 +34,17 @@ def with_beachify_token(fn):
         if not db.check_secret(request.cookies.get('beachifyToken')):
             return util.build_response("Wrong token", 401)
         return fn(*args, **kwargs)
+    wrapper.__name__ = fn.__name__
+    return wrapper
+
+
+def trigger_reload(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        f = fn(*args, **kwargs)
+        ws.trigger_reload()
+
+        return f
     wrapper.__name__ = fn.__name__
     return wrapper
 
@@ -56,6 +67,7 @@ def get_songs_from_queue():
 
 @app.route('/api/queue/song', methods=["PUT"])
 @with_beachify_token
+@trigger_reload
 def add_song_to_queue():
     if not db.adding_song_to_queue_possible():
         return util.build_response("Currently not possible", code=503)
@@ -70,6 +82,7 @@ def add_song_to_queue():
 
 @app.route('/api/queue/song/upvote', methods=["PUT"])
 @with_beachify_token
+@trigger_reload
 def song_from_queue_upvote():
     db.upvote_song(request.json)
     return util.build_response("Song upvoted")
@@ -77,12 +90,15 @@ def song_from_queue_upvote():
 
 @app.route('/api/queue/song/downvote', methods=["PUT"])
 @with_beachify_token
+@trigger_reload
 def song_from_queue_downvote():
     db.downvote_song(request.json)
     return util.build_response("Song downvoted")
 
+
 @app.route('/api/queue/song/delete', methods=["POST"])
 @with_beachify_token
+@trigger_reload
 def delete_song_from_queue():
     db.delete_song_from_queue(song_id=request.json)
     return util.build_response("Song deleted")
@@ -230,6 +246,7 @@ def toggle_playstate():
 
 
 @app.route('/api/spotify/playstate/skip', methods=["POST"])
+@trigger_reload
 def skip_song():
     sp.connector.next_track()
     return util.build_response("OK")

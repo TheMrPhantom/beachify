@@ -4,13 +4,13 @@ from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
 from database.Queue import Queue
 from database.Song import Song
 import util
-import websocket
+import bwebsocket
 from database import Queries
 
 
 class Spotify:
 
-    def __init__(self, ws: websocket.Websocket, db: Queries.Queries) -> None:
+    def __init__(self, ws: bwebsocket.Websocket, db: Queries.Queries) -> None:
         self.scope = "user-read-playback-state user-modify-playback-state user-read-currently-playing streaming playlist-read-private playlist-read-collaborative"
 
         self.connector = spotipy.Spotify(
