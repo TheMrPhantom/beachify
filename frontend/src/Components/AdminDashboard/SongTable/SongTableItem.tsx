@@ -77,6 +77,10 @@ const SongTableItem = (props: Props) => {
         doRequest("queue/song/ban", "PUT", props.song.trackID)
     }
 
+    const approveSong=()=>{
+        doRequest("queue/song/approve", "POST", props.song.trackID)
+    }
+
     return (
         <Paper className={paperClasses()} style={props.style}>
             <div className={style.leftContainer} ref={refOutterContainer}>
@@ -94,7 +98,7 @@ const SongTableItem = (props: Props) => {
                 <div className={buttonContainerClasses()}>
                     {controllButton(<BlockIcon />, () => banSong(), false, true)}
                     {controllButton(<DeleteIcon />, () => deleteSong(), true, true)}
-                    {controllButton(<CheckIcon />, () => { }, true)}
+                    {controllButton(<CheckIcon />, () => {approveSong() }, true)}
                 </div>
                 {dragField()}
             </div>

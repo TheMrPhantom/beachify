@@ -7,6 +7,7 @@ export type Song = {
     interpret: string,
     duration: number,
     startsAt: number,
+    is_next: boolean,
     upvotes?: number,
     downvotes?: number,
     alreadyAdded?: boolean,
@@ -22,4 +23,5 @@ export const DummySong: Song = {
     interpret: "",
     duration: 0,
     startsAt: 0,
+    is_next: false,
 }

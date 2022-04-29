@@ -89,7 +89,7 @@ const AdminDashboard = (props: Props) => {
         }
     }
     const nextSong = () => {
-        if (queueState.songs !== undefined && queueState.songs.length > 0) {
+        if (queueState.songs !== undefined && queueState.songs.length > 0 && queueState.songs[0].is_next) {
             return <>
                 <Typography variant='h4'>Nächster Song</Typography>
                 <Songcard song={queueState.songs[0]} />
@@ -104,6 +104,20 @@ const AdminDashboard = (props: Props) => {
 
     const redirectToSettings = () => {
         navigate("/admin/settings");
+    }
+
+    const getSongTable = (): JSX.Element => {
+        if (queueState !== undefined && queueState.songs !== undefined && queueState.songs.length > 0) {
+            if (queueState.songs[0].is_next) {
+                if (queueState.songs.length > 1) {
+                    return <SongTable songs={queueState.songs.slice(1)} />
+                }
+            } else {
+                return <SongTable songs={queueState.songs} />
+            }
+        }
+        return <></>
+
     }
 
     return <div className={style.outterFlex}>
@@ -122,8 +136,7 @@ const AdminDashboard = (props: Props) => {
             <SongArea placeholder='Default Playlist' fullwidth={false} noHelp />
         </div>
 
-        {queueState !== undefined && queueState.songs !== undefined && queueState.songs.length > 1 ?
-            <SongTable songs={queueState.songs.slice(1)} /> : <></>}
+        {getSongTable()}
     </div>
 
     if (!loggedIn) {

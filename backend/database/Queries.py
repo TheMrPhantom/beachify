@@ -28,9 +28,10 @@ class Queries:
         search_result: Song = self.session.query(
             Song).filter_by(track_id=songID).first()
         first = self.session.query(Queue).filter_by(is_next_song=True).first()
-
+        trust_mode_on = self.session.query(Setting).filter_by(
+            key="trust_mode").first().value == "approval"
         queue_element = None
-        if first is None:
+        if first is None and not trust_mode_on:
             queue_element = Queue(song_id=search_result.id, is_next_song=True)
         else:
             queue_element = Queue(song_id=search_result.id)
@@ -43,7 +44,7 @@ class Queries:
         songs = self.session.query(Queue).filter_by(
             is_next_song=False, played_time=None).all()
         trust_mode_on = self.session.query(Setting).filter_by(
-            key="trust_mode").first().value == "trusted"
+            key="trust_mode").first().value == "approval"
         output = []
 
         for s in songs:
@@ -59,10 +60,19 @@ class Queries:
             waiting_time_s2 = (
                 datetime.now()-s2["insertion_time"]).total_seconds()
 
-            def song_value(w, u, d):
-                return (w/240)+u-d*2
+            def song_value(w, u, d, approval_pending):
+                minus_for_pending = -10000000000 if approval_pending else 0
+                return ((w/240)+u-d*2)+minus_for_pending
 
-            return song_value(waiting_time_s2, s2["upvotes"], s2["downvotes"])-song_value(waiting_time_s1, s1["upvotes"], s1["downvotes"])
+            return song_value(waiting_time_s2,
+                              s2["upvotes"],
+                              s2["downvotes"],
+                              s2["approvalPending"]
+                              )-song_value(waiting_time_s1,
+                                           s1["upvotes"],
+                                           s1["downvotes"],
+                                           s1["approvalPending"]
+                                           )
 
         output.sort(key=cmp_to_key(compare))
 
@@ -200,11 +210,17 @@ class Queries:
         self.session.commit()
 
     def set_next_song_queue(self):
-        next: Queue = self.session.query(
-            Queue).filter_by(is_next_song=True).first()
-        next.is_next_song = False
-        next.played_time = datetime.now()
-        self.session.commit()
+        trust_mode_on = self.session.query(Setting).filter_by(
+            key="trust_mode").first().value == "approval"
+        try:
+            next: Queue = self.session.query(
+                Queue).filter_by(is_next_song=True).first()
+            next.is_next_song = False
+            next.played_time = datetime.now()
+            self.session.commit()
+        except:
+            print("No last next song")
+            
         add_to_queue = None
         try:
             queue = self.get_queued_songs()
@@ -214,7 +230,9 @@ class Queries:
                     track_id=queue[0]["trackID"])
             ).first()
 
-            add_to_queue.is_next_song = True
+            approval_pending = add_to_queue.approval_pending if trust_mode_on else False
+            if not approval_pending:
+                add_to_queue.is_next_song = True
 
             self.session.commit()
         except:
@@ -243,6 +261,14 @@ class Queries:
             if song.ban_time + timedelta(minutes=retention_time) < datetime.now():
                 self.session.delete(song)
 
+        self.session.commit()
+
+    def approve_song(self, track_id):
+        song: Queue = self.session.query(Queue).filter(
+            Queue.song.has(track_id=track_id)).first()
+        song.approval_pending = False
+        if self.session.query(Queue).filter_by(is_next_song=True).first() is None:
+            self.set_next_song_queue()
         self.session.commit()
 
     def insert_default_settings(self):

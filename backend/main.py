@@ -119,6 +119,13 @@ def ban_song():
     db.delete_song_from_queue(request.json)
     return util.build_response("Song banned")
 
+@app.route('/api/queue/song/approve', methods=["POST"])
+@with_beachify_token
+@trigger_reload
+def approve_song():
+    db.approve_song(request.json)
+    return util.build_response("Song approved")
+
 
 @app.route('/api/auth/secret/check/<string:secret>', methods=["GET"])
 def checkSecret(secret):
@@ -144,6 +151,7 @@ def set_listmode():
 
 
 @app.route('/api/setting/trustMode', methods=["PUT"])
+@trigger_reload
 def set_trustmode():
     if request.json == "approval" or request.json == "no_approval":
         db.set_settings(value=request.json, setting_name="trust_mode")

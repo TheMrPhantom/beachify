@@ -142,7 +142,7 @@ const Songcard = (props: Props) => {
     }
 
     const getVotingButtons = () => {
-        if (props.votingPossible) {
+        if (props.votingPossible&&!props.song.approvalPending) {
             const cookieRaw = Cookies.get("voted-songs")
             const cookie = cookieRaw ? cookieRaw : ""
 

@@ -76,6 +76,7 @@ def log(prefix, message):
 def format_song(queue_element: Queue, song: Song, trust_mode_on: bool, cant_add_reason: string):
     return {
         "databaseID": queue_element.id,
+        "is_next": queue_element.is_next_song,
         "songname": song.songname,
         "album": song.album,
         "trackID": song.track_id,
