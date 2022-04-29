@@ -15,6 +15,12 @@ export type Song = {
     approvalPending?: boolean
 }
 
+export type Playlist = {
+    playlistname: string,
+    playlistID: string,
+    coverURL: string
+}
+
 export const DummySong: Song = {
     songname: "",
     album: "",

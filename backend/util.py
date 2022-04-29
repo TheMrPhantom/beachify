@@ -101,3 +101,18 @@ def toNumberDateTime(time: datetime.datetime):
 
 def randomString():
     return secrets.token_urlsafe(64)
+
+
+def simplify_spotify_playlists(playlists):
+    output = []
+    for p in playlists["playlists"]["items"]:
+        output.append(simplify_spotify_playlist(p))
+    return output
+
+
+def simplify_spotify_playlist(playlist):
+    return {
+        "playlistname": playlist["name"],
+        "playlistID": playlist["uri"],
+        "coverURL": playlist["images"][0]["url"]
+    }

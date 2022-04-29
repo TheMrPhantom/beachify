@@ -133,7 +133,6 @@ const AdminDashboard = (props: Props) => {
             {nextSong()}
             <SongArea placeholder='Nächsten Song setzen' fullwidth={false} noHelp />
             <SongArea placeholder='Song zur Warteschlage' fullwidth={false} noHelp />
-            <SongArea placeholder='Default Playlist' fullwidth={false} noHelp />
         </div>
 
         {getSongTable()}

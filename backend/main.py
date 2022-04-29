@@ -54,10 +54,20 @@ def trigger_reload(fn):
 @with_beachify_token
 def search_for_song(seach_term):
     songs = util.simplify_spotify_tracks(
-        sp.connector.search(seach_term, limit=10))
+        sp.connector.search(seach_term, limit=10, type='track'))
 
     db.flag_queued_songs(songs)
     return util.build_response(songs)
+
+
+@app.route('/api/search/playlist/<string:seach_term>', methods=["GET"])
+@with_beachify_token
+def search_for_playlist(seach_term):
+
+    playlists = util.simplify_spotify_playlists(
+        sp.connector.search(seach_term, limit=10, type='playlist'))
+
+    return util.build_response(playlists)
 
 
 @app.route('/api/queue/song', methods=["GET"])
@@ -119,6 +129,7 @@ def ban_song():
     db.delete_song_from_queue(request.json)
     return util.build_response("Song banned")
 
+
 @app.route('/api/queue/song/approve', methods=["POST"])
 @with_beachify_token
 @trigger_reload
@@ -162,8 +173,11 @@ def set_trustmode():
 
 @app.route('/api/setting/defaultPlaylist', methods=["PUT"])
 def set_dp():
-    if sp.connector.playlist(playlist_id=request.json) is not None:
-        db.set_settings(value=request.json, setting_name="default_playlist")
+    if sp.connector.playlist(playlist_id=request.json['id']) is not None:
+        db.set_settings(
+            value=request.json['name'], setting_name="default_playlist")
+        db.set_settings(
+            value=request.json['id'], setting_name="default_playlist_id")
     else:
         return util.build_response("Die übergebene Playlist existiert nicht", code=412)
     return util.build_response(request.json)

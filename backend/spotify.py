@@ -23,6 +23,8 @@ class Spotify:
         self.db = db
         self.currentSong = None
         self.login_state = util.randomString()
+        self.default_playlist_song_id = 0
+        self.default_playlist = db.get_settings()["defaultPlaylist"]
 
     def get_token_url(self):
         self.login_state = util.randomString()
@@ -54,7 +56,7 @@ class Spotify:
     def check_queue_insertion(self):
         try:
             queue = self.db.get_queued_songs()
-            if len(queue) > 1:
+            if len(queue) > 0:
                 if self.currentSong is None or queue[0]["trackID"] == self.currentSong["trackID"]:
 
                     self.connector.current_user()
@@ -62,5 +64,9 @@ class Spotify:
                     self.currentSong = song
                     self.connector.add_to_queue(song.track_id)
                     self.ws.send({"action": "reload_queue"})
+            else:
+                # Add from default playlist
+                    
+                pass
         except Exception as a:
             print("check_queue_insertion", a)

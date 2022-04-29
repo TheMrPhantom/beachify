@@ -220,7 +220,7 @@ class Queries:
             self.session.commit()
         except:
             print("No last next song")
-            
+
         add_to_queue = None
         try:
             queue = self.get_queued_songs()
@@ -300,6 +300,8 @@ class Queries:
             Setting(key="trust_mode", value=trust_mode))
         self.session.add(
             Setting(key="default_playlist", value=default_playlist))
+        self.session.add(
+            Setting(key="default_playlist_id", value=default_playlist))
         self.session.add(
             Setting(key="guest_token", value=guest_token))
         self.session.add(

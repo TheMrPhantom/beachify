@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Settingsbox from './Settingsbox'
 import ContrastIcon from '@mui/icons-material/Contrast';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -19,6 +19,8 @@ import { doGetRequest, doRequest } from '../Common/StaticFunctions';
 import { SettingsType } from '../../Reducer/SettingsReducer';
 import Spacer from '../Common/Spacer';
 import { useNavigate } from 'react-router-dom';
+import { Playlist } from '../Common/Types';
+import Playlistcard from '../Playlistcard/Playlistcard';
 
 type Props = {}
 
@@ -53,8 +55,20 @@ const Settings = (props: Props) => {
         <MenuItem value="no_approval">Freie Wahl</MenuItem>
     </Select>
 
+    const [playlistSearch, setplaylistSearch] = useState(settingsState.defaultPlaylist)
+    const [playlistSearchItems, setplaylistSearchItems] = useState<Array<Playlist>>([])
 
-    const defaultPlaylistElement: JSX.Element = <TextField
+    useEffect(() => {
+        doGetRequest("search/playlist/" + playlistSearch).then(value => {
+            if (value.code === 200) {
+                setplaylistSearchItems(value.content)
+            }
+        })
+    }, [playlistSearch])
+    console.log(playlistSearch);
+    console.log(settingsState.defaultPlaylist);
+
+    const defaultPlaylistElement: JSX.Element = <><TextField
         placeholder='Standard Playlist'
         variant='outlined'
         fullWidth
@@ -63,11 +77,29 @@ const Settings = (props: Props) => {
                 input: style.resize,
             },
         }}
-        value={settingsState.defaultPlaylist}
-        onChange={value => doRequest("setting/defaultPlaylist", "PUT", value.target.value).then((value) => dispatch(setDefaultplaylist(value.content)))}
+        value={playlistSearch}
+        onChange={value => setplaylistSearch(value.target.value)}
     />
-
-
+        {playlistSearch !== settingsState.defaultPlaylist&&playlistSearch!=="" ?
+            <Spacer vertical={10} /> : <></>}
+        {playlistSearch !== settingsState.defaultPlaylist&&playlistSearch!=="" ?
+            playlistSearchItems.map((playlist) => {
+                return <>
+                    <Playlistcard playlist={playlist} key={playlist.playlistID} callback={(playlist: Playlist) => {
+                        doRequest("setting/defaultPlaylist",
+                            "PUT",
+                            { name: playlist.playlistname, id: playlist.playlistID }).then(
+                                (value) => {
+                                    dispatch(setDefaultplaylist(value.content.name))
+                                    setplaylistSearch(value.content.name)
+                                }
+                            )
+                    }} />
+                    <Spacer vertical={10} />
+                </>
+            })
+            : <></>}
+    </>
 
     const guesttokenElement: JSX.Element = <TextField
         placeholder='Gäste-Token Text'
