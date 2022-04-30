@@ -286,7 +286,9 @@ def toggle_playstate():
 @app.route('/api/spotify/playstate/skip', methods=["POST"])
 @trigger_reload
 def skip_song():
+    sp.check_queue_insertion_forced()
     sp.connector.next_track()
+
     return util.build_response("OK")
 
 
