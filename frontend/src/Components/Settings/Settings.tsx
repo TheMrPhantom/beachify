@@ -130,8 +130,6 @@ const Settings = (props: Props) => {
         onChange={value => doRequest("setting/waitingTime", "PUT", value.target.value).then((value) => dispatch(setWaitingTime(value.content)))}
     />
 
-
-
     const banTimeElement: JSX.Element = <TextField
         placeholder='Banzeit'
         variant='outlined'

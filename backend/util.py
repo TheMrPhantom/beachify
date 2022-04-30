@@ -113,6 +113,6 @@ def simplify_spotify_playlists(playlists):
 def simplify_spotify_playlist(playlist):
     return {
         "playlistname": playlist["name"],
-        "playlistID": playlist["uri"],
+        "playlistID": playlist["id"],
         "coverURL": playlist["images"][0]["url"]
     }

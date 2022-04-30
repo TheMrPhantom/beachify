@@ -53,20 +53,52 @@ class Spotify:
         except Exception as a:
             print("checkCurrentSong", a)
 
+    def reset_playlist_song_counter(self):
+        self.default_playlist_song_id = 0
+
     def check_queue_insertion(self):
         try:
             queue = self.db.get_queued_songs()
-            if len(queue) > 0:
+            if len(queue) > 1:
                 if self.currentSong is None or queue[0]["trackID"] == self.currentSong["trackID"]:
-
                     self.connector.current_user()
                     song: Song = self.db.set_next_song_queue()
                     self.currentSong = song
                     self.connector.add_to_queue(song.track_id)
                     self.ws.send({"action": "reload_queue"})
+                    print("laa")
+            elif len(queue) > 0:
+                if self.currentSong is None or queue[0]["trackID"] == self.currentSong["trackID"]:
+                    self.connector.current_user()
+                    songs = self.connector.playlist_items(playlist_id=self.db.get_settings(
+                    )["defaultPlaylistID"], limit=1, offset=self.default_playlist_song_id)
+                    song_simplified = []
+                    for s in songs['items']:
+                        song_simplified.append(
+                            util.simplify_spotify_track(s['track']))
+                    self.default_playlist_song_id += 1
+                    self.db.add_song_to_songlist(song_simplified)
+                    trackID = song_simplified[0]["trackID"]
+                    self.db.add_song_to_queue(trackID)
+                    song: Song = self.db.set_next_song_queue()
+                    self.currentSong = song
+                    self.connector.add_to_queue(song.track_id)
+                    self.ws.send({"action": "reload_queue"})
+                    print("lee")
             else:
-                # Add from default playlist
-                    
-                pass
+                songs = self.connector.playlist_items(playlist_id=self.db.get_settings(
+                )["defaultPlaylistID"], limit=1, offset=self.default_playlist_song_id)
+                song_simplified = []
+                for s in songs['items']:
+                    song_simplified.append(
+                        util.simplify_spotify_track(s['track']))
+                self.default_playlist_song_id += 1
+                self.db.add_song_to_songlist(song_simplified)
+                trackID = song_simplified[0]["trackID"]
+                self.db.add_song_to_queue(trackID)
+                self.connector.add_to_queue(trackID)
+                self.ws.send({"action": "reload_queue"})
+                print("luu")
+
         except Exception as a:
             print("check_queue_insertion", a)

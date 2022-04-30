@@ -188,6 +188,7 @@ class Queries:
             "listMode": settings_map["list_mode"].value,
             "trustMode": settings_map["trust_mode"].value,
             "defaultPlaylist": settings_map["default_playlist"].value,
+            "defaultPlaylistID": settings_map["default_playlist_id"].value,
             "guestToken": settings_map["guest_token"].value,
             "waitingTime": settings_map["waiting_time"].value,
             "defaultBanTime": settings_map["default_ban_time"].value,
