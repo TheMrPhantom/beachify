@@ -42,7 +42,7 @@ def with_beachify_token(fn):
     return wrapper
 
 
-def with_beachify_token(fn):
+def admin(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         password_correct = util.check_password(request.cookies.get('password'))
@@ -113,7 +113,7 @@ def add_song_to_queue():
 
 
 @app.route('/api/queue/song/next', methods=["PUT"])
-@with_beachify_token
+@admin
 @trigger_reload
 def set_next_song():
     db.add_songs_to_songlist([request.json])
@@ -139,7 +139,7 @@ def song_from_queue_downvote():
 
 
 @app.route('/api/queue/song/delete', methods=["POST"])
-@with_beachify_token
+@admin
 @trigger_reload
 def delete_song_from_queue():
     db.delete_song_from_queue(song_id=request.json)
@@ -147,7 +147,7 @@ def delete_song_from_queue():
 
 
 @app.route('/api/queue/song/ban', methods=["PUT"])
-@with_beachify_token
+@admin
 @trigger_reload
 def ban_song():
     db.ban_song(request.json)
@@ -156,7 +156,7 @@ def ban_song():
 
 
 @app.route('/api/queue/song/approve', methods=["POST"])
-@with_beachify_token
+@admin
 @trigger_reload
 def approve_song():
     db.approve_song(request.json)
@@ -172,11 +172,13 @@ def checkSecret(secret):
 
 
 @app.route('/api/setting', methods=["GET"])
+@admin
 def get_settings():
     return util.build_response(db.get_settings())
 
 
 @app.route('/api/setting/listMode', methods=["PUT"])
+@admin
 def set_listmode():
     if "whitelist" == request.json or "blacklist" == request.json:
         db.set_settings(value=request.json, setting_name="list_mode")
@@ -187,6 +189,7 @@ def set_listmode():
 
 
 @app.route('/api/setting/trustMode', methods=["PUT"])
+@admin
 @trigger_reload
 def set_trustmode():
     if request.json == "approval" or request.json == "no_approval":
@@ -197,6 +200,7 @@ def set_trustmode():
 
 
 @app.route('/api/setting/defaultPlaylist', methods=["PUT"])
+@admin
 def set_dp():
     if sp.connector.playlist(playlist_id=request.json['id']) is not None:
         db.set_settings(
@@ -209,6 +213,7 @@ def set_dp():
 
 
 @app.route('/api/setting/guestToken', methods=["PUT"])
+@admin
 def set_guest_token():
     if len(str(request.json)) != 0:
         db.set_settings(value=request.json, setting_name="guest_token")
@@ -218,6 +223,7 @@ def set_guest_token():
 
 
 @app.route('/api/setting/waitingTime', methods=["PUT"])
+@admin
 def set_waiting_time():
     if int(request.json) > 0:
         db.set_settings(value=request.json, setting_name="waiting_time")
@@ -227,6 +233,7 @@ def set_waiting_time():
 
 
 @app.route('/api/setting/defaultBanTime', methods=["PUT"])
+@admin
 def set_default_ban_time():
     if int(request.json) > 0:
         db.set_settings(value=request.json,
@@ -237,6 +244,7 @@ def set_default_ban_time():
 
 
 @app.route('/api/setting/queueState', methods=["PUT"])
+@admin
 def set_queue_state():
     if request.json == "activated" or request.json == "deactivated":
         db.set_settings(value=request.json, setting_name="queue_state")
@@ -246,6 +254,7 @@ def set_queue_state():
 
 
 @app.route('/api/setting/queueSubmittable', methods=["PUT"])
+@admin
 def set_queue_submittable():
     if request.json == "activated" or request.json == "deactivated":
         db.set_settings(value=request.json,
@@ -256,6 +265,7 @@ def set_queue_submittable():
 
 
 @app.route('/api/setting/retentionTime', methods=["PUT"])
+@admin
 def set_retention_time():
     if int(request.json) > 0:
         db.set_settings(value=request.json, setting_name="retention_time")
@@ -265,6 +275,7 @@ def set_retention_time():
 
 
 @app.route('/api/spotify/authorize', methods=["GET"])
+@admin
 def authorize_spotify():
     return util.build_response(sp.get_token_url())
 
@@ -280,28 +291,33 @@ def spotify_callback():
 
 
 @app.route('/api/spotify/playstate/currentlyPlaying', methods=["GET"])
+@with_beachify_token
 def currently_playing():
     return util.build_response(util.simplify_spotify_track(sp.connector.currently_playing()['item']))
 
 
 @app.route('/api/spotify/playstate/playing', methods=["GET"])
+@with_beachify_token
 def is_playing():
     return util.build_response(sp.connector.currently_playing()["is_playing"])
 
 
 @app.route('/api/spotify/playstate/play', methods=["POST"])
+@admin
 def play():
     sp.connector.start_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotify/playstate/pause', methods=["POST"])
+@admin
 def pause():
     sp.connector.pause_playback()
     return util.build_response("OK")
 
 
 @app.route('/api/spotify/playstate/toggle', methods=["POST"])
+@admin
 def toggle_playstate():
     if sp.connector.currently_playing()["is_playing"]:
         sp.connector.pause_playback()
@@ -311,6 +327,7 @@ def toggle_playstate():
 
 
 @app.route('/api/spotify/playstate/skip', methods=["POST"])
+@admin
 @trigger_reload
 def skip_song():
     sp.check_queue_insertion_forced(skip_song=True)
@@ -319,6 +336,7 @@ def skip_song():
 
 
 @app.route('/api/spotify/authentication', methods=["GET"])
+@admin
 def spotify_state():
     try:
         sp.connector.current_user()
