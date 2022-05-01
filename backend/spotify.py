@@ -79,7 +79,7 @@ class Spotify:
         else:
             if self.db.get_settings()["queueState"] == "deactivated":
                 songs_to_add = self.fetch_next_playlist_songs(1)
-                print("lalala")
+
                 for s in songs_to_add:
                     self.db.add_song_to_queue(
                         s["trackID"], approved=True, force_add=True)
