@@ -1,21 +1,8 @@
-import { Button, Divider, Paper, Skeleton, useTheme } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import { Paper, useTheme } from '@mui/material'
+import React, { useRef, useState } from 'react'
 import style from './songcard.module.scss'
 import Typography from '@mui/material/Typography';
-import config from '../../environment.json'
-import { Playlist, Song } from '../Common/Types';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import Spacer from '../Common/Spacer';
-import Cookies from 'js-cookie';
-import { doGetRequest, doPostRequest, doRequest } from '../Common/StaticFunctions';
-import { setNextSong, setQueueSongs } from '../../Actions/QueueAction';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
-import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
-import { SettingsType } from '../../Reducer/SettingsReducer';
-import { setPlaystate } from '../../Actions/SettingsAction';
+import { Playlist } from '../Common/Types';
 
 type Props = {
     playlist: Playlist,
@@ -26,11 +13,6 @@ const Playlistcard = (props: Props) => {
     const [isHovered, setisHovered] = useState(false);
     const refPaper: React.RefObject<HTMLInputElement> = useRef(null);
     const [imgLoaded, setimgLoaded] = useState(false)
-    const [currentTime, setcurrentTime] = useState<Date>(new Date())
-    const [skipButtonDisabled, setskipButtonDisabled] = useState(false)
-    const dispatch = useDispatch()
-    const settingsState: SettingsType = useSelector((state: RootStateOrAny) => state.settingsReducer);
-    const cornerElevation = 5
     const theme = useTheme();
 
     const getPaperClasses = () => {

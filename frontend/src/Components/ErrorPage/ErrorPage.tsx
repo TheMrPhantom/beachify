@@ -1,5 +1,5 @@
 import { Button, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { openToast } from '../../Actions/CommonAction'
 import { doPostRequest } from '../Common/StaticFunctions'
