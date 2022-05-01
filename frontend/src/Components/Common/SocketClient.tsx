@@ -48,6 +48,13 @@ const SocketClient = (props: Props) => {
                             }
                         });
                         break;
+                    case "renew_spotify":
+                        doGetRequest("spotify/authorize").then(value => {
+                            if (value.code === 200) {
+                                window.location = value.content
+                            }
+                        })
+                        break;
                 }
 
             };

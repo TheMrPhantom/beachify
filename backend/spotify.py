@@ -31,6 +31,12 @@ class Spotify:
         self.login_state = util.randomString()
         return SpotifyOAuth(scope=self.scope).get_authorize_url(state=self.login_state)
 
+    def check_spotify_connection(self):
+        try:
+            self.connector.current_user()
+        except:
+            self.ws.send({"action": "renew_spotify"})
+
     def set_token(self, token, state):
         if self.login_state == state:
             oauth_object = SpotifyOAuth(scope=self.scope)
