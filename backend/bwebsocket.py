@@ -8,7 +8,7 @@ class Websocket:
     def __init__(self) -> None:
         self.PORT = int(os.environ.get("websocket_port")) if os.environ.get(
             "websocket_port") else int(9001)
-        self.server = WebsocketServer(port=self.PORT)
+        self.server = WebsocketServer(host='0.0.0.0', port=self.PORT)
         self.server.set_fn_new_client(self.on_connect)
         self.server.set_fn_client_left(self.on_disconnect)
         self.server.set_fn_message_received(self.on_recieve)
