@@ -1,6 +1,5 @@
 import { Song } from "../Components/Common/Types"
 import Cookies from 'js-cookie';
-import { doGetRequest } from "../Components/Common/StaticFunctions";
 
 export const setQueueSongs = (songs: Array<Song>) => {
     return {

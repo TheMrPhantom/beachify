@@ -65,6 +65,12 @@ const SocketClient = (props: Props) => {
                 }, Math.random() * (maxTimeout - minTimeout) + minTimeout);
             }
 
+            ws.onclose = () => {
+                setTimeout(() => {
+                    setws(new WebSocket(Config.WEBSOCKET_URL));
+                }, Math.random() * (maxTimeout - minTimeout) + minTimeout);
+            }
+
         }
     }, [dispatch, ws])
 
