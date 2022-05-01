@@ -212,6 +212,19 @@ def set_dp():
     return util.build_response(request.json)
 
 
+@app.route('/api/setting/blacklistPlaylist', methods=["PUT"])
+@admin
+def set_bp():
+    if sp.connector.playlist(playlist_id=request.json['id']) is not None:
+        db.set_settings(
+            value=request.json['name'], setting_name="blacklist_playlist")
+        db.set_settings(
+            value=request.json['id'], setting_name="blacklist_playlist_id")
+    else:
+        return util.build_response("Die übergebene Playlist existiert nicht", code=412)
+    return util.build_response(request.json)
+
+
 @app.route('/api/setting/guestToken', methods=["PUT"])
 @admin
 def set_guest_token():

@@ -210,6 +210,8 @@ class Queries:
             "trustMode": settings_map["trust_mode"].value,
             "defaultPlaylist": settings_map["default_playlist"].value,
             "defaultPlaylistID": settings_map["default_playlist_id"].value,
+            "blacklistPlaylist": settings_map["blacklist_playlist"].value,
+            "blacklistPlaylistID": settings_map["blacklist_playlist_id"].value,
             "guestToken": settings_map["guest_token"].value,
             "waitingTime": settings_map["waiting_time"].value,
             "defaultBanTime": settings_map["default_ban_time"].value,
@@ -316,6 +318,8 @@ class Queries:
             "trust_mode") if os.environ.get("trust_mode") else "no_approval"
         default_playlist = os.environ.get(
             "default_playlist") if os.environ.get("default_playlist") else "6YP7NneFapA2Ynglzb3v2a"
+        blacklist_playlist = os.environ.get(
+            "blacklist_playlist") if os.environ.get("blacklist_playlist") else "6YP7NneFapA2Ynglzb3v2a"
         guest_token = os.environ.get(
             "guest_token") if os.environ.get("guest_token") else "beachify"
         waiting_time = os.environ.get(
@@ -337,6 +341,10 @@ class Queries:
             Setting(key="default_playlist", value=default_playlist))
         self.session.add(
             Setting(key="default_playlist_id", value=default_playlist))
+        self.session.add(
+            Setting(key="blacklist_playlist", value=blacklist_playlist))
+        self.session.add(
+            Setting(key="blacklist_playlist_id", value=blacklist_playlist))
         self.session.add(
             Setting(key="guest_token", value=guest_token))
         self.session.add(

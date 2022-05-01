@@ -14,7 +14,7 @@ import Texts from '../../texts.json';
 import style from './settings.module.scss'
 import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
-import { setAllSettings, setDefaultBantime, setDefaultplaylist, setGuestToken, setListmode, setQueueState, setQueueSubmittable, setRetentionTime, setTrustmode, setWaitingTime } from '../../Actions/SettingsAction';
+import { setAllSettings, setBlacklistplaylist, setDefaultBantime, setDefaultplaylist, setGuestToken, setListmode, setQueueState, setQueueSubmittable, setRetentionTime, setTrustmode, setWaitingTime } from '../../Actions/SettingsAction';
 import { doGetRequest, doRequest } from '../Common/StaticFunctions';
 import { SettingsType } from '../../Reducer/SettingsReducer';
 import Spacer from '../Common/Spacer';
@@ -66,6 +66,10 @@ const Settings = (props: Props) => {
         })
     }, [playlistSearch])
 
+    useEffect(() => {
+        setplaylistSearch(settingsState.defaultPlaylist)
+    }, [settingsState.defaultPlaylist])
+
     const defaultPlaylistElement: JSX.Element = <><TextField
         placeholder='Standard Playlist'
         variant='outlined'
@@ -98,6 +102,54 @@ const Settings = (props: Props) => {
             })
             : <></>}
     </>
+
+    const [playlistSearchBlacklist, setplaylistSearchBlacklist] = useState(settingsState.blacklistPlaylist)
+    const [playlistSearchItemsBlacklist, setplaylistSearchItemsBlacklist] = useState<Array<Playlist>>([])
+
+    useEffect(() => {
+        doGetRequest("search/playlist/" + playlistSearchBlacklist).then(value => {
+            if (value.code === 200) {
+                setplaylistSearchItemsBlacklist(value.content)
+            }
+        })
+    }, [playlistSearchBlacklist])
+
+    useEffect(() => {
+        setplaylistSearchBlacklist(settingsState.blacklistPlaylist)
+    }, [settingsState.blacklistPlaylist])
+    const blacklistPlaylistElement: JSX.Element = <><TextField
+        placeholder='Blacklist Playlist'
+        variant='outlined'
+        fullWidth
+        InputProps={{
+            classes: {
+                input: style.resize,
+            },
+        }}
+        value={playlistSearchBlacklist}
+        onChange={value => setplaylistSearchBlacklist(value.target.value)}
+    />
+        {playlistSearchBlacklist !== settingsState.blacklistPlaylist && playlistSearchBlacklist !== "" ?
+            <Spacer vertical={10} /> : <></>}
+        {playlistSearchBlacklist !== settingsState.blacklistPlaylist && playlistSearchBlacklist !== "" ?
+            playlistSearchItemsBlacklist.map((playlist) => {
+                return <>
+                    <Playlistcard playlist={playlist} key={playlist.playlistID} callback={(playlist: Playlist) => {
+                        doRequest("setting/blacklistPlaylist",
+                            "PUT",
+                            { name: playlist.playlistname, id: playlist.playlistID }).then(
+                                (value) => {
+                                    dispatch(setBlacklistplaylist(value.content.name))
+                                    setplaylistSearchBlacklist(value.content.name)
+                                }
+                            )
+                    }} />
+                    <Spacer vertical={10} />
+                </>
+            })
+            : <></>}
+    </>
+
 
     const guesttokenElement: JSX.Element = <TextField
         placeholder='Gäste-Token Text'
@@ -211,6 +263,13 @@ const Settings = (props: Props) => {
                 description={Texts.DEFAULT_PLAYLIST_SUB_DESCRIPTION}
                 icon={<PlaylistPlayIcon />}
                 input={defaultPlaylistElement}
+            />
+            <Settingsbox
+                headline={Texts.BLACKLIST_PLAYLIST_HEADLINE}
+                short={Texts.BLACKLIST_PLAYLIST_SUB_HEADLINE}
+                description={Texts.BLACKLIST_PLAYLIST_SUB_DESCRIPTION}
+                icon={<PlaylistPlayIcon />}
+                input={blacklistPlaylistElement}
             />
             <Settingsbox
                 headline={Texts.GUEST_TOKEN_MODE_HEADLINE}

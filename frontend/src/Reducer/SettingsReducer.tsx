@@ -2,6 +2,7 @@ const initialState: SettingsType = {
     listMode: "",
     trustMode: "",
     defaultPlaylist: "",
+    blacklistPlaylist: "",
     guestToken: "",
     waitingTime: "",
     defaultBanTime: "",
@@ -15,6 +16,7 @@ export type SettingsType = {
     listMode: string,
     trustMode: string,
     defaultPlaylist: string,
+    blacklistPlaylist: string,
     guestToken: string,
     waitingTime: string,
     defaultBanTime: string,
@@ -40,6 +42,9 @@ const reducer = (state = initialState, { type, payload }: { type: string, payloa
             return newState
         case "SET_DF_PLAYLIST":
             newState.defaultPlaylist = payload
+            return newState
+        case "SET_BL_PLAYLIST":
+            newState.blacklistPlaylist = payload
             return newState
         case "SET_GUEST_TOKEN":
             newState.guestToken = payload

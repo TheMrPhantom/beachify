@@ -31,6 +31,13 @@ export const setDefaultplaylist = (setting: string) => {
     }
 }
 
+export const setBlacklistplaylist = (setting: string) => {
+    return {
+        type: "SET_BL_PLAYLIST",
+        payload: setting
+    }
+}
+
 export const setPlaystate = (setting: boolean) => {
     return {
         type: "SET_IS_PLAYING",
