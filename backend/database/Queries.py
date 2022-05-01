@@ -21,10 +21,18 @@ class Queries:
         self.db.create_all()
         self.insert_default_settings()
 
-    def add_song_to_queue(self, songID):
+    def add_song_to_queue(self, songID, approved=False, force_add=False):
         if self.session.query(Queue).filter(
                 Queue.song.has(track_id=songID)).first() is not None:
-            return False
+
+            if force_add:
+                self.session.delete(self.session.query(Queue).filter(
+                    Queue.song.has(track_id=songID)).first())
+                self.session.commit()
+            else:
+                print("Couldnt add song! Song already in Queue Table.", songID)
+                return False
+
         search_result: Song = self.session.query(
             Song).filter_by(track_id=songID).first()
         first = self.session.query(Queue).filter_by(is_next_song=True).first()
@@ -32,15 +40,17 @@ class Queries:
             key="trust_mode").first().value == "approval"
         queue_element = None
         if first is None and not trust_mode_on:
-            queue_element = Queue(song_id=search_result.id, is_next_song=True)
+            queue_element = Queue(
+                song_id=search_result.id, is_next_song=True, approval_pending=(not approved))
         else:
-            queue_element = Queue(song_id=search_result.id)
+            queue_element = Queue(song_id=search_result.id,
+                                  approval_pending=(not approved))
 
         self.session.add(queue_element)
         self.session.commit()
         return True
 
-    def get_queued_songs(self):
+    def get_queued_songs(self, only_approved=False):
         songs = self.session.query(Queue).filter_by(
             is_next_song=False, played_time=None).all()
         trust_mode_on = self.session.query(Setting).filter_by(
@@ -94,6 +104,10 @@ class Queries:
             output.insert(0, d)
         except Exception as a:
             print("get_queued_songs", a)
+
+        if only_approved:
+            output = list(filter(lambda x: (not x["approvalPending"]), output))
+
         return output
 
     def flag_queued_songs(self, songs):
@@ -130,7 +144,7 @@ class Queries:
         self.session.delete(song)
         self.session.commit()
 
-    def add_song_to_songlist(self, songlist):
+    def add_songs_to_songlist(self, songlist):
         for element in songlist:
             song_from_database = self.session.query(Song).filter_by(
                 track_id=element["trackID"]).first()
@@ -210,7 +224,7 @@ class Queries:
 
         self.session.commit()
 
-    def set_next_song_queue(self):
+    def set_next_song_queue(self) -> Song:
         trust_mode_on = self.session.query(Setting).filter_by(
             key="trust_mode").first().value == "approval"
         try:

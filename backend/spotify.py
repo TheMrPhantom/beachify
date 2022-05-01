@@ -46,9 +46,9 @@ class Spotify:
             received = util.simplify_spotify_track(received_input['item'])
             received["is_playing"] = received_input["is_playing"]
 
-            if received != self.currentSong:
+            if received["trackID"] != self.currentSong:
                 self.ws.send({"action": "reload_current_song"})
-                self.currentSong = received
+                self.currentSong = received["trackID"]
 
         except Exception as a:
             print("checkCurrentSong", a)
@@ -57,55 +57,41 @@ class Spotify:
         self.default_playlist_song_id = 0
 
     def check_queue_insertion(self):
-        queue = self.db.get_queued_songs()
+        queue = self.db.get_queued_songs(only_approved=True)
         if len(queue) > 0:
-            if self.currentSong is None or queue[0]["trackID"] == self.currentSong["trackID"]:
+            if self.currentSong is None or queue[0]["trackID"] == self.currentSong:
                 self.check_queue_insertion_forced(queue)
         else:
             self.check_queue_insertion_forced(queue)
 
-    def check_queue_insertion_forced(self, queue=None):
-        try:
-            if queue is None:
-                queue = self.db.get_queued_songs()
-            if len(queue) > 1:
-                self.connector.current_user()
-                song: Song = self.db.set_next_song_queue()
-                self.currentSong = song
-                self.connector.add_to_queue(song.track_id)
-                self.ws.send({"action": "reload_queue"})
-                print("laa")
-            elif len(queue) > 0:
-                self.connector.current_user()
-                songs = self.connector.playlist_items(playlist_id=self.db.get_settings(
-                )["defaultPlaylistID"], limit=1, offset=self.default_playlist_song_id)
-                song_simplified = []
-                for s in songs['items']:
-                    song_simplified.append(
-                        util.simplify_spotify_track(s['track']))
-                self.default_playlist_song_id += 1
-                self.db.add_song_to_songlist(song_simplified)
-                trackID = song_simplified[0]["trackID"]
-                self.db.add_song_to_queue(trackID)
-                song: Song = self.db.set_next_song_queue()
-                self.currentSong = song
-                self.connector.add_to_queue(song.track_id)
-                self.ws.send({"action": "reload_queue"})
-                print("lee")
-            else:
-                songs = self.connector.playlist_items(playlist_id=self.db.get_settings(
-                )["defaultPlaylistID"], limit=1, offset=self.default_playlist_song_id)
-                song_simplified = []
-                for s in songs['items']:
-                    song_simplified.append(
-                        util.simplify_spotify_track(s['track']))
-                self.default_playlist_song_id += 1
-                self.db.add_song_to_songlist(song_simplified)
-                trackID = song_simplified[0]["trackID"]
-                self.db.add_song_to_queue(trackID)
-                self.connector.add_to_queue(trackID)
-                self.ws.send({"action": "reload_queue"})
-                print("luu")
+    def check_queue_insertion_forced(self, queue=None, skip_song=False):
+        if queue is None:
+            queue = self.db.get_queued_songs(only_approved=True)
 
-        except Exception as a:
-            print("check_queue_insertion", a)
+        if len(queue) < 2:
+            # Curently and or Next playing needed
+            songs_to_add = self.fetch_next_playlist_songs(2-len(queue))
+
+            for s in songs_to_add:
+                self.db.add_song_to_queue(
+                    s["trackID"], approved=True, force_add=True)
+        self.add_to_spotify_queue(skip_song=skip_song)
+
+    def fetch_next_playlist_songs(self, amount: int):
+        songs = self.connector.playlist_items(playlist_id=self.db.get_settings(
+        )["defaultPlaylistID"], limit=amount, offset=self.default_playlist_song_id)
+        songs_simplified = []
+        for s in songs['items']:
+            songs_simplified.append(
+                util.simplify_spotify_track(s['track']))
+        self.default_playlist_song_id += amount
+
+        self.db.add_songs_to_songlist(songs_simplified)
+
+        return songs_simplified
+
+    def add_to_spotify_queue(self, skip_song=False):
+        to_play = self.db.set_next_song_queue()
+        self.connector.add_to_queue(to_play.track_id)
+        if skip_song:
+            self.connector.next_track()

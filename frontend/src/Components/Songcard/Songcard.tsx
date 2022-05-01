@@ -142,7 +142,7 @@ const Songcard = (props: Props) => {
     }
 
     const getVotingButtons = () => {
-        if (props.votingPossible&&!props.song.approvalPending) {
+        if (props.votingPossible && !props.song.approvalPending) {
             const cookieRaw = Cookies.get("voted-songs")
             const cookie = cookieRaw ? cookieRaw : ""
 
@@ -203,7 +203,7 @@ const Songcard = (props: Props) => {
 
     const skipSong = () => {
         setskipButtonDisabled(true)
-        setTimeout(() => { setskipButtonDisabled(false) }, 6000)
+        setTimeout(() => { setskipButtonDisabled(false) }, 10)
         doPostRequest("spotify/playstate/skip").then(value => {
             new Promise(v => setTimeout(() => {
                 if (value.code === 200) {

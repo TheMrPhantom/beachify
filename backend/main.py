@@ -88,7 +88,7 @@ def add_song_to_queue():
             return util.build_response("Der Song wurde vorübergehend gebannt", code=503)
         else:
             return util.build_response("Aktuell nicht möglich", code=503)
-    db.add_song_to_songlist([request.json])
+    db.add_songs_to_songlist([request.json])
     success = db.add_song_to_queue(request.json["trackID"])
 
     if success:
@@ -286,8 +286,7 @@ def toggle_playstate():
 @app.route('/api/spotify/playstate/skip', methods=["POST"])
 @trigger_reload
 def skip_song():
-    sp.check_queue_insertion_forced()
-    sp.connector.next_track()
+    sp.check_queue_insertion_forced(skip_song=True)
 
     return util.build_response("OK")
 
