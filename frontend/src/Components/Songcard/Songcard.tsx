@@ -207,7 +207,7 @@ const Songcard = (props: Props) => {
 
     const skipSong = () => {
         setskipButtonDisabled(true)
-        setTimeout(() => { setskipButtonDisabled(false) }, 10)
+        setTimeout(() => { setskipButtonDisabled(false) }, 500)
         doPostRequest("spotify/playstate/skip").then(value => {
             new Promise(v => setTimeout(() => {
                 if (value.code === 200) {

@@ -28,5 +28,8 @@
     "QUEUE_SUBMITTABLE_SUB_DESCRIPTION": "Wenn diese Option aktiviert ist, können Nutzer Songs zur Warteschlage hinzufügen, ist sie deaktiviert, können keine Lieder mehr hinzugefügt werden. Bestehende Lieder werden nicht aus der Warteschlage gelöscht",
     "RETENTION_TIME_HEADLINE": "Verbleibe Dauer",
     "RETENTION_TIME_SUB_HEADLINE": "Zeit nach der Songs aus der Warteschlange entfernt werden",
-    "RETENTION_TIME_SUB_DESCRIPTION": "Setze die Zeit in Minuten"
+    "RETENTION_TIME_SUB_DESCRIPTION": "Setze die Zeit in Minuten",
+    "RECONNECT_SPOTIFY_HEADLINE": "Spotify Account verbinden",
+    "RECONNECT_SPOTIFY_SUB_HEADLINE": "Verbinde den Spotify Account, der von Beachify gesteuert werden soll",
+    "RECONNECT_SPOTIFY_SUB_DESCRIPTION": ""
 }

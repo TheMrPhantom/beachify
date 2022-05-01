@@ -9,7 +9,7 @@ import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import HotelIcon from '@mui/icons-material/Hotel';
-
+import AudiotrackIcon from '@mui/icons-material/Audiotrack';
 import Texts from '../../texts.json';
 import style from './settings.module.scss'
 import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
@@ -234,6 +234,20 @@ const Settings = (props: Props) => {
         onChange={value => doRequest("setting/retentionTime", "PUT", value.target.value).then((value) => dispatch(setRetentionTime(value.content)))}
     />
 
+    const reAuthenticateElement: JSX.Element = <Button
+        fullWidth
+        variant='contained'
+        onClick={() => {
+            doGetRequest("spotify/authorize").then(value => {
+                if (value.code === 200) {
+                    window.location = value.content
+                }
+            })
+        }}
+    >
+        Spotify Verbinden
+    </Button>
+
     const toAdminPage = () => {
         navigate("/admin")
     }
@@ -315,6 +329,13 @@ const Settings = (props: Props) => {
                 description={Texts.RETENTION_TIME_SUB_DESCRIPTION}
                 icon={<HotelIcon />}
                 input={retentionTimeElement}
+            />
+            <Settingsbox
+                headline={Texts.RECONNECT_SPOTIFY_HEADLINE}
+                short={Texts.RECONNECT_SPOTIFY_SUB_HEADLINE}
+                description={Texts.RECONNECT_SPOTIFY_SUB_DESCRIPTION}
+                icon={<AudiotrackIcon />}
+                input={reAuthenticateElement}
             />
         </div>
         <Spacer vertical={5} />
