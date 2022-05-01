@@ -27,6 +27,7 @@ const AdminDashboard = (props: Props) => {
     useEffect(() => {
         doGetRequest("spotify/authentication").then((value) => {
             if (value.code !== 200) {
+                console.log("lalals")
                 dispatch(openToast({
                     message: "", type: "error", duration: 15000, jsxElement: <>
                         Spotify authentifizierung abgelaufen!

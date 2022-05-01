@@ -15,13 +15,11 @@ const Toast = (props: Props) => {
             open={alertState.toast.isOpen}
             autoHideDuration={alertState.toast.duration}
             onClose={() => {
-                console.log("lwlwl")
                 dispatch(closeToast())
             }}
         >
             <Alert
                 onClose={() => {
-                    console.log("lwlwl")
                     dispatch(closeToast())
                 }}
                 variant='filled'

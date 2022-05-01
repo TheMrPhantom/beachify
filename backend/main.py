@@ -293,7 +293,10 @@ def skip_song():
 
 @app.route('/api/spotify/authentication', methods=["GET"])
 def spotify_state():
-    sp.connector.current_user()
+    try:
+        sp.connector.current_user()
+    except Exception as e:
+        return util.build_response("Sitzung abgelaufen", code=401)
     return util.build_response("OK")
 
 

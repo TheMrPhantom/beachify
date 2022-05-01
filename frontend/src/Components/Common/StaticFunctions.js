@@ -14,15 +14,11 @@ export const doRequest = async (path, method, data) => {
             body: JSON.stringify(data)
         });
     const status_code = resp.status
-    if (status_code === 200) {
-        const userJson = await resp.json();
 
-        return { code: status_code, content: userJson }
-    } else if (status_code === 403) {
-        return { code: status_code }
-    } else {
-        return { code: status_code }
-    }
+    const userJson = await resp.json();
+
+    return { code: status_code, content: userJson }
+
 };
 
 export const doGetRequest = async (path) => {
@@ -35,14 +31,9 @@ export const doGetRequest = async (path) => {
 
     const status_code = userInput.status
 
-    if (status_code === 200) {
-        const userJson = await userInput.json();
-        return { code: status_code, content: userJson }
-    } else if (status_code === 403) {
-        return { code: status_code }
-    } else {
-        return { code: status_code }
-    }
+    const userJson = await userInput.json();
+    return { code: status_code, content: userJson }
+
 };
 
 export const downloadPDF = async (path) => {

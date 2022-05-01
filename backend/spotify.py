@@ -7,6 +7,7 @@ from database.Song import Song
 import util
 import bwebsocket
 from database import Queries
+import time
 
 
 class Spotify:
@@ -67,14 +68,25 @@ class Spotify:
     def check_queue_insertion_forced(self, queue=None, skip_song=False):
         if queue is None:
             queue = self.db.get_queued_songs(only_approved=True)
-
-        if len(queue) < 2:
+        queueLen = len(queue)
+        if queueLen < 2:
             # Curently and or Next playing needed
             songs_to_add = self.fetch_next_playlist_songs(2-len(queue))
 
             for s in songs_to_add:
                 self.db.add_song_to_queue(
                     s["trackID"], approved=True, force_add=True)
+        else:
+            if self.db.get_settings()["queueState"] == "deactivated":
+                songs_to_add = self.fetch_next_playlist_songs(1)
+                print("lalala")
+                for s in songs_to_add:
+                    self.db.add_song_to_queue(
+                        s["trackID"], approved=True, force_add=True)
+
+        if queueLen == 0:
+            self.connector.add_to_queue(songs_to_add[0]["trackID"])
+
         self.add_to_spotify_queue(skip_song=skip_song)
 
     def fetch_next_playlist_songs(self, amount: int):
@@ -92,6 +104,10 @@ class Spotify:
 
     def add_to_spotify_queue(self, skip_song=False):
         to_play = self.db.set_next_song_queue()
-        self.connector.add_to_queue(to_play.track_id)
+        try:
+            self.connector.add_to_queue(to_play.track_id)
+        except Exception as a:
+            print("Cant add song to spotify queue", a)
         if skip_song:
             self.connector.next_track()
+            self.ws.send({"action": "reload_current_song"})

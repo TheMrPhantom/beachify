@@ -41,10 +41,10 @@ class Queries:
         queue_element = None
         if first is None and not trust_mode_on:
             queue_element = Queue(
-                song_id=search_result.id, is_next_song=True, approval_pending=(not approved))
+                song_id=search_result.id, is_next_song=True, approval_pending=(not approved), is_default_song=force_add)
         else:
             queue_element = Queue(song_id=search_result.id,
-                                  approval_pending=(not approved))
+                                  approval_pending=(not approved), is_default_song=force_add)
 
         self.session.add(queue_element)
         self.session.commit()
@@ -55,6 +55,8 @@ class Queries:
             is_next_song=False, played_time=None).all()
         trust_mode_on = self.session.query(Setting).filter_by(
             key="trust_mode").first().value == "approval"
+        queue_activated = self.session.query(Setting).filter_by(
+            key="queue_state").first().value == "activated"
         output = []
 
         for s in songs:
@@ -70,18 +72,22 @@ class Queries:
             waiting_time_s2 = (
                 datetime.now()-s2["insertion_time"]).total_seconds()
 
-            def song_value(w, u, d, approval_pending):
-                minus_for_pending = -10000000000 if approval_pending else 0
+            def song_value(w, u, d, approval_pending, default_song):
+                minus_for_pending = - \
+                    10000000000 if (
+                        approval_pending or not queue_activated) and not default_song else 0
                 return ((w/240)+u-d*2)+minus_for_pending
 
             return song_value(waiting_time_s2,
                               s2["upvotes"],
                               s2["downvotes"],
-                              s2["approvalPending"]
+                              s2["approvalPending"],
+                              s2["defaultSong"]
                               )-song_value(waiting_time_s1,
                                            s1["upvotes"],
                                            s1["downvotes"],
-                                           s1["approvalPending"]
+                                           s1["approvalPending"],
+                                           s1["defaultSong"]
                                            )
 
         output.sort(key=cmp_to_key(compare))
@@ -106,7 +112,8 @@ class Queries:
             print("get_queued_songs", a)
 
         if only_approved:
-            output = list(filter(lambda x: (not x["approvalPending"]), output))
+            output = list(
+                filter(lambda x: (not x["approvalPending"]), output))
 
         return output
 
@@ -224,6 +231,19 @@ class Queries:
 
         self.session.commit()
 
+    def delete_played_songs_from_queue(self):
+        waiting_time = int(self.session.query(
+            Setting).filter_by(key="waiting_time").first().value)
+        songs = self.session.query(Queue).all()
+
+        for element in songs:
+            song: Queue = element
+            if song.played_time is not None:
+                if song.insertion_time + timedelta(minutes=waiting_time) < datetime.now():
+                    self.session.delete(song)
+
+        self.session.commit()
+
     def set_next_song_queue(self) -> Song:
         trust_mode_on = self.session.query(Setting).filter_by(
             key="trust_mode").first().value == "approval"
@@ -295,7 +315,7 @@ class Queries:
         trust_mode = os.environ.get(
             "trust_mode") if os.environ.get("trust_mode") else "no_approval"
         default_playlist = os.environ.get(
-            "default_playlist") if os.environ.get("default_playlist") else ""
+            "default_playlist") if os.environ.get("default_playlist") else "6YP7NneFapA2Ynglzb3v2a"
         guest_token = os.environ.get(
             "guest_token") if os.environ.get("guest_token") else "beachify"
         waiting_time = os.environ.get(

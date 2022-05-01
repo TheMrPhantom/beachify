@@ -87,7 +87,8 @@ def format_song(queue_element: Queue, song: Song, trust_mode_on: bool, cant_add_
         "approvalPending": queue_element.approval_pending if trust_mode_on else False,
         "duration": song.duration,
         "insertion_time": queue_element.insertion_time,
-        "cant_add_reason": cant_add_reason
+        "cant_add_reason": cant_add_reason,
+        "defaultSong": queue_element.is_default_song
     }
 
 

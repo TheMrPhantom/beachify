@@ -7,6 +7,7 @@ import { Song } from '../Common/Types';
 import Cookies from 'js-cookie';
 import { useDispatch } from 'react-redux';
 import { setQueueSongs } from '../../Actions/QueueAction';
+import { openToast } from '../../Actions/CommonAction';
 
 type Props = {
     placeholder?: string
@@ -37,9 +38,14 @@ const SongArea = (props: Props) => {
 
     const addSongtoQueue = async (song: Song) => {
         await doRequest("queue/song", "PUT", song).then((value) => {
-            doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                dispatch(setQueueSongs(value.content))
-            })
+            if (value.code !== 200) {
+                console.log(value)
+                dispatch(openToast({ message: value.content, type: 'error' }))
+            } else {
+                doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                    dispatch(setQueueSongs(value.content))
+                })
+            }
         })
         setsearchText("")
     }
