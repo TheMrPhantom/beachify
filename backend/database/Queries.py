@@ -308,6 +308,12 @@ class Queries:
             self.set_next_song_queue()
         self.session.commit()
 
+    def get_database_song_id(self, track_id):
+        queue: Queue = self.session.query(Queue).filter(
+            Queue.song.has(track_id=track_id)).first()
+        song: Song = queue.song
+        return song.id
+
     def insert_default_settings(self):
         if self.session.query(Setting).first() is not None:
             return

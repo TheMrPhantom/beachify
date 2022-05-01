@@ -142,7 +142,7 @@ const Songcard = (props: Props) => {
     const setVotedCookie = async () => {
         const cookieRaw = Cookies.get("voted-songs")
         const cookie = cookieRaw ? cookieRaw : ""
-        Cookies.set("voted-songs", cookie + ";" + props.song.databaseID)
+        Cookies.set("voted-songs", cookie + ";" + props.song.trackID)
     }
 
     const getVotingButtons = () => {
@@ -150,8 +150,8 @@ const Songcard = (props: Props) => {
             const cookieRaw = Cookies.get("voted-songs")
             const cookie = cookieRaw ? cookieRaw : ""
 
-            const queueID = props.song.databaseID ? props.song.databaseID.toString() : "?"
-            if (!cookie.split(";").includes(queueID)) {
+            const trackID = props.song.trackID
+            if (!cookie.split(";").includes(trackID)) {
                 return <>
                     <Spacer vertical={5} />
                     <Divider style={{ width: "100%" }} />

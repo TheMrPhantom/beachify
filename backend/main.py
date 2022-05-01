@@ -86,6 +86,12 @@ def search_for_playlist(seach_term):
     return util.build_response(playlists)
 
 
+@app.route('/api/song/id/<string:track_id>', methods=["GET"])
+@with_beachify_token
+def song_info(track_id):
+    return util.build_response(db.get_database_song_id(track_id))
+
+
 @app.route('/api/queue/song', methods=["GET"])
 @with_beachify_token
 def get_songs_from_queue():
