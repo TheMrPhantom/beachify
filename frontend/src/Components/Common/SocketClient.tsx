@@ -43,7 +43,9 @@ const SocketClient = (props: Props) => {
                         break;
                     case "reload_queue":
                         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                            dispatch(setQueueSongs(value.content))
+                            if (value.code === 200) {
+                                dispatch(setQueueSongs(value.content))
+                            }
                         });
                         break;
                 }

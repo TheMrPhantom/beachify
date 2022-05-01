@@ -117,3 +117,7 @@ def simplify_spotify_playlist(playlist):
         "playlistID": playlist["id"],
         "coverURL": playlist["images"][0]["url"]
     }
+
+
+def check_password(password):
+    return admin_pw == password

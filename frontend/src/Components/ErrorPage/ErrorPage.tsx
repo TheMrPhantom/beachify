@@ -1,16 +1,19 @@
 import { Button, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { openToast } from '../../Actions/CommonAction'
+import { doPostRequest } from '../Common/StaticFunctions'
 import style from './error.module.scss'
 
 type Props = {
-    loginRequired?: boolean
+    login?: (password: string) => void
 }
 
 const ErrorPage = (props: Props) => {
     const [password, setpassword] = useState("")
+    const dispatch = useDispatch()
 
-
-    if (props.loginRequired) {
+    if (props.login) {
         return <div className={style.login}>
             <Typography variant='h2' align='center'>Bitte melde dich an</Typography>
             <TextField
@@ -29,7 +32,21 @@ const ErrorPage = (props: Props) => {
                 }}
             />
 
-            <Button variant='contained' className={style.loginButton}>Login</Button>
+            <Button
+                variant='contained'
+                className={style.loginButton}
+                onClick={() => {
+                    doPostRequest("login", password).then(value => {
+                        if (value.code === 200) {
+                            if (props.login) {
+                                props.login(password)
+                            }
+                        } else {
+                            dispatch(openToast({ message: "Falsches Passwort!", type: 'error', duration: 3000 }))
+                        }
+                    })
+                }}
+            >Login</Button>
             <img src="/svg/Palm-White.svg" alt="Palm" style={{ width: "50%", maxWidth: "300px", minWidth: "150px" }} />
         </div >
     }

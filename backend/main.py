@@ -32,9 +32,24 @@ taskScheduler.start()
 def with_beachify_token(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
-        if not db.check_secret(request.cookies.get('beachifyToken')):
-            return util.build_response("Wrong token", 401)
-        return fn(*args, **kwargs)
+        secret_correct = db.check_secret(request.cookies.get('beachifyToken'))
+        password_correct = util.check_password(request.cookies.get('password'))
+        if secret_correct or password_correct:
+            return fn(*args, **kwargs)
+        return util.build_response("Wrong token", 401)
+
+    wrapper.__name__ = fn.__name__
+    return wrapper
+
+
+def with_beachify_token(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        password_correct = util.check_password(request.cookies.get('password'))
+        if password_correct:
+            return fn(*args, **kwargs)
+        return util.build_response("Wrong token", 401)
+
     wrapper.__name__ = fn.__name__
     return wrapper
 
@@ -95,6 +110,16 @@ def add_song_to_queue():
         return util.build_response("Song added")
     else:
         return util.build_response("Song cant be added", code=409)
+
+
+@app.route('/api/queue/song/next', methods=["PUT"])
+@with_beachify_token
+@trigger_reload
+def set_next_song():
+    db.add_songs_to_songlist([request.json])
+    sp.connector.start_playback(uris=[request.json["trackID"]])
+
+    return util.build_response("Now playing")
 
 
 @app.route('/api/queue/song/upvote', methods=["PUT"])
@@ -204,7 +229,8 @@ def set_waiting_time():
 @app.route('/api/setting/defaultBanTime', methods=["PUT"])
 def set_default_ban_time():
     if int(request.json) > 0:
-        db.set_settings(value=request.json, setting_name="default_ban_time")
+        db.set_settings(value=request.json,
+                        setting_name="default_ban_time")
     else:
         return util.build_response("Die übergebene Ban Zeit ist keine gültige Zeit.", code=412)
     return util.build_response(request.json)
@@ -222,7 +248,8 @@ def set_queue_state():
 @app.route('/api/setting/queueSubmittable', methods=["PUT"])
 def set_queue_submittable():
     if request.json == "activated" or request.json == "deactivated":
-        db.set_settings(value=request.json, setting_name="queue_submittable")
+        db.set_settings(value=request.json,
+                        setting_name="queue_submittable")
     else:
         return util.build_response("Die übergebene Eingabe ist weder Aktiviert noch Deaktiviert.", code=412)
     return util.build_response(request.json)
@@ -300,7 +327,16 @@ def spotify_state():
     return util.build_response("OK")
 
 
-@app.route('/api/login/check', methods=["GET"])
+@app.route('/api/login', methods=["POST"])
+def login():
+    if util.check_password(request.json):
+        return util.build_response("OK")
+    else:
+        return util.build_response("Unauthorized", code=401)
+
+
+@app.route('/api/auth/login/status', methods=["GET"])
+@with_beachify_token
 def loginCheck():
     return util.build_response("OK")
 

@@ -1,7 +1,7 @@
 @import "../Common/variables.module.scss";
 
 $image-size: 130px;
-$corner-banner-height: 23px;
+$corner-banner-height: 35px;
 
 .cardContainer {
     display: flex;
@@ -42,7 +42,8 @@ $corner-banner-height: 23px;
     top: 0;
     background-color: rgba($color: #d7eaf3, $alpha: 1) !important;
     color: #062c30 !important;
-    padding: 15px;
+    padding-left: $padding;
+    padding-right: $padding;
     height: $corner-banner-height;
 
     display: flex;

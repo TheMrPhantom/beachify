@@ -119,7 +119,9 @@ const Songcard = (props: Props) => {
         doRequest("queue/song/upvote", "PUT", props.song.trackID).then(() => {
             setVotedCookie().then(() => {
                 doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                    dispatch(setQueueSongs(value.content))
+                    if (value.code === 200) {
+                        dispatch(setQueueSongs(value.content))
+                    }
                 })
             })
         })
@@ -129,7 +131,9 @@ const Songcard = (props: Props) => {
         doRequest("queue/song/downvote", "PUT", props.song.trackID).then(() => {
             setVotedCookie().then(() => {
                 doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                    dispatch(setQueueSongs(value.content))
+                    if (value.code === 200) {
+                        dispatch(setQueueSongs(value.content))
+                    }
                 })
             })
         })

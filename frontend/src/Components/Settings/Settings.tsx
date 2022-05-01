@@ -65,8 +65,6 @@ const Settings = (props: Props) => {
             }
         })
     }, [playlistSearch])
-    console.log(playlistSearch);
-    console.log(settingsState.defaultPlaylist);
 
     const defaultPlaylistElement: JSX.Element = <><TextField
         placeholder='Standard Playlist'
@@ -80,9 +78,9 @@ const Settings = (props: Props) => {
         value={playlistSearch}
         onChange={value => setplaylistSearch(value.target.value)}
     />
-        {playlistSearch !== settingsState.defaultPlaylist&&playlistSearch!=="" ?
+        {playlistSearch !== settingsState.defaultPlaylist && playlistSearch !== "" ?
             <Spacer vertical={10} /> : <></>}
-        {playlistSearch !== settingsState.defaultPlaylist&&playlistSearch!=="" ?
+        {playlistSearch !== settingsState.defaultPlaylist && playlistSearch !== "" ?
             playlistSearchItems.map((playlist) => {
                 return <>
                     <Playlistcard playlist={playlist} key={playlist.playlistID} callback={(playlist: Playlist) => {

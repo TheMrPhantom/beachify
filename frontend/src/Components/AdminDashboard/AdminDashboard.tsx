@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { doGetRequest, doRequest, secureRandomNumber } from '../Common/StaticFunctions'
+import { doGetRequest, doPostRequest, doRequest, secureRandomNumber } from '../Common/StaticFunctions'
 import ErrorPage from '../ErrorPage/ErrorPage'
 import UserDashboard from '../UserDashboard/UserDashboard'
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate } from 'react-router-dom';
 import { closeToast, openToast } from '../../Actions/CommonAction';
 import Spacer from '../Common/Spacer';
+import Cookies from 'js-cookie';
+import { setPlaystate } from '../../Actions/SettingsAction';
 
 type Props = {}
 
@@ -27,7 +29,6 @@ const AdminDashboard = (props: Props) => {
     useEffect(() => {
         doGetRequest("spotify/authentication").then((value) => {
             if (value.code !== 200) {
-                console.log("lalals")
                 dispatch(openToast({
                     message: "", type: "error", duration: 15000, jsxElement: <>
                         Spotify authentifizierung abgelaufen!
@@ -49,12 +50,19 @@ const AdminDashboard = (props: Props) => {
                 }))
             }
         })
+        doPostRequest("login", Cookies.get("password")).then(value => {
+            if (value.code === 200) {
+                setloggedIn(true)
+            }
+        })
     }, [dispatch])
 
 
     useEffect(() => {
         doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-            dispatch(setQueueSongs(value.content))
+            if (value.code === 200) {
+                dispatch(setQueueSongs(value.content))
+            }
         })
     }, [dispatch])
 
@@ -121,6 +129,28 @@ const AdminDashboard = (props: Props) => {
 
     }
 
+    if (!loggedIn) {
+        return <ErrorPage login={(password) => {
+            Cookies.set("password", password)
+            doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
+                if (value.code === 200) {
+                    dispatch(setNextSong(value.content))
+                }
+            });
+            doRequest("spotify/playstate/playing", "GET").then((value) => {
+                if (value.code === 200) {
+                    dispatch(setPlaystate(value.content))
+                }
+            });
+            doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                if (value.code === 200) {
+                    dispatch(setQueueSongs(value.content))
+                }
+            });
+            setloggedIn(true)
+        }} />
+    }
+
     return <div className={style.outterFlex}>
         <Button
             className={style.settingsButton}
@@ -132,20 +162,12 @@ const AdminDashboard = (props: Props) => {
         <div className={style.firstSecondSongDiv}>
             {currentlyPlaying()}
             {nextSong()}
-            <SongArea placeholder='Nächsten Song setzen' fullwidth={false} noHelp />
+            <SongArea placeholder='Nächsten Song setzen' fullwidth={false} noHelp nextSong />
             <SongArea placeholder='Song zur Warteschlage' fullwidth={false} noHelp />
         </div>
 
         {getSongTable()}
     </div>
-
-    if (!loggedIn) {
-        return <ErrorPage loginRequired />
-    }
-
-    return (
-        <UserDashboard />
-    )
 }
 
 export default AdminDashboard

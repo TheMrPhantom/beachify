@@ -13,6 +13,7 @@ type Props = {
     placeholder?: string
     fullwidth?: boolean
     noHelp?: boolean
+    nextSong?: boolean
 }
 
 const SongArea = (props: Props) => {
@@ -39,11 +40,27 @@ const SongArea = (props: Props) => {
     const addSongtoQueue = async (song: Song) => {
         await doRequest("queue/song", "PUT", song).then((value) => {
             if (value.code !== 200) {
-                console.log(value)
                 dispatch(openToast({ message: value.content, type: 'error' }))
             } else {
                 doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                    dispatch(setQueueSongs(value.content))
+                    if (value.code === 200) {
+                        dispatch(setQueueSongs(value.content))
+                    }
+                })
+            }
+        })
+        setsearchText("")
+    }
+
+    const setNextSong = async (song: Song) => {
+        await doRequest("queue/song/next", "PUT", song).then((value) => {
+            if (value.code !== 200) {
+                dispatch(openToast({ message: value.content, type: 'error' }))
+            } else {
+                doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                    if (value.code === 200) {
+                        dispatch(setQueueSongs(value.content))
+                    }
                 })
             }
         })
@@ -58,7 +75,7 @@ const SongArea = (props: Props) => {
             return <Songcard
                 key={song.trackID}
                 song={song}
-                callback={addSongtoQueue}
+                callback={!props.nextSong ? addSongtoQueue : setNextSong}
             />
         })
     }
