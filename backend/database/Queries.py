@@ -105,11 +105,14 @@ class Queries:
         except Exception as a:
             print("get_queued_songs", a)
 
-        time_elapsed = output[0]["duration"]
-        for song in output[1:]:
-            song["startsAt"] = util.toNumberDateTime(datetime.now(
-            )+timedelta(milliseconds=time_elapsed))
-            time_elapsed += song["duration"]
+        try:
+            time_elapsed = output[0]["duration"]
+            for song in output[1:]:
+                song["startsAt"] = util.toNumberDateTime(datetime.now(
+                )+timedelta(milliseconds=time_elapsed))
+                time_elapsed += song["duration"]
+        except:
+            print("Queue Empty")
 
         if only_approved:
             output = list(
