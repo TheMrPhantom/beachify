@@ -95,12 +95,6 @@ class Queries:
         for o in output:
             del o["insertion_time"]
 
-        time_elapsed = 0
-        for song in output:
-            song["startsAt"] = util.toNumberDateTime(datetime.now(
-            )+timedelta(milliseconds=time_elapsed))
-            time_elapsed += song["duration"]
-
         try:
             next: Queue = self.session.query(
                 Queue).filter_by(is_next_song=True).first()
@@ -110,6 +104,12 @@ class Queries:
             output.insert(0, d)
         except Exception as a:
             print("get_queued_songs", a)
+
+        time_elapsed = output[0]["duration"]
+        for song in output[1:]:
+            song["startsAt"] = util.toNumberDateTime(datetime.now(
+            )+timedelta(milliseconds=time_elapsed))
+            time_elapsed += song["duration"]
 
         if only_approved:
             output = list(
