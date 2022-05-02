@@ -31,9 +31,9 @@ export const setDefaultplaylist = (setting: string) => {
     }
 }
 
-export const setBlacklistplaylist = (setting: string) => {
+export const setWhitelistplaylist = (setting: string) => {
     return {
-        type: "SET_BL_PLAYLIST",
+        type: "SET_WL_PLAYLIST",
         payload: setting
     }
 }

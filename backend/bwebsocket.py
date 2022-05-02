@@ -28,5 +28,8 @@ class Websocket:
         self.server.send_message_to_all(json.dumps(message))
         print("Ws message sent:", message)
 
-    def trigger_reload(self):
+    def trigger_reload_queue(self):
         self.send({"action": "reload_queue"})
+    
+    def trigger_reload_next(self):
+        self.send({"action": "reload_current_song"})

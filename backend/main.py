@@ -59,7 +59,7 @@ def trigger_reload(fn):
     @wraps(fn)
     def wrapper(*args, **kwargs):
         f = fn(*args, **kwargs)
-        ws.trigger_reload()
+        ws.trigger_reload_queue()
 
         return f
     wrapper.__name__ = fn.__name__
@@ -219,14 +219,14 @@ def set_dp():
     return util.build_response(request.json)
 
 
-@app.route('/api/setting/blacklistPlaylist', methods=["PUT"])
+@app.route('/api/setting/whitelistPlaylist', methods=["PUT"])
 @admin
 def set_bp():
     if sp.connector.playlist(playlist_id=request.json['id']) is not None:
         db.set_settings(
-            value=request.json['name'], setting_name="blacklist_playlist")
+            value=request.json['name'], setting_name="whitelist_playlist")
         db.set_settings(
-            value=request.json['id'], setting_name="blacklist_playlist_id")
+            value=request.json['id'], setting_name="whitelist_playlist_id")
     else:
         return util.build_response("Die übergebene Playlist existiert nicht", code=412)
     return util.build_response(request.json)
@@ -348,7 +348,6 @@ def toggle_playstate():
 
 @app.route('/api/spotify/playstate/skip', methods=["POST"])
 @admin
-@trigger_reload
 def skip_song():
     sp.check_queue_insertion_forced(skip_song=True)
 

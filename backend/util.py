@@ -66,6 +66,7 @@ def simplify_spotify_track(song):
 
 
 def log(prefix, message):
+    print(prefix,":",message)
     if logging_enabled:
         time = datetime.datetime.now().strftime("%x %X")
         output_string = f"[{time}] {prefix} -> {message}"

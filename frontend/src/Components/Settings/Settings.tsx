@@ -14,7 +14,7 @@ import Texts from '../../texts.json';
 import style from './settings.module.scss'
 import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
-import { setAllSettings, setBlacklistplaylist, setDefaultBantime, setDefaultplaylist, setGuestToken, setListmode, setQueueState, setQueueSubmittable, setRetentionTime, setTrustmode, setWaitingTime } from '../../Actions/SettingsAction';
+import { setAllSettings, setWhitelistplaylist, setDefaultBantime, setDefaultplaylist, setGuestToken, setListmode, setQueueState, setQueueSubmittable, setRetentionTime, setTrustmode, setWaitingTime } from '../../Actions/SettingsAction';
 import { doGetRequest, doRequest } from '../Common/StaticFunctions';
 import { SettingsType } from '../../Reducer/SettingsReducer';
 import Spacer from '../Common/Spacer';
@@ -103,22 +103,22 @@ const Settings = (props: Props) => {
             : <></>}
     </>
 
-    const [playlistSearchBlacklist, setplaylistSearchBlacklist] = useState(settingsState.blacklistPlaylist)
-    const [playlistSearchItemsBlacklist, setplaylistSearchItemsBlacklist] = useState<Array<Playlist>>([])
+    const [playlistSearchWhitelist, setplaylistSearchWhitelist] = useState(settingsState.whitelistPlaylist)
+    const [playlistSearchItemsWhitelist, setplaylistSearchItemsWhitelist] = useState<Array<Playlist>>([])
 
     useEffect(() => {
-        doGetRequest("search/playlist/" + playlistSearchBlacklist).then(value => {
+        doGetRequest("search/playlist/" + playlistSearchWhitelist).then(value => {
             if (value.code === 200) {
-                setplaylistSearchItemsBlacklist(value.content)
+                setplaylistSearchItemsWhitelist(value.content)
             }
         })
-    }, [playlistSearchBlacklist])
+    }, [playlistSearchWhitelist])
 
     useEffect(() => {
-        setplaylistSearchBlacklist(settingsState.blacklistPlaylist)
-    }, [settingsState.blacklistPlaylist])
-    const blacklistPlaylistElement: JSX.Element = <><TextField
-        placeholder='Blacklist Playlist'
+        setplaylistSearchWhitelist(settingsState.whitelistPlaylist)
+    }, [settingsState.whitelistPlaylist])
+    const whitelistPlaylistElement: JSX.Element = <><TextField
+        placeholder='Whitelist Playlist'
         variant='outlined'
         fullWidth
         InputProps={{
@@ -126,21 +126,21 @@ const Settings = (props: Props) => {
                 input: style.resize,
             },
         }}
-        value={playlistSearchBlacklist}
-        onChange={value => setplaylistSearchBlacklist(value.target.value)}
+        value={playlistSearchWhitelist}
+        onChange={value => setplaylistSearchWhitelist(value.target.value)}
     />
-        {playlistSearchBlacklist !== settingsState.blacklistPlaylist && playlistSearchBlacklist !== "" ?
+        {playlistSearchWhitelist !== settingsState.whitelistPlaylist && playlistSearchWhitelist !== "" ?
             <Spacer vertical={10} /> : <></>}
-        {playlistSearchBlacklist !== settingsState.blacklistPlaylist && playlistSearchBlacklist !== "" ?
-            playlistSearchItemsBlacklist.map((playlist) => {
+        {playlistSearchWhitelist !== settingsState.whitelistPlaylist && playlistSearchWhitelist !== "" ?
+            playlistSearchItemsWhitelist.map((playlist) => {
                 return <>
                     <Playlistcard playlist={playlist} key={playlist.playlistID} callback={(playlist: Playlist) => {
-                        doRequest("setting/blacklistPlaylist",
+                        doRequest("setting/whitelistPlaylist",
                             "PUT",
                             { name: playlist.playlistname, id: playlist.playlistID }).then(
                                 (value) => {
-                                    dispatch(setBlacklistplaylist(value.content.name))
-                                    setplaylistSearchBlacklist(value.content.name)
+                                    dispatch(setWhitelistplaylist(value.content.name))
+                                    setplaylistSearchWhitelist(value.content.name)
                                 }
                             )
                     }} />
@@ -279,11 +279,11 @@ const Settings = (props: Props) => {
                 input={defaultPlaylistElement}
             />
             <Settingsbox
-                headline={Texts.BLACKLIST_PLAYLIST_HEADLINE}
-                short={Texts.BLACKLIST_PLAYLIST_SUB_HEADLINE}
-                description={Texts.BLACKLIST_PLAYLIST_SUB_DESCRIPTION}
+                headline={Texts.WHITELIST_PLAYLIST_HEADLINE}
+                short={Texts.WHITELIST_PLAYLIST_SUB_HEADLINE}
+                description={Texts.WHITELIST_PLAYLIST_SUB_DESCRIPTION}
                 icon={<PlaylistPlayIcon />}
-                input={blacklistPlaylistElement}
+                input={whitelistPlaylistElement}
             />
             <Settingsbox
                 headline={Texts.GUEST_TOKEN_MODE_HEADLINE}

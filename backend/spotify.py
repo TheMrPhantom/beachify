@@ -8,7 +8,7 @@ import util
 import bwebsocket
 from database import Queries
 import time
-
+from threading import Lock
 
 class Spotify:
 
@@ -26,6 +26,7 @@ class Spotify:
         self.login_state = util.randomString()
         self.default_playlist_song_id = 0
         self.default_playlist = db.get_settings()["defaultPlaylist"]
+        self.critical_function_lock = Lock()
 
     def get_token_url(self):
         self.login_state = util.randomString()
@@ -72,40 +73,60 @@ class Spotify:
             self.check_queue_insertion_forced(queue)
 
     def check_queue_insertion_forced(self, queue=None, skip_song=False):
-        if queue is None:
-            queue = self.db.get_queued_songs(only_approved=True)
-        queueLen = len(queue)
-        if queueLen < 2:
-            # Curently and or Next playing needed
-            songs_to_add = self.fetch_next_playlist_songs(2-len(queue))
+        with self.critical_function_lock:
+            if queue is None:
+                queue = self.db.get_queued_songs(only_approved=True)
+            queueLen = len(queue)
+            is_trust_mode = self.db.get_settings()[
+                "trustMode"] == "approval"
+            songs_to_add = []
+            if queueLen < 2:
+                # Curently and or Next playing needed
+                songs_to_add = None
 
-            for s in songs_to_add:
-                self.db.add_song_to_queue(
-                    s["trackID"], approved=True, force_add=True)
-        else:
-            if self.db.get_settings()["queueState"] == "deactivated":
-                songs_to_add = self.fetch_next_playlist_songs(1)
+                if len(queue) == 0:
+                    songs_to_add = self.fetch_next_playlist_songs(3)
+
+                else:
+                    songs_to_add = self.fetch_next_playlist_songs(1)
 
                 for s in songs_to_add:
                     self.db.add_song_to_queue(
                         s["trackID"], approved=True, force_add=True)
+            else:
+                if self.db.get_settings()["queueState"] == "deactivated":
+                    songs_to_add = self.fetch_next_playlist_songs(1)
 
-        if queueLen == 0:
-            self.connector.add_to_queue(songs_to_add[0]["trackID"])
+                    for s in songs_to_add:
+                        self.db.add_song_to_queue(
+                            s["trackID"], approved=True, force_add=True)
 
-        self.add_to_spotify_queue(skip_song=skip_song)
+            if queueLen == 0 and not is_trust_mode:
+                self.add_to_spotify_queue(skip_song=not skip_song)
+
+            self.add_to_spotify_queue(skip_song=skip_song)
+            self.ws.trigger_reload_queue()
+            self.ws.trigger_reload_next()
 
     def fetch_next_playlist_songs(self, amount: int):
+        songs_simplified = self.try_fetch_songs(amount)
+        if len(songs_simplified)!=amount:
+            print("No more songs in playlist, starting again",amount,"!=",len(songs_simplified))
+            self.default_playlist_song_id=0
+            songs_simplified = self.try_fetch_songs(amount)
+        self.default_playlist_song_id += amount
+
+        self.db.add_songs_to_songlist(songs_simplified)
+
+        return songs_simplified
+
+    def try_fetch_songs(self, amount: int):
         songs = self.connector.playlist_items(playlist_id=self.db.get_settings(
         )["defaultPlaylistID"], limit=amount, offset=self.default_playlist_song_id)
         songs_simplified = []
         for s in songs['items']:
             songs_simplified.append(
                 util.simplify_spotify_track(s['track']))
-        self.default_playlist_song_id += amount
-
-        self.db.add_songs_to_songlist(songs_simplified)
-
         return songs_simplified
 
     def add_to_spotify_queue(self, skip_song=False):
