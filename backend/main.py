@@ -69,8 +69,20 @@ def trigger_reload(fn):
 @app.route('/api/search/song/<string:seach_term>', methods=["GET"])
 @with_beachify_token
 def search_for_song(seach_term):
-    songs = util.simplify_spotify_tracks(
-        sp.connector.search(seach_term, limit=10, type='track'))
+    songs = []
+
+    if db.get_settings()["listMode"] == "blacklist":
+        songs = util.simplify_spotify_tracks(
+            sp.connector.search(seach_term, limit=10, type='track'))
+
+    else:
+        wl_songs = sp.get_all_wl_songs()
+
+        for playlist_song in wl_songs:
+            if str(seach_term).lower() in str(playlist_song["songname"]).lower():
+                songs.append(playlist_song)
+
+        songs = songs[:10]
 
     db.flag_queued_songs(songs)
     return util.build_response(songs)

@@ -1,7 +1,7 @@
 import queue
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-from sqlalchemy import true
+from sqlalchemy import false, true
 from database.Queue import Queue
 from database.Song import Song
 import util
@@ -9,6 +9,7 @@ import bwebsocket
 from database import Queries
 import time
 from threading import Lock
+
 
 class Spotify:
 
@@ -27,6 +28,7 @@ class Spotify:
         self.default_playlist_song_id = 0
         self.default_playlist = db.get_settings()["defaultPlaylist"]
         self.critical_function_lock = Lock()
+        self.wl_songs = None
 
     def get_token_url(self):
         self.login_state = util.randomString()
@@ -110,9 +112,10 @@ class Spotify:
 
     def fetch_next_playlist_songs(self, amount: int):
         songs_simplified = self.try_fetch_songs(amount)
-        if len(songs_simplified)!=amount:
-            print("No more songs in playlist, starting again",amount,"!=",len(songs_simplified))
-            self.default_playlist_song_id=0
+        if len(songs_simplified) != amount:
+            print("No more songs in playlist, starting again",
+                  amount, "!=", len(songs_simplified))
+            self.default_playlist_song_id = 0
             songs_simplified = self.try_fetch_songs(amount)
         self.default_playlist_song_id += amount
 
@@ -128,6 +131,26 @@ class Spotify:
             songs_simplified.append(
                 util.simplify_spotify_track(s['track']))
         return songs_simplified
+
+    def get_all_wl_songs(self, renew=False):
+        if self.wl_songs is not None and not renew:
+            return self.wl_songs
+
+        songs = []
+        next = True
+        offset = 0
+        while next:
+            songs_temp = self.connector.playlist_items(playlist_id=self.db.get_settings(
+            )["whitelistPlaylistID"], limit=40, offset=offset)
+            offset += 40
+            for s in songs_temp['items']:
+                songs.append(
+                    util.simplify_spotify_track(s['track']))
+            if len(songs_temp) < 40:
+                next = False
+
+        self.wl_songs=songs
+        return self.wl_songs
 
     def add_to_spotify_queue(self, skip_song=False):
         to_play = self.db.set_next_song_queue()
