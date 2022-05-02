@@ -235,6 +235,9 @@ def set_dp():
 @admin
 def set_bp():
     if sp.connector.playlist(playlist_id=request.json['id']) is not None:
+        #Refreshes cache
+        sp.get_all_wl_songs(renew=True)
+
         db.set_settings(
             value=request.json['name'], setting_name="whitelist_playlist")
         db.set_settings(
