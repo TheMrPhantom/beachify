@@ -257,7 +257,8 @@ const Settings = (props: Props) => {
             doPostRequest("queue/reset", {}).then(value => {
                 if (value.code === 200) {
                     dispatch(openToast({
-                        message: "Warteschlange zurückgesetzt"
+                        message: "Warteschlange zurückgesetzt",
+                        type: "success"
                     }))
                 }
             })
