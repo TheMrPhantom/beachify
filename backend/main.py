@@ -401,7 +401,7 @@ def login():
 
 
 @app.route('/api/auth/login/status', methods=["GET"])
-@with_beachify_token
+@admin
 def loginCheck():
     return util.build_response("OK")
 

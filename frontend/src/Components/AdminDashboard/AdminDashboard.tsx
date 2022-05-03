@@ -52,6 +52,8 @@ const AdminDashboard = (props: Props) => {
         doPostRequest("login", Cookies.get("password")).then(value => {
             if (value.code === 200) {
                 setloggedIn(true)
+            } else {
+                setloggedIn(false)
             }
         })
     }, [dispatch, loggedIn])
@@ -92,7 +94,7 @@ const AdminDashboard = (props: Props) => {
         } else {
             return <>
                 <Typography variant='h4'>Aktuell spielt</Typography>
-                <Songcard song={DummySong} key={secureRandomNumber()} skeleton />
+                <Songcard song={DummySong} key={secureRandomNumber()} playPauseControls skeleton />
             </>
         }
     }
