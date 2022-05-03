@@ -137,17 +137,26 @@ class Queries:
             else:
                 s["banned"] = True
 
-    def upvote_song(self, song_id):
-        song: Song = self.session.query(Queue).filter(
+    def upvote_song(self, song_id, user_ip):
+        song: Queue = self.session.query(Queue).filter(
             Queue.song.has(track_id=song_id)).first()
-        song.upvotes += 1
-        self.session.commit()
+        if user_ip not in song.voted_by:
+            song.upvotes += 1
+            song.voted_by += user_ip
+            self.session.commit()
+            return True
+        else:
+            return False
 
-    def downvote_song(self, song_id):
-        song: Song = self.session.query(Queue).filter(
+    def downvote_song(self, song_id, user_ip):
+        song: Queue = self.session.query(Queue).filter(
             Queue.song.has(track_id=song_id)).first()
-        song.downvotes += 1
-        self.session.commit()
+        if user_ip not in song.voted_by:
+            song.downvotes += 1
+            self.session.commit()
+            return True
+        else:
+            return False
 
     def delete_song(self, song_id):
         song: Song = self.session.query(Song).filter_by(id=song_id).first()

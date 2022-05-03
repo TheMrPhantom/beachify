@@ -129,6 +129,11 @@ const Songcard = (props: Props) => {
                         }
                     })
                 })
+            } else {
+                dispatch(openToast({
+                    message: value.content,
+                    type: "error"
+                }))
             }
         })
     }
@@ -146,6 +151,11 @@ const Songcard = (props: Props) => {
                         }
                     })
                 })
+            } else {
+                dispatch(openToast({
+                    message: value.content,
+                    type: "error"
+                }))
             }
         })
     }

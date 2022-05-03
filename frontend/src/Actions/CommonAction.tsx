@@ -1,6 +1,4 @@
 import { AlertColor } from "@mui/material"
-import { SettingsType } from "../Reducer/SettingsReducer"
-
 
 export const openToast = (settings: {
     message: string,

@@ -145,16 +145,22 @@ def set_next_song():
 @with_beachify_token
 @trigger_reload
 def song_from_queue_upvote():
-    db.upvote_song(request.json)
-    return util.build_response("Song upvoted")
+    success = db.upvote_song(request.json, request.remote_addr)
+    if success:
+        return util.build_response("Song upvoted")
+    else:
+        return util.build_response("Du hast bereits für diesen Song abgestimmt", code=403)
 
 
 @app.route('/api/queue/song/downvote', methods=["PUT"])
 @with_beachify_token
 @trigger_reload
 def song_from_queue_downvote():
-    db.downvote_song(request.json)
-    return util.build_response("Song downvoted")
+    success = db.downvote_song(request.json, request.remote_addr)
+    if success:
+        return util.build_response("Song downvoted")
+    else:
+        return util.build_response("Du hast bereits für diesen Song abgestimmt", code=403)
 
 
 @app.route('/api/queue/song/delete', methods=["POST"])

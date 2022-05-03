@@ -19,3 +19,4 @@ class Queue(db.Model):
         sql.DateTime, nullable=True)
     is_next_song = sql.Column(sql.Boolean, nullable=False, default=False)
     is_default_song = sql.Column(sql.Integer, nullable=False, default=False)
+    voted_by = sql.Column(sql.Text, nullable=False, default="")
