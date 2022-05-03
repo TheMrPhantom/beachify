@@ -146,6 +146,7 @@ def set_next_song():
 @trigger_reload
 def song_from_queue_upvote():
     success = db.upvote_song(request.json, request.remote_addr)
+    print(request.access_route)
     if success:
         return util.build_response("Song upvoted")
     else:
