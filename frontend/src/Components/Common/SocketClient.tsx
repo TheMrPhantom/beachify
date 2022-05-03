@@ -19,6 +19,17 @@ const SocketClient = (props: Props) => {
     }, [])
 
     useEffect(() => {
+        const closeWs = () => {
+            try {
+                if (ws !== null) {
+                    ws.close()
+                }
+            }
+            catch (e) {
+                console.log(e);
+            }
+        }
+
         if (ws !== null) {
             ws.onmessage = (e: MessageEvent) => {
 
@@ -61,12 +72,14 @@ const SocketClient = (props: Props) => {
 
             ws.onerror = () => {
                 setTimeout(() => {
+                    closeWs()
                     setws(new WebSocket(Config.WEBSOCKET_URL));
                 }, Math.random() * (maxTimeout - minTimeout) + minTimeout);
             }
 
             ws.onclose = () => {
                 setTimeout(() => {
+                    closeWs()
                     setws(new WebSocket(Config.WEBSOCKET_URL));
                 }, Math.random() * (maxTimeout - minTimeout) + minTimeout);
             }
