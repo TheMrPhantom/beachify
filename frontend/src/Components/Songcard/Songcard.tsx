@@ -16,6 +16,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { SettingsType } from '../../Reducer/SettingsReducer';
 import { setPlaystate } from '../../Actions/SettingsAction';
+import { openToast } from '../../Actions/CommonAction';
 
 type Props = {
     song: Song,
@@ -116,26 +117,36 @@ const Songcard = (props: Props) => {
     }
 
     const voteUp = () => {
-        doRequest("queue/song/upvote", "PUT", props.song.trackID).then(() => {
-            setVotedCookie().then(() => {
-                doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                    if (value.code === 200) {
-                        dispatch(setQueueSongs(value.content))
-                    }
+        doRequest("queue/song/upvote", "PUT", props.song.trackID).then((value) => {
+            if (value.code === 200) {
+                dispatch(openToast({
+                    message: "Song upgevoted"
+                }))
+                setVotedCookie().then(() => {
+                    doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                        if (value.code === 200) {
+                            dispatch(setQueueSongs(value.content))
+                        }
+                    })
                 })
-            })
+            }
         })
     }
 
     const voteDown = () => {
-        doRequest("queue/song/downvote", "PUT", props.song.trackID).then(() => {
-            setVotedCookie().then(() => {
-                doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
-                    if (value.code === 200) {
-                        dispatch(setQueueSongs(value.content))
-                    }
+        doRequest("queue/song/downvote", "PUT", props.song.trackID).then((value) => {
+            if (value.code === 200) {
+                dispatch(openToast({
+                    message: "Song downgevoted"
+                }))
+                setVotedCookie().then(() => {
+                    doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
+                        if (value.code === 200) {
+                            dispatch(setQueueSongs(value.content))
+                        }
+                    })
                 })
-            })
+            }
         })
     }
 

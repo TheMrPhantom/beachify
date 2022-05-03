@@ -182,6 +182,13 @@ def approve_song():
     return util.build_response("Song approved")
 
 
+@app.route('/api/queue/reset', methods=["POST"])
+@admin
+def reset_queue():
+    db.reset_queue()
+    return util.build_response("OK")
+
+
 @app.route('/api/auth/secret/check/<string:secret>', methods=["GET"])
 def checkSecret(secret):
     if db.check_secret(secret):
@@ -235,7 +242,7 @@ def set_dp():
 @admin
 def set_bp():
     if sp.connector.playlist(playlist_id=request.json['id']) is not None:
-        #Refreshes cache
+        # Refreshes cache
         sp.get_all_wl_songs(renew=True)
 
         db.set_settings(

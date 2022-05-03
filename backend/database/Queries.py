@@ -317,6 +317,11 @@ class Queries:
         song: Song = queue.song
         return song.id
 
+    def reset_queue(self):
+        queue_elements = self.session.query(Queue).all()
+        for q_e in queue_elements:
+            self.session.delete(q_e)
+
     def insert_default_settings(self):
         if self.session.query(Setting).first() is not None:
             return

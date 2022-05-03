@@ -31,5 +31,8 @@
     "RETENTION_TIME_SUB_DESCRIPTION": "Setze die Zeit in Minuten",
     "RECONNECT_SPOTIFY_HEADLINE": "Spotify Account verbinden",
     "RECONNECT_SPOTIFY_SUB_HEADLINE": "Verbinde den Spotify Account, der von Beachify gesteuert werden soll",
-    "RECONNECT_SPOTIFY_SUB_DESCRIPTION": ""
+    "RECONNECT_SPOTIFY_SUB_DESCRIPTION": "",
+    "RESET_QUEUE_HEADLINE": "Setze die Warteschlange zurück",
+    "RESET_QUEUE_SUB_HEADLINE": "Löscht alle Songs aus der Warteschlange",
+    "RESET_QUEUE_SUB_DESCRIPTION": ""
 }

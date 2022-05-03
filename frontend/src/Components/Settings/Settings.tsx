@@ -15,12 +15,14 @@ import style from './settings.module.scss'
 import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { RootStateOrAny, useDispatch, useSelector } from 'react-redux';
 import { setAllSettings, setWhitelistplaylist, setDefaultBantime, setDefaultplaylist, setGuestToken, setListmode, setQueueState, setQueueSubmittable, setRetentionTime, setTrustmode, setWaitingTime } from '../../Actions/SettingsAction';
-import { doGetRequest, doRequest } from '../Common/StaticFunctions';
+import { doGetRequest, doRequest, doPostRequest } from '../Common/StaticFunctions';
 import { SettingsType } from '../../Reducer/SettingsReducer';
 import Spacer from '../Common/Spacer';
 import { useNavigate } from 'react-router-dom';
 import { Playlist } from '../Common/Types';
 import Playlistcard from '../Playlistcard/Playlistcard';
+import { openToast } from '../../Actions/CommonAction';
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 
 type Props = {}
 
@@ -248,6 +250,22 @@ const Settings = (props: Props) => {
         Spotify Verbinden
     </Button>
 
+    const resetQueue: JSX.Element = <Button
+        fullWidth
+        variant='contained'
+        onClick={() => {
+            doPostRequest("queue/reset", {}).then(value => {
+                if (value.code === 200) {
+                    dispatch(openToast({
+                        message: "Warteschlange zurückgesetzt"
+                    }))
+                }
+            })
+        }}
+    >
+        Zurücksetzen
+    </Button>
+
     const toAdminPage = () => {
         navigate("/admin")
     }
@@ -336,6 +354,13 @@ const Settings = (props: Props) => {
                 description={Texts.RECONNECT_SPOTIFY_SUB_DESCRIPTION}
                 icon={<AudiotrackIcon />}
                 input={reAuthenticateElement}
+            />
+            <Settingsbox
+                headline={Texts.RESET_QUEUE_HEADLINE}
+                short={Texts.RESET_QUEUE_SUB_HEADLINE}
+                description={Texts.RESET_QUEUE_SUB_DESCRIPTION}
+                icon={<RotateLeftIcon />}
+                input={resetQueue}
             />
         </div>
         <Spacer vertical={5} />

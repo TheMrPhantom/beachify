@@ -42,6 +42,9 @@ const SongArea = (props: Props) => {
             if (value.code !== 200) {
                 dispatch(openToast({ message: value.content, type: 'error' }))
             } else {
+                dispatch(openToast({
+                    message: "Song zur Warteschlange hinzugefügt"
+                }))
                 doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
                     if (value.code === 200) {
                         dispatch(setQueueSongs(value.content))
