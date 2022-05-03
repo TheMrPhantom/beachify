@@ -145,8 +145,7 @@ def set_next_song():
 @with_beachify_token
 @trigger_reload
 def song_from_queue_upvote():
-    success = db.upvote_song(request.json, request.remote_addr)
-    print(request.access_route)
+    success = db.upvote_song(request.json, str(request.access_route[0]))
     if success:
         return util.build_response("Song upvoted")
     else:
@@ -157,7 +156,7 @@ def song_from_queue_upvote():
 @with_beachify_token
 @trigger_reload
 def song_from_queue_downvote():
-    success = db.downvote_song(request.json, request.remote_addr)
+    success = db.downvote_song(request.json, str(request.access_route[0]))
     if success:
         return util.build_response("Song downvoted")
     else:
