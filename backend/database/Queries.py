@@ -321,6 +321,7 @@ class Queries:
         queue_elements = self.session.query(Queue).all()
         for q_e in queue_elements:
             self.session.delete(q_e)
+        self.session.commit()
 
     def insert_default_settings(self):
         if self.session.query(Setting).first() is not None:
