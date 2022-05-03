@@ -120,7 +120,8 @@ const Songcard = (props: Props) => {
         doRequest("queue/song/upvote", "PUT", props.song.trackID).then((value) => {
             if (value.code === 200) {
                 dispatch(openToast({
-                    message: "Song upgevoted"
+                    message: "Song upgevoted",
+                    type: "success"
                 }))
                 setVotedCookie().then(() => {
                     doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
@@ -142,7 +143,8 @@ const Songcard = (props: Props) => {
         doRequest("queue/song/downvote", "PUT", props.song.trackID).then((value) => {
             if (value.code === 200) {
                 dispatch(openToast({
-                    message: "Song downgevoted"
+                    message: "Song downgevoted",
+                    type: "success"
                 }))
                 setVotedCookie().then(() => {
                     doGetRequest("queue/song").then((value: { code: number, content?: any }) => {
