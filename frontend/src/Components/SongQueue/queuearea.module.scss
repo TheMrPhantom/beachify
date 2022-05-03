@@ -12,6 +12,7 @@
     flex-direction: column;
     flex-wrap: wrap;
     align-items: flex-start;
+    max-width: 500px;
     padding: $padding;
     gap: $flex-gap;
 }
