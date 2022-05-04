@@ -144,6 +144,11 @@ class Queries:
             song.upvotes += 1
             song.voted_by += user_ip
             self.session.commit()
+            if song.upvotes+song.downvotes > util.min_votes_for_deletion:
+                song_count = song.upvotes+song.downvotes
+                if song.downvotes / song_count > util.ratio_of_downvotes:
+                    self.session.delete(song)
+                    self.session.commit()
             return True
         else:
             return False
@@ -154,6 +159,11 @@ class Queries:
         if user_ip not in song.voted_by:
             song.downvotes += 1
             self.session.commit()
+            if song.upvotes+song.downvotes > util.min_votes_for_deletion:
+                song_count = song.upvotes+song.downvotes
+                if song.downvotes / song_count > util.ratio_of_downvotes:
+                    self.session.delete(song)
+                    self.session.commit()
             return True
         else:
             return False

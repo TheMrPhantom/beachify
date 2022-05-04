@@ -18,6 +18,14 @@ admin_pw = os.environ.get("adminpw") if os.environ.get(
 logging_enabled = True if os.environ.get(
     "logging") else False
 
+min_votes_for_deletion = int(os.environ.get(
+    "min_votes_for_deletion")) if os.environ.get(
+    "min_votes_for_deletion") else 8
+
+ratio_of_downvotes = float(os.environ.get(
+    "ratio_of_downvotes")) if os.environ.get(
+    "ratio_of_downvotes") else 0.75
+
 os.environ['TZ'] = 'Europe/London'
 time.tzset()
 
@@ -66,7 +74,7 @@ def simplify_spotify_track(song):
 
 
 def log(prefix, message):
-    print(prefix,":",message)
+    print(prefix, ":", message)
     if logging_enabled:
         time = datetime.datetime.now().strftime("%x %X")
         output_string = f"[{time}] {prefix} -> {message}"
