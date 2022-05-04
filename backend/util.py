@@ -20,11 +20,11 @@ logging_enabled = True if os.environ.get(
 
 min_votes_for_deletion = int(os.environ.get(
     "min_votes_for_deletion")) if os.environ.get(
-    "min_votes_for_deletion") else 8
+    "min_votes_for_deletion") else 6
 
 ratio_of_downvotes = float(os.environ.get(
     "ratio_of_downvotes")) if os.environ.get(
-    "ratio_of_downvotes") else 0.75
+    "ratio_of_downvotes") else 0.5
 
 os.environ['TZ'] = 'Europe/London'
 time.tzset()
@@ -130,3 +130,11 @@ def simplify_spotify_playlist(playlist):
 
 def check_password(password):
     return admin_pw == password
+
+
+def delete_song_if_bad_votes(song: Queue, session):
+    if song.upvotes+song.downvotes > min_votes_for_deletion:
+        song_count = song.upvotes+song.downvotes
+        if (song.downvotes / song_count) > ratio_of_downvotes:
+            session.delete(song)
+            session.commit()

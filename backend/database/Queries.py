@@ -74,8 +74,8 @@ class Queries:
 
             def song_value(w, u, d, approval_pending, default_song):
                 minus_for_pending = - \
-                    10000000000 if (
-                        approval_pending or not queue_activated) and not default_song else 0
+                    10000000000 if ((
+                        approval_pending or not queue_activated) and not default_song) or u <= d else 0
                 return ((w/240)+u-d*2)+minus_for_pending
 
             return song_value(waiting_time_s2,
@@ -116,7 +116,7 @@ class Queries:
 
         if only_approved:
             output = list(
-                filter(lambda x: (not x["approvalPending"]), output))
+                filter(lambda x: (not x["approvalPending"]) and x["upvotes"] > x["downvotes"], output))
 
         return output
 
@@ -144,11 +144,7 @@ class Queries:
             song.upvotes += 1
             song.voted_by += user_ip
             self.session.commit()
-            if song.upvotes+song.downvotes > util.min_votes_for_deletion:
-                song_count = song.upvotes+song.downvotes
-                if song.downvotes / song_count > util.ratio_of_downvotes:
-                    self.session.delete(song)
-                    self.session.commit()
+            util.delete_song_if_bad_votes(song=song, session=self.session)
             return True
         else:
             return False
@@ -159,11 +155,7 @@ class Queries:
         if user_ip not in song.voted_by:
             song.downvotes += 1
             self.session.commit()
-            if song.upvotes+song.downvotes > util.min_votes_for_deletion:
-                song_count = song.upvotes+song.downvotes
-                if song.downvotes / song_count > util.ratio_of_downvotes:
-                    self.session.delete(song)
-                    self.session.commit()
+            util.delete_song_if_bad_votes(song=song, session=self.session)
             return True
         else:
             return False
