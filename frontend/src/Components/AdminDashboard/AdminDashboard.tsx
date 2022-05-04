@@ -132,7 +132,7 @@ const AdminDashboard = (props: Props) => {
 
     if (!loggedIn) {
         return <ErrorPage login={(password) => {
-            Cookies.set("password", password)
+            Cookies.set("password", password, { secure: true })
             doRequest("spotify/playstate/currentlyPlaying", "GET").then((value) => {
                 if (value.code === 200) {
                     dispatch(setNextSong(value.content))
