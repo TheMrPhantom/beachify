@@ -116,7 +116,7 @@ class Queries:
 
         if only_approved:
             output = list(
-                filter(lambda x: (not x["approvalPending"]) and x["upvotes"] > x["downvotes"], output))
+                filter(lambda x: ((not x["approvalPending"]) and x["upvotes"] > x["downvotes"]) or x["defaultSong"], output))
 
         return output
 

@@ -192,6 +192,7 @@ def approve_song():
 @admin
 def reset_queue():
     db.reset_queue()
+    sp.currentSong = None
     return util.build_response("OK")
 
 

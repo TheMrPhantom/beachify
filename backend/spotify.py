@@ -149,7 +149,7 @@ class Spotify:
             if len(songs_temp) < 40:
                 next = False
 
-        self.wl_songs=songs
+        self.wl_songs = songs
         return self.wl_songs
 
     def add_to_spotify_queue(self, skip_song=False):
