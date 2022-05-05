@@ -75,7 +75,7 @@ class Queries:
             def song_value(w, u, d, approval_pending, default_song):
                 minus_for_pending = - \
                     10000000000 if ((
-                        approval_pending or not queue_activated) and not default_song) or u <= d else 0
+                        approval_pending or not queue_activated or u <= d) and not default_song) else 0
                 return ((w/240)+u-d*2)+minus_for_pending
 
             return song_value(waiting_time_s2,
