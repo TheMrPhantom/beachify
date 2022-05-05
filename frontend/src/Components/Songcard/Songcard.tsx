@@ -61,10 +61,20 @@ const Songcard = (props: Props) => {
         if (!props.playsIn) {
             return <></>
         }
-        return <>
-            <Typography variant='caption'>Spielt in {calcTime()} min</Typography>
-            <Divider orientation='vertical' className={style.divider} />
-        </>
+        if (props.song !== undefined &&
+            props.song.downvotes !== undefined &&
+            props.song.upvotes !== undefined &&
+            (props.song.upvotes > props.song.downvotes)) {
+            return <>
+                <Typography variant='caption'>Spielt in {calcTime()} min</Typography>
+                <Divider orientation='vertical' className={style.divider} />
+            </>
+        } else {
+            return <>
+                <Typography variant='caption'>Nicht genug Upvotes</Typography>
+                <Divider orientation='vertical' className={style.divider} />
+            </>
+        }
     }
 
     const calcTime = () => {
