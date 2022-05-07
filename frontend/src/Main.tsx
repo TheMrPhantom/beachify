@@ -14,6 +14,7 @@ const Main = (props: Props) => {
             <Route path="/dashboard/:secret" element={<UserDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/settings" element={<Settings />} />
+            <Route path="/moderator" element={<AdminDashboard />} />
         </Routes>
     )
 }
