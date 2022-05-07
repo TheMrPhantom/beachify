@@ -339,6 +339,12 @@ def authorize_spotify():
     return util.build_response(sp.get_token_url(show_dialog=True))
 
 
+@app.route('/api/spotify/authorize/automatic', methods=["GET"])
+@admin
+def authorize_spotify_automatic():
+    return util.build_response(sp.get_token_url())
+
+
 @app.route('/api/spotify/authorize/callback', methods=["GET"])
 def spotify_callback():
     sp.set_token(request.args.get("code"), request.args.get("state"))
