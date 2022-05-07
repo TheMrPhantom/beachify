@@ -145,3 +145,5 @@ def delete_song_if_bad_votes(song: Queue, session):
         if (song.downvotes / song_count) > ratio_of_downvotes:
             session.delete(song)
             session.commit()
+            return True
+    return False

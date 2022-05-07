@@ -92,15 +92,12 @@ class Queries:
 
         output.sort(key=cmp_to_key(compare))
 
-        for o in output:
-            del o["insertion_time"]
-
         try:
             next: Queue = self.session.query(
                 Queue).filter_by(is_next_song=True).first()
             d = util.format_song(
                 next, next.song, trust_mode_on, None)
-            del d["insertion_time"]
+
             output.insert(0, d)
         except Exception as a:
             print("get_queued_songs", a)
@@ -116,7 +113,10 @@ class Queries:
 
         if only_approved:
             output = list(
-                filter(lambda x: ((not x["approvalPending"]) and x["upvotes"] > x["downvotes"]) or x["defaultSong"], output))
+                filter(lambda x: ((not x["approvalPending"]) and x["upvotes"] > x["downvotes"] and datetime.now()-x["insertion_time"] > timedelta(minutes=5)) or x["defaultSong"], output))
+
+        for o in output:
+            del o["insertion_time"]
 
         return output
 
@@ -154,6 +154,7 @@ class Queries:
             Queue.song.has(track_id=song_id)).first()
         if user_ip not in song.voted_by:
             song.downvotes += 1
+            song.voted_by += user_ip
             self.session.commit()
             util.delete_song_if_bad_votes(song=song, session=self.session)
             return True
