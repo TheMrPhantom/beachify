@@ -12,7 +12,8 @@ export type Song = {
     downvotes?: number,
     alreadyAdded?: boolean,
     banned?: boolean,
-    approvalPending?: boolean
+    approvalPending?: boolean,
+    insertion_time?: string
 }
 
 export type Playlist = {

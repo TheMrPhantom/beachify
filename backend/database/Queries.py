@@ -116,7 +116,8 @@ class Queries:
                 filter(lambda x: ((not x["approvalPending"]) and x["upvotes"] > x["downvotes"] and datetime.now()-x["insertion_time"] > timedelta(minutes=5)) or x["defaultSong"], output))
 
         for o in output:
-            del o["insertion_time"]
+            o["insertion_time"] = datetime.strftime(
+                o["insertion_time"], '%Y-%m-%dT%H:%M:%S.000Z')
 
         return output
 
