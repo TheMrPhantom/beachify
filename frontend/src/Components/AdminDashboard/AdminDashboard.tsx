@@ -113,7 +113,11 @@ const AdminDashboard = (props: Props) => {
     }
 
     const redirectToSettings = () => {
-        navigate("/admin/settings");
+        if (!window.location.pathname.includes("moderator")) {
+            navigate("/admin/settings");
+        } else {
+            dispatch(openToast({ message: "Du kannst das nicht mit der Moderations-Seite tun", type: "error" }))
+        }
     }
 
     const getSongTable = (): JSX.Element => {
