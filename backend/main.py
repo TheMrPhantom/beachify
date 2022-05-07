@@ -12,6 +12,7 @@ from web import *
 from database import Queries
 import spotify
 import bwebsocket
+import prometheus_exporter
 
 # Database
 token_manager = authenticator.TokenManager()
@@ -19,6 +20,7 @@ token_manager = authenticator.TokenManager()
 db = Queries.Queries(sql_database)
 ws = bwebsocket.Websocket()
 sp = spotify.Spotify(ws, db)
+pe = prometheus_exporter.PrometheusExporter(sp, ws, db)
 
 # Tasks
 taskScheduler = TaskScheduler.TaskScheduler()
@@ -27,6 +29,7 @@ taskScheduler.add_minutely_task(db.delete_old_songs_from_ban)
 taskScheduler.add_secondly_task(sp.checkCurrentSong)
 taskScheduler.add_secondly_task(sp.check_queue_insertion)
 taskScheduler.add_secondly_task(sp.check_spotify_connection)
+taskScheduler.add_secondly_task(pe.update_metrics)
 taskScheduler.start()
 
 

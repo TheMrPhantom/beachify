@@ -26,6 +26,12 @@ ratio_of_downvotes = float(os.environ.get(
     "ratio_of_downvotes")) if os.environ.get(
     "ratio_of_downvotes") else 0.5
 
+prometheus_prefix = os.environ.get("prometheus_prefix") if os.environ.get(
+    "prometheus_prefix") else "beachify"
+
+prometheus_port = int(os.environ.get("prometheus_port")) if os.environ.get(
+    "prometheus_port") else 8080
+
 os.environ['TZ'] = 'Europe/London'
 time.tzset()
 

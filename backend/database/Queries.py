@@ -235,6 +235,7 @@ class Queries:
         }
 
     def delete_old_songs_from_queue(self):
+        print("Deleting old songs from queue")
         retention_time = int(self.session.query(
             Setting).filter_by(key="retention_time").first().value)
         songs = self.session.query(Queue).all()
@@ -302,6 +303,7 @@ class Queries:
         self.session.commit()
 
     def delete_old_songs_from_ban(self):
+        print("Deleting old songs from ban list")
         retention_time = int(self.session.query(
             Setting).filter_by(key="default_ban_time").first().value)
         songs = self.session.query(Ban).all()

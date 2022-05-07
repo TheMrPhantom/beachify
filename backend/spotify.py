@@ -35,6 +35,7 @@ class Spotify:
         return SpotifyOAuth(scope=self.scope).get_authorize_url(state=self.login_state)
 
     def check_spotify_connection(self):
+        print("Checking spotify connection")
         try:
             self.connector.current_user()
         except:
@@ -51,6 +52,7 @@ class Spotify:
             return False
 
     def checkCurrentSong(self):
+        print("Checking current song")
         try:
             received_input = self.connector.currently_playing()
             received = util.simplify_spotify_track(received_input['item'])
@@ -67,6 +69,7 @@ class Spotify:
         self.default_playlist_song_id = 0
 
     def check_queue_insertion(self):
+        print("Checking if song should be inserted")
         queue = self.db.get_queued_songs(only_approved=True)
         if len(queue) > 0:
             if self.currentSong is None or queue[0]["trackID"] == self.currentSong:
@@ -155,6 +158,7 @@ class Spotify:
     def add_to_spotify_queue(self, skip_song=False):
         to_play = self.db.set_next_song_queue()
         try:
+            print(f"Song {to_play.songname} added to queue")
             self.connector.add_to_queue(to_play.track_id)
         except Exception as a:
             print("Cant add song to spotify queue", a)

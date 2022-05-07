@@ -13,12 +13,15 @@ class Websocket:
         self.server.set_fn_client_left(self.on_disconnect)
         self.server.set_fn_message_received(self.on_recieve)
         self.server.run_forever(threaded=True)
+        self.active_connections = 0
 
     def on_connect(self, client, server):
         print(f"New Client with id {client['id']}")
+        self.active_connections += 1
 
     def on_disconnect(self, client, server):
         print(f"Client disconnect with id {client['id']}")
+        self.active_connections -= 1
 
     def on_recieve(self, client, server, message):
         print(f"Client with id {client['id']} sent: {message}")
@@ -30,6 +33,6 @@ class Websocket:
 
     def trigger_reload_queue(self):
         self.send({"action": "reload_queue"})
-    
+
     def trigger_reload_next(self):
         self.send({"action": "reload_current_song"})
