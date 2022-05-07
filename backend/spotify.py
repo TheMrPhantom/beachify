@@ -28,6 +28,7 @@ class Spotify:
         self.default_playlist_song_id = 0
         self.default_playlist = db.get_settings()["defaultPlaylist"]
         self.critical_function_lock = Lock()
+        self.critical_function_lock_2 = Lock()
         self.wl_songs = None
 
     def get_token_url(self):
@@ -136,24 +137,28 @@ class Spotify:
         return songs_simplified
 
     def get_all_wl_songs(self, renew=False):
-        if self.wl_songs is not None and not renew:
+        with self.critical_function_lock_2:
+            if self.wl_songs is not None and not renew:
+                return self.wl_songs
+
+            songs = []
+            next = True
+            offset = 0
+
+            while next:
+                songs_temp = self.connector.playlist_items(playlist_id=self.db.get_settings(
+                )["whitelistPlaylistID"], limit=50, offset=offset)
+                offset += 50
+                print("Loading song", offset)
+                for s in songs_temp['items']:
+                    if s['track'] is not None:
+                        songs.append(
+                            util.simplify_spotify_track(s['track']))
+                if len(songs_temp['items']) < 50:
+                    next = False
+
+            self.wl_songs = songs
             return self.wl_songs
-
-        songs = []
-        next = True
-        offset = 0
-        while next:
-            songs_temp = self.connector.playlist_items(playlist_id=self.db.get_settings(
-            )["whitelistPlaylistID"], limit=40, offset=offset)
-            offset += 40
-            for s in songs_temp['items']:
-                songs.append(
-                    util.simplify_spotify_track(s['track']))
-            if len(songs_temp) < 40:
-                next = False
-
-        self.wl_songs = songs
-        return self.wl_songs
 
     def add_to_spotify_queue(self, skip_song=False):
         to_play = self.db.set_next_song_queue()

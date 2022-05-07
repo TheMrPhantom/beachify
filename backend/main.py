@@ -82,7 +82,14 @@ def search_for_song(seach_term):
         wl_songs = sp.get_all_wl_songs()
 
         for playlist_song in wl_songs:
-            if str(seach_term).lower() in str(playlist_song["songname"]).lower():
+            in_songname = str(seach_term).lower() in str(
+                playlist_song["songname"]).lower()
+            in_interpret = str(seach_term).lower() in str(
+                playlist_song["interpret"]).lower()
+            in_album = str(seach_term).lower() in str(
+                playlist_song["album"]).lower()
+
+            if in_songname or in_interpret or in_album:
                 songs.append(playlist_song)
 
         songs = songs[:10]

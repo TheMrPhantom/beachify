@@ -70,10 +70,11 @@ def simplify_spotify_tracks(song):
 
 
 def simplify_spotify_track(song):
+
     return {
         "trackID": song["uri"],
         "album": song["album"]["name"],
-        "coverURL": song["album"]["images"][1]["url"],
+        "coverURL": song["album"]["images"][1]["url"] if len(song["album"]["images"]) > 1 else "",
         "interpret": song["artists"][0]["name"],
         "songname": song["name"],
         "duration": song["duration_ms"]}
