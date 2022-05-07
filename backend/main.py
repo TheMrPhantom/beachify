@@ -336,7 +336,7 @@ def set_retention_time():
 @app.route('/api/spotify/authorize', methods=["GET"])
 @admin
 def authorize_spotify():
-    return util.build_response(sp.get_token_url())
+    return util.build_response(sp.get_token_url(show_dialog=True))
 
 
 @app.route('/api/spotify/authorize/callback', methods=["GET"])

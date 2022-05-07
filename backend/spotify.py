@@ -31,9 +31,9 @@ class Spotify:
         self.critical_function_lock_2 = Lock()
         self.wl_songs = None
 
-    def get_token_url(self):
+    def get_token_url(self, show_dialog=False):
         self.login_state = util.randomString()
-        return SpotifyOAuth(scope=self.scope).get_authorize_url(state=self.login_state)
+        return SpotifyOAuth(scope=self.scope, show_dialog=show_dialog).get_authorize_url(state=self.login_state)
 
     def check_spotify_connection(self):
         print("Checking spotify connection")
