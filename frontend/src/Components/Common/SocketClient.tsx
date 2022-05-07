@@ -60,8 +60,8 @@ const SocketClient = (props: Props) => {
                         });
                         break;
                     case "renew_spotify":
-                        if (!window.location.pathname.includes("moderator"))
-                            doGetRequest("spotify/authorize").then(value => {
+                        if (window.location.pathname.includes("admin"))
+                            doGetRequest("spotify/authorize/automatic").then(value => {
                                 if (value.code === 200) {
                                     window.location = value.content
                                 }
