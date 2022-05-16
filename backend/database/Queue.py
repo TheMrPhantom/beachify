@@ -11,7 +11,7 @@ class Queue(db.Model):
     song = relationship(
         'database.Song.Song', lazy="joined")
     approval_pending = sql.Column(sql.Boolean, nullable=False, default=True)
-    upvotes = sql.Column(sql.Integer, nullable=False, default=0)
+    upvotes = sql.Column(sql.Integer, nullable=False, default=1)
     downvotes = sql.Column(sql.Integer, nullable=False, default=0)
     insertion_time = sql.Column(
         sql.DateTime, nullable=False, default=datetime.now)
