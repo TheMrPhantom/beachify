@@ -27,18 +27,22 @@ class PrometheusExporter:
 
     def update_metrics(self):
         print("Updating prometheus metrics")
-        queued_songs = self.db.get_queued_songs()
-        queued_songs_approved = self.db.get_queued_songs(only_approved=True)
-        self.metrics['queue_length_all'].set(len(queued_songs))
-        self.metrics['queue_length_playable'].set(len(queued_songs_approved))
-        upvotes = 0
-        downvotes = 0
+        try:
+            queued_songs = self.db.get_queued_songs()
+            queued_songs_approved = self.db.get_queued_songs(
+                only_approved=True)
+            self.metrics['queue_length_all'].set(len(queued_songs))
+            self.metrics['queue_length_playable'].set(
+                len(queued_songs_approved))
+            upvotes = 0
+            downvotes = 0
 
-        for s in queued_songs:
-            upvotes += s['upvotes']
-            downvotes += s['downvotes']
+            for s in queued_songs:
+                upvotes += s['upvotes']
+                downvotes += s['downvotes']
 
-        self.metrics['upvotes'].set(upvotes)
-        self.metrics['downvotes'].set(downvotes)
-        self.metrics['ws_clients'].set(self.ws.active_connections)
-        pass
+            self.metrics['upvotes'].set(upvotes)
+            self.metrics['downvotes'].set(downvotes)
+            self.metrics['ws_clients'].set(self.ws.active_connections)
+        except Exception as e:
+            print("Error in Prometheus Exporter Line 46:", e)

@@ -12,8 +12,11 @@ class TaskScheduler:
 
     def loop(self) -> None:
         while True:
-            time.sleep(1)
-            schedule.run_pending()
+            try:
+                time.sleep(1)
+                schedule.run_pending()
+            except Exception as e:
+                print("Error in TaskScheduler loop:", e)
 
     def add_Daily_Task(self, task, *args) -> None:
         if len(args) > 0:

@@ -40,6 +40,7 @@ class Spotify:
         try:
             self.connector.current_user()
         except:
+            print("Error in spotify Line 42: Cant get current user")
             self.ws.send({"action": "renew_spotify"})
 
     def set_token(self, token, state):
@@ -71,12 +72,15 @@ class Spotify:
 
     def check_queue_insertion(self):
         print("Checking if song should be inserted")
-        queue = self.db.get_queued_songs(only_approved=True)
-        if len(queue) > 0:
-            if self.currentSong is None or queue[0]["trackID"] == self.currentSong:
+        try:
+            queue = self.db.get_queued_songs(only_approved=True)
+            if len(queue) > 0:
+                if self.currentSong is None or queue[0]["trackID"] == self.currentSong:
+                    self.check_queue_insertion_forced(queue)
+            else:
                 self.check_queue_insertion_forced(queue)
-        else:
-            self.check_queue_insertion_forced(queue)
+        except Exception as e:
+            print("Error in spotify Line 82:", e)
 
     def check_queue_insertion_forced(self, queue=None, skip_song=False):
         with self.critical_function_lock:

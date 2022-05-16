@@ -238,17 +238,20 @@ class Queries:
 
     def delete_old_songs_from_queue(self):
         print("Deleting old songs from queue")
-        retention_time = int(self.session.query(
-            Setting).filter_by(key="retention_time").first().value)
-        songs = self.session.query(Queue).all()
+        try:
+            retention_time = int(self.session.query(
+                Setting).filter_by(key="retention_time").first().value)
+            songs = self.session.query(Queue).all()
 
-        for element in songs:
-            song: Queue = element
+            for element in songs:
+                song: Queue = element
 
-            if song.insertion_time + timedelta(minutes=retention_time) < datetime.now():
-                self.session.delete(song)
+                if song.insertion_time + timedelta(minutes=retention_time) < datetime.now():
+                    self.session.delete(song)
 
-        self.session.commit()
+            self.session.commit()
+        except Exception as e:
+            print("Error in Queries Line 254:", e)
 
     def delete_played_songs_from_queue(self):
         waiting_time = int(self.session.query(
@@ -306,17 +309,20 @@ class Queries:
 
     def delete_old_songs_from_ban(self):
         print("Deleting old songs from ban list")
-        retention_time = int(self.session.query(
-            Setting).filter_by(key="default_ban_time").first().value)
-        songs = self.session.query(Ban).all()
+        try:
+            retention_time = int(self.session.query(
+                Setting).filter_by(key="default_ban_time").first().value)
+            songs = self.session.query(Ban).all()
 
-        for element in songs:
-            song: Ban = element
+            for element in songs:
+                song: Ban = element
 
-            if song.ban_time + timedelta(minutes=retention_time) < datetime.now():
-                self.session.delete(song)
+                if song.ban_time + timedelta(minutes=retention_time) < datetime.now():
+                    self.session.delete(song)
 
-        self.session.commit()
+            self.session.commit()
+        except Exception as e:
+            print("Error in Queries Line 325:", e)
 
     def approve_song(self, track_id):
         song: Queue = self.session.query(Queue).filter(
