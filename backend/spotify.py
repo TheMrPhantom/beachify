@@ -51,6 +51,7 @@ class Spotify:
             self.connector = spotipy.Spotify(auth=auth_token)
             return True
         else:
+            print("State was wrong, couldnt auth user")
             return False
 
     def checkCurrentSong(self):
