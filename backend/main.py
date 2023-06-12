@@ -137,6 +137,7 @@ def add_song_to_queue():
     success = db.add_song_to_queue(request.json["trackID"])
 
     if success:
+        db.upvote_song(request.json["trackID"], str(request.access_route[0]))
         return util.build_response("Song added")
     else:
         return util.build_response("Song cant be added", code=409)
