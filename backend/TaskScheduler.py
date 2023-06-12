@@ -4,7 +4,8 @@ import threading
 
 
 class TaskScheduler:
-    def __init__(self) -> None:
+    def __init__(self,app) -> None:
+        self.app=app
         return
 
     def start(self) -> None:
@@ -13,8 +14,9 @@ class TaskScheduler:
     def loop(self) -> None:
         while True:
             try:
-                time.sleep(1)
-                schedule.run_pending()
+                with self.app.app_context():
+                    time.sleep(1)
+                    schedule.run_pending()
             except Exception as e:
                 print("Error in TaskScheduler loop:", e)
 

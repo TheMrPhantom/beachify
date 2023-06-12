@@ -65,7 +65,7 @@ class Queries:
 
             output.append(util.format_song(
                 queueElement, song, trust_mode_on, None))
-
+            
         def compare(s1, s2):
             waiting_time_s1 = (
                 datetime.now()-s1["insertion_time"]).total_seconds()
@@ -266,7 +266,7 @@ class Queries:
 
         self.session.commit()
 
-    def set_next_song_queue(self) -> Song:
+    def set_next_song_queue(self) -> Song:       
         trust_mode_on = self.session.query(Setting).filter_by(
             key="trust_mode").first().value == "approval"
         try:
@@ -279,8 +279,8 @@ class Queries:
             print("No last next song")
 
         add_to_queue = None
-        try:
-            queue = self.get_queued_songs()
+        try:  
+            queue = self.get_queued_songs(only_approved=True)
 
             add_to_queue: Queue = self.session.query(Queue).filter(
                 Queue.song.has(

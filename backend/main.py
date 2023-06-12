@@ -17,20 +17,21 @@ import prometheus_exporter
 # Database
 token_manager = authenticator.TokenManager()
 
-db = Queries.Queries(sql_database)
-ws = bwebsocket.Websocket()
-sp = spotify.Spotify(ws, db)
-pe = prometheus_exporter.PrometheusExporter(sp, ws, db)
+with app.app_context():
+    db = Queries.Queries(sql_database)
+    ws = bwebsocket.Websocket()
+    sp = spotify.Spotify(ws, db)
+    pe = prometheus_exporter.PrometheusExporter(sp, ws, db)
 
-# Tasks
-taskScheduler = TaskScheduler.TaskScheduler()
-taskScheduler.add_minutely_task(db.delete_old_songs_from_queue)
-taskScheduler.add_minutely_task(db.delete_old_songs_from_ban)
-taskScheduler.add_secondly_task(sp.checkCurrentSong)
-taskScheduler.add_secondly_task(sp.check_queue_insertion)
-taskScheduler.add_secondly_task(sp.check_spotify_connection)
-taskScheduler.add_secondly_task(pe.update_metrics)
-taskScheduler.start()
+    # Tasks
+    taskScheduler = TaskScheduler.TaskScheduler(app)
+    taskScheduler.add_minutely_task(db.delete_old_songs_from_queue)
+    taskScheduler.add_minutely_task(db.delete_old_songs_from_ban)
+    taskScheduler.add_secondly_task(sp.checkCurrentSong)
+    taskScheduler.add_secondly_task(sp.check_queue_insertion)
+    taskScheduler.add_secondly_task(sp.check_spotify_connection)
+    taskScheduler.add_secondly_task(pe.update_metrics)
+    taskScheduler.start()
 
 
 def with_beachify_token(fn):
